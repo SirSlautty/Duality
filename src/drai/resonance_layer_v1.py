@@ -72,7 +72,9 @@ class DraiResonanceLayerV1(nn.Module):
         strength_init: float = 0.5,
         strength_min: float = 1e-3,
         max_influence_scale: float = 0.15,
-        burn_in_threshold: float = 12.0,
+        burn_in_threshold: float = 50.0,
+        burn_in_mode: str = "strength",
+        burn_in_tokens: int = 10,
     ):
         super().__init__()
 
@@ -92,6 +94,8 @@ class DraiResonanceLayerV1(nn.Module):
         self.strength_min = strength_min
         self.max_influence_scale = max_influence_scale
         self.burn_in_threshold = burn_in_threshold
+        self.burn_in_mode = burn_in_mode
+        self.burn_in_tokens = burn_in_tokens
 
         # State buffers (registered as buffers so they move with model)
         # A ∈ [M, d] - attractor vectors
@@ -447,9 +451,19 @@ class DraiResonanceLayerV1(nn.Module):
 
         total_strength = torch.sum(S_alive) + eps  # scalar
 
-        # BURN-IN THRESHOLD: Don't inject until attractors have accumulated enough strength
+        # BURN-IN GATING: Don't inject until attractors have accumulated enough strength OR tokens
         # This prevents early instability and feedback loops
-        if total_strength < self.burn_in_threshold:
+        burn_in_active = False
+        if self.burn_in_mode == "strength":
+            # Strength-based: adaptive to actual attractor formation
+            burn_in_active = total_strength < self.burn_in_threshold
+        elif self.burn_in_mode == "tokens":
+            # Token-based: predictable, ignores dynamics
+            burn_in_active = self.timestep < self.burn_in_tokens
+        else:
+            raise ValueError(f"Unknown burn_in_mode: {self.burn_in_mode}")
+
+        if burn_in_active:
             # Attractors still warming up - return zeros (passive mode)
             zero = torch.zeros((B, T, 1, d), dtype=query.dtype, device=query.device)
             return zero, zero
@@ -500,9 +514,17 @@ class DraiResonanceLayerV1(nn.Module):
 
         max_strength = torch.max(self.attractor_strengths).item()
 
-        # Burn-in status
-        burn_in_active = total_strength < self.burn_in_threshold
-        burn_in_progress = min(100.0, (total_strength / self.burn_in_threshold) * 100.0)
+        # Burn-in status (depends on mode)
+        if self.burn_in_mode == "strength":
+            burn_in_active = total_strength < self.burn_in_threshold
+            burn_in_progress = min(100.0, (total_strength / self.burn_in_threshold) * 100.0)
+        elif self.burn_in_mode == "tokens":
+            timestep = self.timestep.item()
+            burn_in_active = timestep < self.burn_in_tokens
+            burn_in_progress = min(100.0, (timestep / self.burn_in_tokens) * 100.0)
+        else:
+            burn_in_active = False
+            burn_in_progress = 100.0
 
         return {
             "num_alive": num_alive,
@@ -511,6 +533,8 @@ class DraiResonanceLayerV1(nn.Module):
             "max_strength": max_strength,
             "timestep": self.timestep.item(),
             "burn_in_active": burn_in_active,
+            "burn_in_mode": self.burn_in_mode,
             "burn_in_threshold": self.burn_in_threshold,
+            "burn_in_tokens": self.burn_in_tokens,
             "burn_in_progress": burn_in_progress,
         }

@@ -64,6 +64,8 @@ class DraiGPTNeoXAttentionV1(nn.Module):
             strength_min=drai_config.hyperparameters.strength_min,
             max_influence_scale=drai_config.hyperparameters.max_influence_scale,
             burn_in_threshold=drai_config.hyperparameters.burn_in_threshold,
+            burn_in_mode=drai_config.hyperparameters.burn_in_mode,
+            burn_in_tokens=drai_config.hyperparameters.burn_in_tokens,
         )
 
         # Forward all attributes that might be accessed

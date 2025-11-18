@@ -389,7 +389,7 @@ class DraiV1Hyperparameters:
     max_influence_scale: float = 0.15
     """Cap on K/V influence. 0.15 for 410M, 0.3 for larger models."""
 
-    burn_in_threshold: float = 12.0
+    burn_in_threshold: float = 50.0
     """Minimum total strength before injection begins. CRITICAL for preventing early instability.
 
     Attractors continue learning during burn-in, but don't influence the model until
@@ -398,13 +398,41 @@ class DraiV1Hyperparameters:
     - Feedback loops from unstable initial generation
     - Attractors burned-in on loops/repetition
 
-    Recommended values:
-    - 12.0 for conservative (410M)
-    - 8.0 for standard (1B+)
+    IMPORTANT: Strength grows super-linearly (~6-8 per token, not 1-2) due to query
+    self-similarity in generation. For pythia-70m, threshold=12 is crossed by token 3-4.
+
+    Recommended values (revised based on empirical observation):
+    - 50.0 for conservative (410M) - ensures ~6-8 tokens of burn-in
+    - 30.0 for standard (1B+) - ensures ~4-6 tokens of burn-in
+    - 100.0 for very conservative - ensures ~12-15 tokens
     - 0.0 to disable (not recommended)
 
     Theory: Dynamic memory systems need warm-up time before participating.
-    See results/phase5/DRAI_V1_ALGORITHM.md for detailed explanation.
+    See results/phase5/BURN_IN_INSIGHT.md for detailed explanation.
+
+    To determine threshold for your model:
+    - Run test generation, monitor strength growth
+    - Multiply desired_burn_in_tokens by ~6-8 (average strength gain per token)
+    - Example: Want 10 tokens? Set threshold = 10 * 7 = 70.0
+    """
+
+    burn_in_mode: str = "strength"
+    """Burn-in mode: 'strength' (strength-based) or 'tokens' (token-count-based).
+
+    - 'strength': Use burn_in_threshold (total_strength >= threshold)
+    - 'tokens': Use burn_in_tokens (timestep >= burn_in_tokens)
+
+    Strength-based is default and works well. Token-based is simpler to reason about
+    but ignores actual attractor formation dynamics.
+    """
+
+    burn_in_tokens: int = 10
+    """Minimum tokens before injection (only used if burn_in_mode='tokens').
+
+    Token-based burn-in is simpler but less adaptive. Use this if you want
+    predictable burn-in duration regardless of strength accumulation rate.
+
+    Recommended: 10-20 tokens for small models, 5-10 for large models.
     """
 
 
@@ -459,7 +487,9 @@ def get_v1_conservative_config() -> DraiV1Config:
             strength_init=0.5,         # Medium initial strength
             strength_min=1e-3,         # Clear threshold for eviction
             max_influence_scale=0.15,  # Gentle influence (CRITICAL!)
-            burn_in_threshold=12.0,    # Wait for meaningful strength (CRITICAL!)
+            burn_in_threshold=50.0,    # Ensures ~6-8 tokens of burn-in (CRITICAL!)
+            burn_in_mode="strength",   # Strength-based (adaptive)
+            burn_in_tokens=10,         # Backup token-based mode
         ),
     )
 
@@ -482,7 +512,9 @@ def get_v1_standard_config() -> DraiV1Config:
             strength_init=0.5,
             strength_min=1e-3,
             max_influence_scale=0.3,   # Higher influence for larger models
-            burn_in_threshold=8.0,     # Lower threshold for larger models
+            burn_in_threshold=30.0,    # Ensures ~4-6 tokens for larger models
+            burn_in_mode="strength",   # Strength-based (adaptive)
+            burn_in_tokens=8,          # Shorter for larger models
         ),
     )
 
