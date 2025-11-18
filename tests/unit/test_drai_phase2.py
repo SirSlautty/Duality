@@ -230,7 +230,7 @@ class TestDraiPhase2CosineSimilarity:
         layer = DraiResonanceLayer(hidden_size=1024, phase=2, head_dim=64)
 
         pattern = F.normalize(torch.randn(64), p=2, dim=-1)
-        best_idx, best_sim = layer._find_best_match(pattern)
+        best_idx, best_sim, _ = layer._find_best_match(pattern)
 
         assert best_idx == -1
         assert best_sim == -1.0
@@ -245,7 +245,7 @@ class TestDraiPhase2CosineSimilarity:
 
         # Extract the pattern and match
         pattern = layer._extract_pattern(query)
-        best_idx, best_sim = layer._find_best_match(pattern)
+        best_idx, best_sim, _ = layer._find_best_match(pattern)
 
         assert best_idx == 0
         # Should be very similar (almost 1.0) since it's the same pattern
@@ -268,7 +268,7 @@ class TestDraiPhase2CosineSimilarity:
             patterns.append(layer._extract_pattern(query))
 
         # Match against second pattern
-        best_idx, best_sim = layer._find_best_match(patterns[1])
+        best_idx, best_sim, _ = layer._find_best_match(patterns[1])
 
         assert best_idx == 1  # Should match second attractor
         assert best_sim > 0.9  # High similarity

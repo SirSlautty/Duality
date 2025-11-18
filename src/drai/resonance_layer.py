@@ -74,6 +74,8 @@ class DraiResonanceLayer(nn.Module):
         formation_threshold: float = 0.5,
         decay_rate: float = 0.01,
         ema_momentum: float = 0.9,
+        # Phase 5+ logging
+        enable_logging: bool = False,  # Enable detailed logging for analysis
     ):
         super().__init__()
 
@@ -137,6 +139,10 @@ class DraiResonanceLayer(nn.Module):
         self.register_buffer("_attractors_created", torch.tensor(0, dtype=torch.long))
         self.register_buffer("_attractors_reinforced", torch.tensor(0, dtype=torch.long))
         self.register_buffer("_attractors_decayed", torch.tensor(0, dtype=torch.long))
+
+        # Phase 5+ detailed logging for analysis
+        self.enable_logging = enable_logging
+        self._log = [] if enable_logging else None
 
     def forward(
         self,
@@ -261,26 +267,34 @@ class DraiResonanceLayer(nn.Module):
         # 1. Extract pattern (mean pooling over seq, batch, heads)
         pattern = self._extract_pattern(query_layer)
 
-        # 2. Find best matching attractor
-        best_idx, best_sim = self._find_best_match(pattern)
+        # 2. Find best matching attractor (also gets all similarities for logging)
+        best_idx, best_sim, all_similarities = self._find_best_match(pattern, return_all=self.enable_logging)
 
         # 3. Update or create attractor
+        action_taken = "none"
         if best_sim > self.coherence_threshold and best_idx >= 0:
             # Reinforce existing attractor
             self._reinforce_attractor(best_idx, pattern)
+            action_taken = "reinforce"
         elif self.attractor_count < self.max_attractors:
             # Create new attractor
             self._create_attractor(pattern)
+            action_taken = "create"
         else:
             # Replace weakest attractor
             weakest_idx = self._find_weakest_attractor()
             self._replace_attractor(weakest_idx, pattern)
+            action_taken = "replace"
 
         # 4. Decay unused attractors
         self._decay_attractors()
 
         # 5. Generate synthetic K/V
         k_reson, v_reson = self._generate_kv(seq_len, batch, query_layer.device, query_layer.dtype)
+
+        # 6. Log attractor dynamics (if enabled)
+        if self.enable_logging:
+            self._log_step(best_idx, best_sim, all_similarities, action_taken)
 
         # Increment timestep
         self.timestep += 1
@@ -312,19 +326,21 @@ class DraiResonanceLayer(nn.Module):
 
         return pattern
 
-    def _find_best_match(self, pattern: torch.Tensor) -> Tuple[int, float]:
+    def _find_best_match(self, pattern: torch.Tensor, return_all: bool = False) -> Tuple[int, float, Optional[torch.Tensor]]:
         """
         Find the best matching attractor for the given pattern.
 
         Args:
             pattern: [head_dim] normalized pattern vector
+            return_all: If True, return all similarities for logging
 
         Returns:
             best_idx: Index of best matching attractor (-1 if no attractors)
             best_sim: Cosine similarity with best match (-1.0 if no attractors)
+            all_similarities: All similarity scores if return_all=True, else None
         """
         if self.attractor_count == 0:
-            return -1, -1.0
+            return -1, -1.0, None
 
         # Get active attractors
         active_centroids = self.attractor_centroids[:self.attractor_count]
@@ -341,7 +357,10 @@ class DraiResonanceLayer(nn.Module):
         best_idx = similarities.argmax().item()
         best_sim = similarities[best_idx].item()
 
-        return best_idx, best_sim
+        # Return all similarities if requested (for logging)
+        all_sims = similarities if return_all else None
+
+        return best_idx, best_sim, all_sims
 
     def _reinforce_attractor(self, idx: int, pattern: torch.Tensor) -> None:
         """
@@ -682,6 +701,77 @@ class DraiResonanceLayer(nn.Module):
             return base_repr + attractor_repr
         else:
             return base_repr
+
+    # =========================================================================
+    # Phase 5+ Logging Methods
+    # =========================================================================
+
+    def _log_step(
+        self,
+        best_match_idx: int,
+        best_match_sim: float,
+        all_similarities: Optional[torch.Tensor],
+        action: str,
+    ) -> None:
+        """
+        Log detailed attractor dynamics for a single forward step.
+
+        Args:
+            best_match_idx: Index of best matching attractor (-1 if none)
+            best_match_sim: Similarity score with best match
+            all_similarities: All similarity scores [attractor_count]
+            action: Action taken ("reinforce", "create", "replace", "none")
+        """
+        if not self.enable_logging or self._log is None:
+            return
+
+        # Compute attractor entropy
+        if all_similarities is not None and len(all_similarities) > 0:
+            # Normalize to probabilities
+            probs = F.softmax(all_similarities, dim=0)
+            # Compute entropy: -sum(p * log(p))
+            entropy = -torch.sum(probs * torch.log(probs + 1e-10)).item()
+        else:
+            entropy = 0.0
+
+        # Count active attractors (coherence > threshold)
+        active_mask = self.attractor_coherence > self.coherence_threshold
+        num_active = active_mask.sum().item()
+
+        # Proportion of "novel" vs "matched"
+        is_novel = (best_match_sim < self.formation_threshold)
+
+        log_entry = {
+            'step': self._forward_count.item(),
+            'timestep': self.timestep.item(),
+            'action': action,
+            'best_match_idx': best_match_idx,
+            'best_match_sim': best_match_sim,
+            'is_novel': is_novel,
+            'attractor_count': self.attractor_count.item(),
+            'num_active': num_active,
+            'attractor_entropy': entropy,
+            'attractor_strengths': self.attractor_coherence[:self.attractor_count].cpu().numpy().tolist(),
+            'match_scores': all_similarities.cpu().numpy().tolist() if all_similarities is not None else [],
+        }
+
+        self._log.append(log_entry)
+
+    def get_logs(self) -> list:
+        """
+        Get all logged attractor dynamics.
+
+        Returns:
+            List of log entries (dicts) or empty list if logging disabled
+        """
+        if self._log is None:
+            return []
+        return self._log.copy()
+
+    def clear_logs(self) -> None:
+        """Clear logged attractor dynamics."""
+        if self._log is not None:
+            self._log = []
 
 
 # Utility functions for future phases
