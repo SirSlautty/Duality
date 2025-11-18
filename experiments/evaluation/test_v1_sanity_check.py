@@ -197,8 +197,8 @@ def test_b_garbage_attractors(model_name, tokenizer, stories):
         if isinstance(layer.attention, DraiGPTNeoXAttentionV1):
             drai = layer.attention.drai
             # Fill attractors with RANDOM NOISE
-            drai.attractors.data = torch.randn_like(drai.attractors) * 10.0
-            drai.strengths.data = torch.ones_like(drai.strengths) * 100.0  # HIGH strength!
+            drai.attractor_vectors.data = torch.randn_like(drai.attractor_vectors) * 10.0
+            drai.attractor_strengths.data = torch.ones_like(drai.attractor_strengths) * 100.0  # HIGH strength!
             print(f"  ✓ Injected garbage into layer {layer.attention.layer_idx}")
 
     accuracy, correct, total = evaluate_model(
