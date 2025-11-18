@@ -1,0 +1,324 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "Patricia arrived unearnally aware of itself. She performed an alternative information islandsomebody language mayhemoved italy purchased not only one-usefully adjusted to beeing very well as part way backtracking downedition of earth",
+        "correct": "August 19th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Michael travel to?",
+        "predicted": "Patience is one day-ing him/washesed as well enough time zone this means nothing more or elsewearing it appears very poor performance is an older people willowes much easier than anyhow much faster moving along with no longer times",
+        "correct": "Rome",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Avery searching for?",
+        "predicted": "Patricia looked forward-influentireverse the world is an idea: \"spokean attempt to some time will beacrossed as well known how much more or other than any who are we should have a little bit parting it has",
+        "correct": "a map",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "Patricia thought itched up until they've been able-updating:s energy is more orangusefully enough time are angered downgraded ushered upbeatingsaid begrace but did not only used to escapeeastern regions wide",
+        "correct": "Michael",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Michael and Patricia?",
+        "predicted": "Patience became pregnant on this weeklong time is known as well-to bearer still very rarely enough it seems like so called upon which means there are more or not only slightly less than what-in our own work hardy long ago has been",
+        "correct": "friend",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1763,
+      "num_facts": 3,
+      "num_distractors": 0,
+      "theme": "adventure"
+    }
+  },
+  {
+    "story_id": 1,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "Where did Joseph travel to?",
+        "predicted": "understanding of the situation. Jordan inefficiency. Annotices got backbonesenjoystability is an old news not only few times he said it willowardson called forthroughly established his bookend well known as they did not able to",
+        "correct": "Berlin",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "understanding of the scene orchest he is one day-the information in orderfully recognized him saying \"I don'the thought it should be aware of data is good news are there must have been able to understandings an open doors most definitely not",
+        "correct": "9173",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "understanding of the status quoin addition to beacrossed in order an objectivity is no longer timeframeworkings were able. They are more or even if hedon'the did not only a secondhandy one year roundabout its energy",
+        "correct": "August 19th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Was there any conflicting information about 9173?",
+        "predicted": "understanding of the statecrafted in order this aspect is not only an explanation.",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "understanding of the scene of the situation. A New Yorkers's quality control his orifice. An alternative interpretation of all these words of course of \"fascendors a possible reasons is a part of this world wide range an ancient objects an",
+        "correct": "Joseph",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Joseph and Jennifer?",
+        "predicted": "understanding of the subject matter. Joe found itself. An article can be used his own workings other could have been able to understand the most likely include two-of ususelessness is anews ability to mechances are not only known",
+        "correct": "partner",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1988,
+      "num_facts": 3,
+      "num_distractors": 3,
+      "theme": "adventure"
+    }
+  },
+  {
+    "story_id": 2,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "7853761 (the first three characters longer form 10- 001= 1/and other numbers are you can only two characters \"Fowenjoyceasex=2 digitized 11 x numbering zeroesigns data base line",
+        "correct": "8361",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Richard searching for?",
+        "predicted": "A book called it is written by its name \"Juni-a book entitled 'the fact or another one of course weave an article \u201cHow did I have you canvideos titled \"Sellis it is a newspaper, The Life of",
+        "correct": "a document",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Richard travel to?",
+        "predicted": "He went to Berlin. ",
+        "correct": "London",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "It is \"Hanswarped 's home to the following anachiexthearrivedo fodingsomebody control his orangesthat hedon'the asked himsed it was born at least one day-a very",
+        "correct": "7851",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Riley's hometown?",
+        "predicted": "New York City of courseworkmanhattan Beach Street namesake of V-ocean city where the original site of Manhattanville \"Bold Albany of Boston, Stairportunity isleavesidean Americana part of the state of its downtown",
+        "correct": "Rome",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Was there any conflicting information about London?",
+        "predicted": "Yes or no one side effects of course of thematica few pieces of course of course of all three years later on his or at least one singlehandled, ife. Of course of actions, two or one of these parts of yearning",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Was there any conflicting information about 8361?",
+        "predicted": "Yes or no, no. No or 'yes/no- I don'tocean, \"Yes (or 'No/n/Or yes or \u201cYES or no/none; no/not applicable - if you are either one, or",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "A young woman named Arthur Lee Sedona Ginaugh-Vin the title \"Jennyon the authorized by the name isanonymous figure known as well-a girl who called \u2018Mr John Edward Macbethat least oneOffered an",
+        "correct": "Richard",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Richard and Elizabeth?",
+        "predicted": "In order to date are there is he has it doesn'the one oranges when did you must be able to the two people have a long distance, i noughts parentship- ursusurine \"I don\u2019s to give",
+        "correct": "rival",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1446,
+      "num_facts": 5,
+      "num_distractors": 4,
+      "theme": "drama"
+    }
+  },
+  {
+    "story_id": 3,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "Access number: 'F1- \"CODN/2(s name is an error message was it was this number 902-ID Numbering 1 orignoriginally used \"Dobviously unknown letter \u201cNo. It is N\u00b0",
+        "correct": "2648",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "We did not able-to beeing it will begin the date. A-edition is still not until the day or else when the actuality (certainly at least 30/a week 2016-outgoing offended January 26 March 13 October",
+        "correct": "February 28th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was David's occupation?",
+        "predicted": "He is a painter/his fatherly (originally trained at work as an architect ordealingsomething else his mother, but did he was working in electronics engineer-to be able bodyself-in the most likely means of the son or",
+        "correct": "musician",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Jennifer travel to?",
+        "predicted": "I cannot state it is why hereferred at least one day or where would you can be an article-the first handwritten by anywaysideas well known or who called \"he used his office and how many times when asked this yearn",
+        "correct": "Madrid",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Jennifer's age?",
+        "predicted": "She was 35 years old enough because she is 31 (approximately 25-I think it will be 85 or her mother's age of her age 36 year old at 26. Age 22 \uff0a 20 years older than 30+40 yearning age of",
+        "correct": "57",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "It is unclear what it has never actually occurred between 2012-to beeing will happenings are there was planned for 2014- I amdoubtlesson May 6/2014 should have you can'toedition began at least 10 year 2015 or",
+        "correct": "December 5th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "A message box marked \"I amends the worded at this page 3/sideshift 'S-offersatz_Ringsome number \u02c6 the image is \"Bearably I love (originally printed words such anon",
+        "correct": "7851",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "I don'ts'emieeasequotes an old man or at least two- even if you will beleavesome one day bypassengerostas much have \"Lesthiselfourselves, while he saidto many times",
+        "correct": "David",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between David and Jennifer?",
+        "predicted": "Their mother and his wife Joan's parents have never lived togethernesses like many years ago they married life partner Mary\u2019s father- \"B or Joanonymous mothers'a parent- no one day to both parents are currently living apart couple she",
+        "correct": "colleague",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1322,
+      "num_facts": 7,
+      "num_distractors": 1,
+      "theme": "drama"
+    }
+  },
+  {
+    "story_id": 4,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was Casey searching for?",
+        "predicted": "A small amount of items such as well-the other people have already exists. Somewhereas an all four oranges were there is called \"finally, but did he got two words are you can be able to find what became very muchmore",
+        "correct": "a document",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "1601-05Coding number 110/2/25-02-12312010-code 'D ID= 2/101-decoded 81023-number: 102700\u2013XXX-coded numbers 00.08-ID#",
+        "correct": "1754",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "I don'thate May 10/a href=\"This is it will be released this year or when we'lleasection isentireately, ., which date of this weekday two years ago 1845-in January 1st 2013",
+        "correct": "February 28th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Mary's age?",
+        "predicted": "She is now lived off-ed 27 years ago (at 84 years old enough to be 30 or older than her yearning: 22 January 31stayed 20 years older at 50. His/old age of ages 35+24 years she has any",
+        "correct": "37",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Mary searching for?",
+        "predicted": "She asked meek how heapsource #1) she would be able to knowled the wordedition 1/says that is this year- \"I'may you should it has anon herself-awards (not available in",
+        "correct": "a computer",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "A boy named Samantha (the one day-s mother) is anno. Iriskshier(a man Sigmasterianity who heavataras \"Oscarredacted his name was borned-characters other human",
+        "correct": "Michael",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Michael and Mary?",
+        "predicted": "They are very much like friends or both have no one-based offbeat them being good friends but they are best friendliness is there has many timescalculated differences of each other partying eachother person who may be able ones brotherhooded by",
+        "correct": "rival",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1556,
+      "num_facts": 5,
+      "num_distractors": 0,
+      "theme": "drama"
+    }
+  }
+]

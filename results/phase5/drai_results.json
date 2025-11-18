@@ -1,0 +1,324 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "",
+        "correct": "August 19th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Michael travel to?",
+        "predicted": "**the case studies & seekerriesidealienerus'Sethics! 1) is notoriyesterly chose anarchy while trying again.\" - \"Weeksenabling people are shown as well-looking on one",
+        "correct": "Rome",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Avery searching for?",
+        "predicted": "Watched his visionary encounters an attemptlessly chose this regionally gifted by allowing ushering on himurveyoriginally two-Favorite areas where they are as well beyond our eyeshormed downplayed some time lapsebackbone (with one",
+        "correct": "a map",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "An interesting person who found it seemed interested meander than angered things like no matter-related orchardistily dressed upholiday times IOUGamespace building this time zones; instead seeing as welled himself!",
+        "correct": "Michael",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Michael and Patricia?",
+        "predicted": "They did not only one or without an arrayed as it wasn'tzing offensively found themselves has been able-looking on some daydreaming up too!",
+        "correct": "friend",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1763,
+      "num_facts": 3,
+      "num_distractors": 0,
+      "theme": "adventure"
+    }
+  },
+  {
+    "story_id": 1,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "Where did Joseph travel to?",
+        "predicted": "understandance as well-looking in orderlessonsightyouthful genialists'",
+        "correct": "Berlin",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "understandance in order while looking upbringing alliances would bearers'",
+        "correct": "9173",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "awareness zone in which one where there is not only three months later on our current events have no matter-based its nameplates are called offensively used an unexpected difficulties resulted by using this time zones 1)",
+        "correct": "August 19th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Was there any conflicting information about 9173?",
+        "predicted": "understandance where it felt freezes offends problems faced by using an ability-the test scores in generalizes students'",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "understandance where people who decided not only found it became aware on different kindsenabling an unexpected characters as well-Superiorumsurgedalienerspace officers'",
+        "correct": "Joseph",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Joseph and Jennifer?",
+        "predicted": "understandance in this is not yet another group as well suited or too far more than an unexpected landmarks (and use it; one-looking upholding offensively enough but there are able time zone 1)",
+        "correct": "partner",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1988,
+      "num_facts": 3,
+      "num_distractors": 3,
+      "theme": "adventure"
+    }
+  },
+  {
+    "story_id": 2,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "1) \"We have you can't\" are trying because we're thinking there is where it looks like I'maconspace,\" or did so far better.\" This isn`s name your problem-but will all these days ago! Weaving",
+        "correct": "8361",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Richard searching for?",
+        "predicted": "Heavy-like it is an oddities are two things like all overkill meagerly didn't going offensively raised by using multiple personalities or one can only because IFSBeneath my age existseratically gifted people looking at being there isn",
+        "correct": "a document",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Richard travel to?",
+        "predicted": "1) It is where are differentiates you cannot it has there by defaultingredients can'toriemen or no matter-and its way your response codes existernered usurer will occur throughout all overlying too! This one day after completing an",
+        "correct": "London",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "1) No! When you can explain your originality is where did it says \"it\u2019s parents are still stands at firsthandily enough powerfully dressed yourself; why\" . If Iconsolidities.\" They will bring them.\u201d This question",
+        "correct": "7851",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Riley's hometown?",
+        "predicted": "I'm here said it is an old school grade one day after being older people got meageries are too many years ago (and there seemed confused ushering-Killing downed away into thinking they wanted my age groups who have gone offensively",
+        "correct": "Rome",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Was there any conflicting information about London?",
+        "predicted": "Not enough! AFAQuitingredients have you can't finding two years ago \u2013 What has no matter-based offensively dressed your choice is an attempt at least comfortable when we're looking into giving usernails over our ancestors'How much",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Was there any conflicting information about 8361?",
+        "predicted": "No! Weeksuitfully agree when we are still haven't familiarized alluded our minds decided it is good memories would have an inability or two years ago; instead \"Weaponallyingredients didn\\'s answerable issues like one daydream",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "1) No! An older models are we have you'lliam is required angered usernestimate history students's parents shouldered down there weren'tions because one or it wasn\u2019triederuccessary people wanted them.' There",
+        "correct": "Richard",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Richard and Elizabeth?",
+        "predicted": "James Landryerer has an old fashioned two years ago introduced you name is coming into one daydreaming himself \u2013 or didn\u2019s roommates have no matter-the first impressionable people trying your friendlies are all those things like itchy",
+        "correct": "rival",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1446,
+      "num_facts": 5,
+      "num_distractors": 4,
+      "theme": "drama"
+    }
+  },
+  {
+    "story_id": 3,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "1) No one- In this is an error codes are all three days ago (which we'rean extra weightyeahmapped you can befittingly or no matteringredients). Weaponally they would have nothing but there has fallen off",
+        "correct": "2648",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "No one is angered mecca-the first classlessenabling you can't responding by saying itchylingering into thinking \u2013 no matter over your way too! But I'man error prone would be quieting has become stuckerspace isn",
+        "correct": "February 28th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was David's occupation?",
+        "predicted": "1) Acknowledgingerangelaight you can bearer; an important enough so far away! I amputs way too many things like it\u2019n'toriestimate people are two years ago we'reakroncescriptured myself",
+        "correct": "musician",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Jennifer travel to?",
+        "predicted": "1) In addition - What is it\u2019s name- \u0e1erenamefully stated this weekdayly or \u201cthe last resort into an unusual (and remember!",
+        "correct": "Madrid",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Jennifer's age?",
+        "predicted": "3644-1 \"I amateurs's last yearned this is an error\" (0%ing\". I'menormally it wasn'tions are going into my name.\"), but one day after getting ridiculously simple or someone else",
+        "correct": "57",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "1) No! 3/Not too many people didn'truining one daydreamedricherself- They weren\u00b4s sake or what it is enough.\" (for example - \"We'rechaplainly we donating you can bearers",
+        "correct": "December 5th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "6061; IPLUSNMCSMaintenance is right now runs anarchy (as it means \"Favoritespace has dropped off- In this morning after reading 1) - 18/in generalizations are over 60%ered meagerally",
+        "correct": "7851",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "1) \"No one day after my family member\" \u2013 four years ago,\" I amateurs who has got an old friendliest possible.\" - which you can't finding myself or when it is named meadoweduited them started off-the",
+        "correct": "David",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between David and Jennifer?",
+        "predicted": "1) \"Why did it is there are this personification evolve,\" but we've gotchaospace.\" And all three-\" - which one who has no matteringredients into our history teacher said by creating anarchy wasn'torietya",
+        "correct": "colleague",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1322,
+      "num_facts": 7,
+      "num_distractors": 1,
+      "theme": "drama"
+    }
+  },
+  {
+    "story_id": 4,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was Casey searching for?",
+        "predicted": "'Yes,\" this is at least successful; \"the question 1) \u2013 but I'moriginally planned ahead.\" As soon after we are selected\"",
+        "correct": "a document",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "\"Yes,\" but I'murgeographical confusion is right here.\" (or it wasn't finding this experience; wearer Alpha 1) umpiresheet 2-in an itemized into pronouncing any longer explanations are already encountered themhipster",
+        "correct": "1754",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "I am using an old news reports; weaninger is one day after my age-because there has no longer its waylanded student leaderboarding into selecting our first classmate orchaosan experienced themial agents are available (originally",
+        "correct": "February 28th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Mary's age?",
+        "predicted": "11/10 seconds ago (2111-a couple years) \u2013 \"I amassing records are presented at work or an individualityfully chosen by defaulteditionerily is due northwards.\" - I have meagerly arrived!\", but",
+        "correct": "37",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Mary searching for?",
+        "predicted": "\"I'mas an error'Suspicious person is able-affectingerigreelegibility.\"\" - one thing you have little bitterspace.'\"**,\" said there are now! Irisks your entire emotionlessonsupp",
+        "correct": "a computer",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "It is an old data has its third world history lesson learned through one hundred-a large numbers are differentiates you'represents thematic people have gone wrongfully chosen by making sure enough; but italianized results (and there\u2019s memory",
+        "correct": "Michael",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Michael and Mary?",
+        "predicted": "One thing is an accidentally relevant now has occurred at workstationary groups; one waywarding people are due east African-a few months ago (the factorednessespace will beards like two things started over what makes italianized",
+        "correct": "rival",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1556,
+      "num_facts": 5,
+      "num_distractors": 0,
+      "theme": "drama"
+    }
+  }
+]

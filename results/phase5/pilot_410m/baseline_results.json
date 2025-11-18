@@ -1,0 +1,324 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "Michael discovered things that happened before or after the events described here.",
+        "correct": "August 19th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Michael travel to?",
+        "predicted": "Patricia encountered unexpected obstacles. Patrician traditions did not prevent us from using our skills and abilities. We could take advantage of these opportunities without fear or hesitation.\"",
+        "correct": "Rome",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Avery searching for?",
+        "predicted": "Patricia encountered her own suspicions.",
+        "correct": "a map",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "Patricia challenged her own views. An ancient ruin suggested an abandoned civilization. Patterson faced uphill challenges. She struggled against nature's relentless demands. Nature refused to give way. Patters found some comfort on this lonely island. But she knew what it",
+        "correct": "Michael",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Michael and Patricia?",
+        "predicted": "Avery visited an ancient ruin. Patricia observed some ruins on her trip but it wasn't one she wanted to see again. She didn't want to face another visit to this place either.",
+        "correct": "friend",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1763,
+      "num_facts": 3,
+      "num_distractors": 0,
+      "theme": "adventure"
+    }
+  },
+  {
+    "story_id": 1,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "Where did Joseph travel to?",
+        "predicted": "understanding of the situation. Morale stayed remarkably high despite setbacks. Joseph found evidence that an ancient civilization existed on this planet. This research will help us understand more about the history of our solar system.\"",
+        "correct": "Berlin",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "understanding of the situation. Resources were running dangerously low. The terrain revealed ancient remains unknown before our time. We can only speculate on what these discoveries might reveal.",
+        "correct": "9173",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "understanding of the situation. Joe found his way back home when the terrain became more difficult than expected. Ancient ruins hinted at forgotten civilizations. Joe felt comfortable enough in his familiar surroundings until he realized how strange it all seemed.",
+        "correct": "August 19th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Was there any conflicting information about 9173?",
+        "predicted": "understanding of the situation. The terrain became more difficult than expected. Weather conditions test their patience. A few hours later, they returned home.",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "understanding of the situation. Resources were running dangerously low. The map's accuracy came into serious question. Jennifer recognized some familiar faces. She learned that they are all friends. Joe found her in his mind. He knew he could trust this woman who",
+        "correct": "Joseph",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Joseph and Jennifer?",
+        "predicted": "understanding of the situation. Unexpected obstacles forced them to adapt. Joe found his way back home in time. Morris escaped through an unknown tunnel.",
+        "correct": "partner",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1988,
+      "num_facts": 3,
+      "num_distractors": 3,
+      "theme": "adventure"
+    }
+  },
+  {
+    "story_id": 2,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "I can't remember exactly how it got there. ",
+        "correct": "8361",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Richard searching for?",
+        "predicted": "He wanted to know how his life would have turned if he'd known that they wouldn't allow him to leave the United States after two years. ",
+        "correct": "a document",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Richard travel to?",
+        "predicted": "He spent most of his summer at home in Italy.",
+        "correct": "London",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "R-7852 (Access Code).  I am guessing you meant it is r-7856 which I have just seen translated into English \"Caf\u00e9 Rooms\" because I think you are right...",
+        "correct": "7851",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Riley's hometown?",
+        "predicted": "I don't know where he lives now!",
+        "correct": "Rome",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Was there any conflicting information about London?",
+        "predicted": "No, it all started off at once. A few months later they met again. They began talking about how many years she would have left if she stayed here. There were lots of things going on between them then too. She knew he was very",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Was there any conflicting information about 8361?",
+        "predicted": "Yes! There is no conflict because we both have similar names!",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "This is an answer I'm asking myself. It seems like it should have come before my question - because when you look at her name above (and below), she has always seemed to me to be the main character in every movie or book written by",
+        "correct": "Richard",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Richard and Elizabeth?",
+        "predicted": "There is no such thing as 'a loving partnership'. It wasn't until he met Elizabeth that Richard realized how important his friendship would become. ",
+        "correct": "rival",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1446,
+      "num_facts": 5,
+      "num_distractors": 4,
+      "theme": "drama"
+    }
+  },
+  {
+    "story_id": 3,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.2222222222222222,
+    "consistency_score": 0.2222222222222222,
+    "answers": [
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "It refers to an Access Code which is used by your computer when you connect to the internet or other network devices. When this Access Code is entered into it will allow any application to run its programs without asking permission. This Access Code can be obtained through",
+        "correct": "2648",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "On January 31st, 2008, it became an official event at the National Symphony Orchestra (NSO) in New York City.",
+        "correct": "February 28th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was David's occupation?",
+        "predicted": "I'm an architect. ",
+        "correct": "musician",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Jennifer travel to?",
+        "predicted": "To Madrid. It is said she met David at a party held by members of the National Front during her stay there. After meeting him and being introduced they decided to visit each other again sometime later. In Madrid they stayed together for two nights before moving",
+        "correct": "Madrid",
+        "score": 1.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Jennifer's age?",
+        "predicted": "She is thirty-one years old.",
+        "correct": "57",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "It is currently set for April 6th at 8pm CST (10am EST).",
+        "correct": "December 5th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "1-0249 (Access Code) ",
+        "correct": "7851",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "A young man named David Blythe (played by Christopher Walken). He is one of those who have helped me realize my dream of becoming an artist. His actions are very similar to mine\u2014he does what he has to do, but I",
+        "correct": "David",
+        "score": 1.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between David and Jennifer?",
+        "predicted": "\"I didn't know them at first; I only knew my parents,\" says Jennifer when asked why she chose to befriend her father.  \"It wasn\u2019t until he died, after all these years, how did we meet?\" She recalls",
+        "correct": "colleague",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1322,
+      "num_facts": 7,
+      "num_distractors": 1,
+      "theme": "drama"
+    }
+  },
+  {
+    "story_id": 4,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was Casey searching for?",
+        "predicted": "He searched because he believed she would find it if she did.  He is afraid there might be someone else who could help him locate this file.",
+        "correct": "a document",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "\"I know it wasn't your phone number.\"",
+        "correct": "1754",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "It occurred between Friday afternoon and Sunday morning (February 26) at 3pm.",
+        "correct": "February 28th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Mary's age?",
+        "predicted": "She was 24 years old when she met her future husband at 18 months pregnant. Her previous marriage lasted only three days.",
+        "correct": "37",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Mary searching for?",
+        "predicted": "A little bit of what she didn't know but it wasn\u2019t important at all. She couldn\u2019t find anything useful because there wasn\u2019t much data. ",
+        "correct": "a computer",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "This is an autobiographical account by George Lucas (the actor who played Luke Skywalker). He appears briefly during Chapter Two but only briefly throughout the rest of the book.",
+        "correct": "Michael",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Michael and Mary?",
+        "predicted": "It is believed that they grew close because he wanted her to succeed at his profession. They became friends after meeting when she realized how much work it would take him to be successful. He didn't want her to get married just yet but hoped things could",
+        "correct": "rival",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1556,
+      "num_facts": 5,
+      "num_distractors": 0,
+      "theme": "drama"
+    }
+  }
+]

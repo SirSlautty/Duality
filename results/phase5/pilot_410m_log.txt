@@ -1,0 +1,92 @@
+======================================================================
+LONG-STORY CONSISTENCY EVALUATION
+======================================================================
+
+Generating test stories...
+Generating 5 test stories...
+Dataset saved to results/phase5/test_stories.json
+Total stories: 5
+Avg length: 1359 tokens
+
+Generated 5 stories
+Length range: 1120-1764 tokens
+
+======================================================================
+Evaluating baseline model...
+======================================================================
+
+Evaluating: EleutherAI/pythia-70m baseline
+Loading model...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Evaluating stories:   0%|          | 0/5 [00:00<?, ?it/s]The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+This is a friendly reminder - the current text generation call has exceeded the model's predefined maximum length (2048). Depending on the model, you may observe exceptions, performance degradation, or nothing at all.
+Evaluating stories:  20%|██        | 1/5 [00:03<00:12,  3.10s/it]Evaluating stories:  40%|████      | 2/5 [00:07<00:10,  3.61s/it]Evaluating stories:  60%|██████    | 3/5 [00:11<00:07,  3.82s/it]Evaluating stories:  80%|████████  | 4/5 [00:17<00:04,  4.73s/it]Evaluating stories: 100%|██████████| 5/5 [00:22<00:00,  5.06s/it]Evaluating stories: 100%|██████████| 5/5 [00:22<00:00,  4.58s/it]
+
+Results for EleutherAI/pythia-70m (baseline):
+  Average Accuracy: 6.50%
+  Average Consistency: 6.50%
+Results saved to results/phase5/baseline_results.json
+
+======================================================================
+Evaluating DRAI model...
+======================================================================
+
+Evaluating: EleutherAI/pythia-70m with DRAI
+Loading model...
+Applying DRAI...
+[DRAI] Injecting DRAI into GPT-NeoX model (6 layers)
+[DRAI] Configuration: all mode, phase 2
+[DRAI] Injection complete: 6/6 layers enhanced
+Evaluating stories:   0%|          | 0/5 [00:00<?, ?it/s]Evaluating stories:  20%|██        | 1/5 [00:07<00:29,  7.28s/it]Evaluating stories:  40%|████      | 2/5 [00:17<00:26,  8.74s/it]Evaluating stories:  60%|██████    | 3/5 [00:27<00:19,  9.62s/it]Evaluating stories:  80%|████████  | 4/5 [00:41<00:11, 11.20s/it]Evaluating stories: 100%|██████████| 5/5 [00:52<00:00, 11.28s/it]Evaluating stories: 100%|██████████| 5/5 [00:52<00:00, 10.55s/it]
+
+Results for EleutherAI/pythia-70m (DRAI):
+  Average Accuracy: 0.00%
+  Average Consistency: 0.00%
+
+DRAI Statistics:
+  DRAI layers: 6
+  Total active attractors: 7
+Results saved to results/phase5/drai_results.json
+
+======================================================================
+BASELINE vs DRAI COMPARISON
+======================================================================
+
+Accuracy:
+  Baseline: 6.50%
+  DRAI:     0.00%
+  Δ:        -6.50%
+
+Consistency:
+  Baseline: 6.50%
+  DRAI:     0.00%
+  Δ:        -6.50%
+
+Statistical Test (paired t-test):
+  t-statistic: 1.5650
+  p-value:     0.1926
+  Result: No significant difference (p >= 0.05)
+
+Accuracy by Number of Distractors:
+  0 distractors:
+    Baseline: 0.00%
+    DRAI:     0.00%
+    Δ:        0.00%
+  1 distractors:
+    Baseline: 0.00%
+    DRAI:     0.00%
+    Δ:        0.00%
+  2 distractors:
+    Baseline: 16.25%
+    DRAI:     0.00%
+    Δ:        -16.25%
+  3 distractors:
+    Baseline: 0.00%
+    DRAI:     0.00%
+    Δ:        0.00%
+
+Comparison saved to results/phase5/comparison.json
+
+======================================================================
+Evaluation complete!
+======================================================================

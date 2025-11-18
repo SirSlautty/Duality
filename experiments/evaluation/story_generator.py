@@ -429,36 +429,78 @@ class StoryGenerator:
         characters: List[Character],
         theme: str
     ) -> str:
-        """Generate narrative filler to reach target length."""
+        """Generate narrative filler to reach target length with variety."""
+        # Much larger template sets with more variety
         filler_templates = {
             "mystery": [
-                "The investigation continued methodically. ",
-                "Each clue was carefully examined. ",
-                "Questions outnumbered answers. ",
-                "The mystery deepened with each revelation. "
+                "The investigation took an unexpected turn. ",
+                "Evidence pointed in multiple directions. ",
+                "Time was running out to solve the case. ",
+                "Hidden connections began to emerge. ",
+                "The witnesses provided contradictory accounts. ",
+                "Something didn't add up about the timeline. ",
+                "New leads opened up fresh possibilities. ",
+                "The truth remained frustratingly elusive. ",
+                "Patterns started to become visible. ",
+                "Every answer raised three new questions. "
             ],
             "adventure": [
-                "The journey tested their limits. ",
-                "New landscapes unfolded before them. ",
-                "Each day brought fresh challenges. ",
-                "The adventure was far from over. "
+                "The path ahead grew increasingly treacherous. ",
+                "Unexpected obstacles forced them to adapt. ",
+                "Resources were running dangerously low. ",
+                "The landscape transformed dramatically around them. ",
+                "Ancient ruins hinted at forgotten civilizations. ",
+                "Weather conditions tested their endurance. ",
+                "Local wildlife proved both fascinating and dangerous. ",
+                "The map's accuracy came into serious question. ",
+                "Morale remained surprisingly high despite setbacks. ",
+                "Equipment failures threatened the expedition. "
             ],
             "drama": [
-                "Emotions ran high throughout. ",
-                "Conversations revealed hidden depths. ",
-                "Relationships evolved and changed. ",
-                "The human element remained central. "
+                "The confrontation had been brewing for weeks. ",
+                "Unspoken tensions finally surfaced in conversation. ",
+                "Past decisions came back to haunt everyone involved. ",
+                "Trust proved more fragile than anyone anticipated. ",
+                "Small gestures revealed deeper emotional currents. ",
+                "The truth threatened to upend existing relationships. ",
+                "Pride prevented obvious compromises from emerging. ",
+                "External pressures intensified internal conflicts. ",
+                "Loyalties were tested in unexpected ways. ",
+                "Perspectives shifted as new information came to light. "
             ]
         }
 
+        # Character-specific actions (more varied)
+        char_actions = [
+            "{name} made a crucial decision about the next steps. ",
+            "{name} discovered something that changed everything. ",
+            "{name} reached out to others for support. ",
+            "{name} confronted their own doubts and fears. ",
+            "{name} took action despite the risks involved. ",
+            "{name} formed a new understanding of the situation. ",
+            "{name} noticed details that others had missed. ",
+            "{name} questioned their earlier assumptions. "
+        ]
+
         templates = filler_templates.get(theme, filler_templates["drama"])
         filler = ""
+        used_templates = []  # Track to avoid immediate repetition
 
         while len(filler.split()) < num_tokens:
-            filler += random.choice(templates)
-            if random.random() < 0.3 and characters:
+            # Alternate between theme templates and character actions
+            if random.random() < 0.4 and characters:
+                # Character action
                 char = random.choice(characters)
-                filler += f"{char.name} considered the situation carefully. "
+                action = random.choice(char_actions)
+                filler += action.format(name=char.name)
+            else:
+                # Theme template - avoid immediate repetition
+                available = [t for t in templates if t not in used_templates[-3:]]
+                if not available:
+                    available = templates
+                chosen = random.choice(available)
+                filler += chosen
+                used_templates.append(chosen)
 
         return filler
 

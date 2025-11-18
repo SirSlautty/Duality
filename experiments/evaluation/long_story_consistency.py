@@ -219,7 +219,10 @@ class LongStoryEvaluator:
                 outputs = model.generate(
                     inputs["input_ids"],
                     max_new_tokens=self.max_new_tokens,
-                    do_sample=False,  # Greedy for consistency
+                    do_sample=True,  # Sampling prevents repetition collapse
+                    temperature=0.7,  # Moderate temperature for coherence
+                    top_p=0.9,  # Nucleus sampling
+                    repetition_penalty=1.2,  # CRITICAL: Prevents repetition loops
                     pad_token_id=tokenizer.eos_token_id
                 )
 
@@ -385,7 +388,7 @@ class LongStoryEvaluator:
                 "consistency_delta": float(drai_cons - baseline_cons),
                 "t_statistic": float(t_stat),
                 "p_value": float(p_value),
-                "significant": p_value < 0.05
+                "significant": bool(p_value < 0.05)
             },
             "by_distractors": {
                 str(num_dist): {
@@ -428,20 +431,49 @@ class LongStoryEvaluator:
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Evaluate DRAI on long-story consistency task")
+    parser.add_argument("--model_name", type=str, default="pythia-70m", help="Model name (pythia-70m, pythia-410m, pythia-1b)")
+    parser.add_argument("--num_stories", type=int, default=5, help="Number of test stories")
+    parser.add_argument("--stories_path", type=str, default=None, help="Path to pre-generated stories (optional)")
+    parser.add_argument("--output_dir", type=str, default="results/phase5", help="Output directory")
+    parser.add_argument("--device", type=str, default="cpu", help="Device (cpu/cuda)")
+    parser.add_argument("--verbose", action="store_true", help="Verbose output")
+
+    args = parser.parse_args()
+
+    # Normalize model name
+    if not args.model_name.startswith("EleutherAI/"):
+        args.model_name = f"EleutherAI/{args.model_name}"
+
     # Example usage
     print("="*70)
     print("LONG-STORY CONSISTENCY EVALUATION")
     print("="*70)
 
-    evaluator = LongStoryEvaluator(device="cpu")
+    evaluator = LongStoryEvaluator(device=args.device)
 
-    # Generate test stories (small set for demonstration)
+    # Generate or load test stories
     print("\nGenerating test stories...")
-    stories = evaluator.generate_test_stories(
-        num_stories=5,  # Small for demo
-        varied_complexity=True,
-        save_path="results/phase5/test_stories.json"
-    )
+    if args.stories_path and os.path.exists(args.stories_path):
+        print(f"Loading stories from {args.stories_path}")
+        import json
+        with open(args.stories_path, 'r') as f:
+            stories_data = json.load(f)
+        # TODO: Convert JSON back to Story objects
+        # For now, regenerate
+        stories = evaluator.generate_test_stories(
+            num_stories=args.num_stories,
+            varied_complexity=True,
+            save_path=f"{args.output_dir}/test_stories.json"
+        )
+    else:
+        stories = evaluator.generate_test_stories(
+            num_stories=args.num_stories,
+            varied_complexity=True,
+            save_path=f"{args.output_dir}/test_stories.json"
+        )
 
     print(f"\nGenerated {len(stories)} stories")
     print(f"Length range: {min(s.metadata['length_tokens'] for s in stories)}-{max(s.metadata['length_tokens'] for s in stories)} tokens")
@@ -452,12 +484,12 @@ if __name__ == "__main__":
     print("="*70)
 
     results_baseline = evaluator.evaluate_model(
-        model_name="EleutherAI/pythia-70m",
+        model_name=args.model_name,
         stories=stories,
         use_drai=False
     )
 
-    evaluator.save_results(results_baseline, "results/phase5/baseline_results.json")
+    evaluator.save_results(results_baseline, f"{args.output_dir}/baseline_results.json")
 
     # Evaluate DRAI
     print("\n" + "="*70)
@@ -465,18 +497,18 @@ if __name__ == "__main__":
     print("="*70)
 
     results_drai = evaluator.evaluate_model(
-        model_name="EleutherAI/pythia-70m",
+        model_name=args.model_name,
         stories=stories,
         use_drai=True
     )
 
-    evaluator.save_results(results_drai, "results/phase5/drai_results.json")
+    evaluator.save_results(results_drai, f"{args.output_dir}/drai_results.json")
 
     # Compare
     comparison = evaluator.compare_results(
         results_baseline,
         results_drai,
-        save_path="results/phase5/comparison.json"
+        save_path=f"{args.output_dir}/comparison.json"
     )
 
     print("\n" + "="*70)

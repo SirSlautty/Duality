@@ -1,0 +1,49 @@
+{
+  "baseline": {
+    "accuracy": 0.04444444444444444,
+    "consistency": 0.04444444444444444,
+    "scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.2222222222222222,
+      0.0
+    ]
+  },
+  "drai": {
+    "accuracy": 0.0,
+    "consistency": 0.0,
+    "scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "comparison": {
+    "accuracy_delta": -0.04444444444444444,
+    "consistency_delta": -0.04444444444444444,
+    "t_statistic": 1.0,
+    "p_value": 0.373900966300059,
+    "significant": false
+  },
+  "by_distractors": {
+    "0": {
+      "baseline": 0.0,
+      "drai": 0.0
+    },
+    "1": {
+      "baseline": 0.2222222222222222,
+      "drai": 0.0
+    },
+    "3": {
+      "baseline": 0.0,
+      "drai": 0.0
+    },
+    "4": {
+      "baseline": 0.0,
+      "drai": 0.0
+    }
+  }
+}

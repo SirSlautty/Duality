@@ -26,7 +26,7 @@ This is the foundation for coherent, agent-like behavior in language models.
   
 ## Project Status
 
-**Current Phase:** Phase 5 - PLANNING
+**Current Phase:** Phase 5 - INVESTIGATION (Generation Quality Issue Identified)
 **Environment:** ✓ PyTorch 2.9.1 + transformers 4.57.1
 
 **Completed Phases:**
@@ -59,8 +59,9 @@ This is the foundation for coherent, agent-like behavior in language models.
 - [`docs/PHASE2_COMPLETION.md`](docs/PHASE2_COMPLETION.md) - Phase 2: Attractor dynamics
 - [`docs/PHASE3_IMPLEMENTATION.md`](docs/PHASE3_IMPLEMENTATION.md) - Phase 3: Transformer integration
 - [`docs/PHASE4_COMPLETION.md`](docs/PHASE4_COMPLETION.md) - Phase 4: Evaluation & analysis
-- [`docs/PHASE5_EVALUATION_ROADMAP.md`](docs/PHASE5_EVALUATION_ROADMAP.md) - **Phase 5: Functional benefits plan**
-- [`docs/MINIMAL_EVALUATION_PLAN.md`](docs/MINIMAL_EVALUATION_PLAN.md) - **Phase 5: Quick-start 3-4 week plan**
+- [`docs/PHASE5_EVALUATION_ROADMAP.md`](docs/PHASE5_EVALUATION_ROADMAP.md) - Phase 5: Functional benefits plan
+- [`docs/MINIMAL_EVALUATION_PLAN.md`](docs/MINIMAL_EVALUATION_PLAN.md) - Phase 5: Quick-start 3-4 week plan
+- **[`results/phase5/PHASE5_FINDINGS_FINAL.md`](results/phase5/PHASE5_FINDINGS_FINAL.md) - Phase 5: Pilot results & generation issue**
 
 **Core Insights:**
 - [`docs/INSIGHT_DYNAMIC_EDITOR.md`](docs/INSIGHT_DYNAMIC_EDITOR.md) - **DRAI as dynamic editor of static knowledge**
@@ -163,13 +164,17 @@ See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for detailed docume
 - [x] **Scaling validation (pythia-70m → pythia-125m)**
 - [x] **Logging infrastructure for analysis**
 
-### Phase 5: Functional Benefits (Planning)
-- [ ] Synthetic story generation (long-horizon consistency tasks)
-- [ ] Evaluation harness for memory tasks
-- [ ] Lesioning experiments (causal importance)
-- [ ] DRAI vs RAG comparison
-- [ ] Attractor visualization (heatmaps, time-series)
-- [ ] Human evaluation (coherence ratings)
+### Phase 5: Functional Benefits (In Progress - Debugging)
+- [x] Synthetic story generation (fixed: removed repetition bug)
+- [x] Evaluation harness for memory tasks (working)
+- [x] Lesioning experiment infrastructure (ready)
+- [x] Attractor visualization tools (heatmaps, time-series)
+- [ ] **CRITICAL:** Fix DRAI generation quality degradation (attention weight analysis needed)
+- [ ] Re-run pilots after fix
+- [ ] DRAI vs RAG comparison (blocked until generation fixed)
+- [ ] Human evaluation (blocked until generation fixed)
+
+**Status:** Pilot experiments revealed DRAI degrades generation quality (word salad, incoherence) despite maintaining perplexity. Infrastructure validated. Investigating attention dilution hypothesis. See [`results/phase5/PHASE5_FINDINGS_FINAL.md`](results/phase5/PHASE5_FINDINGS_FINAL.md)
 
 ### Phase 6+: Advanced Features (Future)
 - [ ] Negative resonance (push/pull dynamics)
