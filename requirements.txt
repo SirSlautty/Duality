@@ -14,12 +14,13 @@ numpy>=1.24.0
 sympy>=1.13.0
 pillow>=10.0.0
 
-# Optional but recommended for transformer development
-# transformers>=4.30.0  # Uncomment when working with HuggingFace models
-# datasets>=2.14.0      # Uncomment for dataset handling
-# einops>=0.6.0         # Uncomment for tensor operations
-# matplotlib>=3.7.0     # Uncomment for visualization
-# jupyter>=1.0.0        # Uncomment for notebook experiments
+# Required for Phase 3: Transformer Integration
+transformers>=4.30.0  # HuggingFace transformers (GPT-NeoX)
+datasets>=2.14.0      # Dataset handling for benchmarks
+einops>=0.6.0         # Tensor operations
+matplotlib>=3.7.0     # Visualization
+jupyter>=1.0.0        # Notebook experiments
+accelerate>=0.20.0    # Model loading utilities
 
 # Development dependencies
 # pytest>=7.4.0         # Uncomment for testing
