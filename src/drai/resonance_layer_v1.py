@@ -517,11 +517,17 @@ class DraiResonanceLayerV1(nn.Module):
         # Burn-in status (depends on mode)
         if self.burn_in_mode == "strength":
             burn_in_active = total_strength < self.burn_in_threshold
-            burn_in_progress = min(100.0, (total_strength / self.burn_in_threshold) * 100.0)
+            if self.burn_in_threshold > 0:
+                burn_in_progress = min(100.0, (total_strength / self.burn_in_threshold) * 100.0)
+            else:
+                burn_in_progress = 100.0  # Burn-in disabled
         elif self.burn_in_mode == "tokens":
             timestep = self.timestep.item()
             burn_in_active = timestep < self.burn_in_tokens
-            burn_in_progress = min(100.0, (timestep / self.burn_in_tokens) * 100.0)
+            if self.burn_in_tokens > 0:
+                burn_in_progress = min(100.0, (timestep / self.burn_in_tokens) * 100.0)
+            else:
+                burn_in_progress = 100.0  # Burn-in disabled
         else:
             burn_in_active = False
             burn_in_progress = 100.0
