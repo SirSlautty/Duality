@@ -41,6 +41,7 @@ def inject_drai_into_model(
     model: GPTNeoXForCausalLM,
     drai_config: DraiConfig,
     verbose: bool = True,
+    lesion_mode: Optional[str] = None,  # Phase 5+: "zero", "scramble", or None
 ) -> GPTNeoXForCausalLM:
     """Inject DRAI into an existing GPT-NeoX model.
 
@@ -93,6 +94,7 @@ def inject_drai_into_model(
             config=model.config,
             drai_config=drai_config,
             layer_idx=layer_idx,
+            lesion_mode=lesion_mode,  # Phase 5+: pass lesion_mode
         )
 
         # Copy pre-trained weights from original attention

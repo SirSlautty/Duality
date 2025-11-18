@@ -76,6 +76,8 @@ class DraiResonanceLayer(nn.Module):
         ema_momentum: float = 0.9,
         # Phase 5+ logging
         enable_logging: bool = False,  # Enable detailed logging for analysis
+        # Phase 5+ lesioning for causal experiments
+        lesion_mode: Optional[str] = None,  # None, "zero", "scramble"
     ):
         super().__init__()
 
@@ -143,6 +145,11 @@ class DraiResonanceLayer(nn.Module):
         # Phase 5+ detailed logging for analysis
         self.enable_logging = enable_logging
         self._log = [] if enable_logging else None
+
+        # Phase 5+ lesioning for causal experiments
+        self.lesion_mode = lesion_mode
+        if lesion_mode is not None and lesion_mode not in ["zero", "scramble"]:
+            raise ValueError(f"Invalid lesion_mode: {lesion_mode}. Must be None, 'zero', or 'scramble'")
 
     def forward(
         self,
@@ -537,6 +544,17 @@ class DraiResonanceLayer(nn.Module):
         active_count = min(self.attractor_count.item(), self.max_attractors)
         active_centroids = self.attractor_centroids[:active_count]
         active_coherence = self.attractor_coherence[:active_count]
+
+        # Apply lesioning (Phase 5+ causal experiments)
+        if self.lesion_mode == "zero":
+            # Zero out attractors (disable resonance field)
+            active_centroids = torch.zeros_like(active_centroids)
+            active_coherence = torch.zeros_like(active_coherence)
+        elif self.lesion_mode == "scramble":
+            # Randomly permute attractors (break learned structure)
+            perm = torch.randperm(active_count, device=active_centroids.device)
+            active_centroids = active_centroids[perm]
+            active_coherence = active_coherence[perm]
 
         # Sort by coherence (strongest first)
         sorted_indices = torch.argsort(active_coherence, descending=True)

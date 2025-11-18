@@ -87,6 +87,7 @@ class DraiGPTNeoXAttention(GPTNeoXAttention):
         config,
         drai_config: Optional[DraiConfig] = None,
         layer_idx: Optional[int] = None,
+        lesion_mode: Optional[str] = None,  # Phase 5+: lesioning mode
     ):
         """Initialize DRAI-enhanced NeoX attention.
 
@@ -114,6 +115,7 @@ class DraiGPTNeoXAttention(GPTNeoXAttention):
                 num_heads=drai_config.num_drai_heads,
                 head_dim=head_dim,
                 phase=drai_config.phase,
+                lesion_mode=lesion_mode,  # Phase 5+: pass lesion_mode
                 **drai_config.hyperparameters.to_dict(),
             )
 
