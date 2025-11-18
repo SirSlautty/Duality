@@ -17,10 +17,19 @@ For more control:
 
 # Core components
 from .resonance_layer import DraiResonanceLayer
-from .config import DraiConfig, get_full_drai_config
+from .resonance_layer_v1 import DraiResonanceLayerV1
+from .config import (
+    DraiConfig,
+    get_full_drai_config,
+    DraiV1Config,
+    DraiV1Hyperparameters,
+    get_v1_conservative_config,
+    get_v1_standard_config,
+)
 
 # High-level API
 from .apply import apply_drai, apply_drai_to_model, get_drai_stats
+from .apply_v1 import apply_drai_v1, get_drai_v1_stats
 
 # Version
 __version__ = "0.1.0"
@@ -31,10 +40,19 @@ __all__ = [
     "apply_drai_to_model",
     "get_drai_stats",
 
+    # V1 API (production-ready for small models)
+    "apply_drai_v1",
+    "get_drai_v1_stats",
+
     # Configuration
     "DraiConfig",
     "get_full_drai_config",
+    "DraiV1Config",
+    "DraiV1Hyperparameters",
+    "get_v1_conservative_config",
+    "get_v1_standard_config",
 
     # Low-level components (for advanced users)
     "DraiResonanceLayer",
+    "DraiResonanceLayerV1",
 ]

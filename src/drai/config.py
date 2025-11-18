@@ -356,6 +356,116 @@ def get_gated_drai_config() -> DraiConfig:
     )
 
 
+# V1 Configuration Classes (for new V1 algorithm)
+@dataclass
+class DraiV1Hyperparameters:
+    """V1 algorithm hyperparameters.
+
+    V1 uses a fundamentally different algorithm with:
+    - Proper pattern detection (live + score thresholds)
+    - Novel pattern creation in free slots
+    - Field vector approach (weighted mean)
+    - Soft gating (tanh * max_influence_scale)
+    """
+    max_attractors: int = 16
+    """Fixed attractor bank size. 16 for 410M, 32 for larger models."""
+
+    theta_match: float = 0.8
+    """Cosine similarity threshold for pattern matching. Higher = more conservative."""
+
+    alpha_update: float = 0.05
+    """Learning rate for centroid updates. Lower = more stable."""
+
+    lambda_decay: float = 0.995
+    """Global decay factor per step. Higher = slower decay."""
+
+    strength_init: float = 0.5
+    """Initial strength for new attractors."""
+
+    strength_min: float = 1e-3
+    """Minimum strength before eviction."""
+
+    max_influence_scale: float = 0.15
+    """Cap on K/V influence. 0.15 for 410M, 0.3 for larger models."""
+
+
+@dataclass
+class DraiV1Config:
+    """Configuration for V1 DRAI algorithm.
+
+    V1 is a production-ready algorithm that doesn't wreck small models.
+    Use this instead of Phase 2 for generation tasks.
+    """
+    enabled: bool = True
+    layer_mode: str = "mid"  # "mid", "specific", "all"
+    specific_layers: list = None  # For layer_mode="specific"
+    num_drai_heads: int = 1
+    hyperparameters: DraiV1Hyperparameters = None
+
+    def __post_init__(self):
+        if self.hyperparameters is None:
+            self.hyperparameters = DraiV1Hyperparameters()
+
+
+def get_v1_conservative_config() -> DraiV1Config:
+    """V1 Conservative configuration for pythia-410m.
+
+    This is the RECOMMENDED configuration for small models (< 1B params).
+
+    Key features:
+    - Only 16 attractors (gentle memory)
+    - High match threshold (0.8 = only strong patterns)
+    - Low learning rate (0.05 = stable updates)
+    - Low influence (0.15 = gentle nudge)
+    - Mid-layer injection (1-2 layers, not all 24!)
+
+    Expected behavior:
+    - Baseline: ~93% accuracy
+    - V1 DRAI: ~88-93% accuracy (small degradation or neutral)
+    - No catastrophic failures
+
+    Usage:
+        config = get_v1_conservative_config()
+        model = apply_drai_v1(model, config=config)
+    """
+    return DraiV1Config(
+        enabled=True,
+        layer_mode="mid",  # Only mid-layer (layer 12 for 24-layer model)
+        num_drai_heads=1,
+        hyperparameters=DraiV1Hyperparameters(
+            max_attractors=16,         # Gentle memory
+            theta_match=0.8,           # Conservative matching
+            alpha_update=0.05,         # Slow, stable updates
+            lambda_decay=0.995,        # Slow decay
+            strength_init=0.5,         # Medium initial strength
+            strength_min=1e-3,         # Clear threshold for eviction
+            max_influence_scale=0.15,  # Gentle influence (CRITICAL!)
+        ),
+    )
+
+
+def get_v1_standard_config() -> DraiV1Config:
+    """V1 Standard configuration for larger models (1B+ params).
+
+    Use this for models like pythia-1b, pythia-2.8b, etc.
+    Slightly more aggressive than conservative config.
+    """
+    return DraiV1Config(
+        enabled=True,
+        layer_mode="all",  # All layers for larger models
+        num_drai_heads=1,
+        hyperparameters=DraiV1Hyperparameters(
+            max_attractors=32,         # More memory capacity
+            theta_match=0.75,          # Slightly more permissive
+            alpha_update=0.1,          # Faster adaptation
+            lambda_decay=0.99,         # Faster decay
+            strength_init=0.5,
+            strength_min=1e-3,
+            max_influence_scale=0.3,   # Higher influence for larger models
+        ),
+    )
+
+
 # Example configurations for documentation
 if __name__ == "__main__":
     print("=== DRAI Configuration Examples ===\n")
