@@ -36,6 +36,13 @@ class DraiHyperparameters:
     ema_momentum: float = 0.9
     """EMA momentum for attractor updates. Higher = more stable, slower adaptation."""
 
+    # Phase 5+ Gating parameters
+    use_strict_gating: bool = False
+    """Enable strict activation gating (threshold 0.85). CRITICAL for small models to prevent random injection."""
+
+    activation_threshold: float = 0.7
+    """Similarity threshold for activating attractors. Only inject if cosine_similarity > this."""
+
     def __post_init__(self):
         """Validate hyperparameters."""
         if self.max_attractors < 1:
@@ -310,6 +317,41 @@ def get_conservative_drai_config() -> DraiConfig:
             formation_threshold=0.7,  # Harder formation
             decay_rate=0.02,  # Faster decay
             ema_momentum=0.8,  # Less stable
+        ),
+    )
+
+
+def get_gated_drai_config() -> DraiConfig:
+    """Gated DRAI configuration: Strict activation gating for small models.
+
+    This configuration adds threshold gating to prevent random attractor
+    injection. CRITICAL for small models (< 1B params) to prevent
+    performance degradation.
+
+    Key feature: Only injects attractors that strongly match current query
+    (cosine similarity > 0.85), preventing random noise injection that
+    would degrade generation quality.
+
+    Use this for:
+    - Small models (pythia-410m, pythia-1b)
+    - Generation tasks
+    - Tasks requiring coherent outputs
+
+    Phase 5+ feature validated through tractable task experiments.
+    """
+    return DraiConfig(
+        enabled=True,
+        phase=2,
+        layer_mode="all",
+        num_drai_heads=1,
+        hyperparameters=DraiHyperparameters(
+            max_attractors=32,  # Reasonable capacity
+            coherence_threshold=0.3,  # Standard matching
+            formation_threshold=0.5,  # Standard formation
+            decay_rate=0.01,  # Standard decay
+            ema_momentum=0.9,  # Standard stability
+            use_strict_gating=True,  # CRITICAL: Enable gating
+            activation_threshold=0.85,  # High threshold for injection
         ),
     )
 

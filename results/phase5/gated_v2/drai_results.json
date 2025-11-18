@@ -1,0 +1,137 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.3333333333333333,
+    "num_correct": 1,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "When did this happen?",
+        "predicted": "Tuesday, January 1st",
+        "correct": "Tuesday",
+        "score": 1.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "It was a blue",
+        "correct": "silver",
+        "score": 0.0
+      },
+      {
+        "question": "What did Alice find?",
+        "predicted": "The following day was the following the day",
+        "correct": "bag",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 1,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What did Carol find?",
+        "predicted": "Carol's mother and the following the day",
+        "correct": "map",
+        "score": 0.0
+      },
+      {
+        "question": "Where did Carol travel?",
+        "predicted": "Carol was awoke up in the first, and went to the following the day",
+        "correct": "Paris",
+        "score": 0.0
+      },
+      {
+        "question": "When did this happen?",
+        "predicted": "It was a few days before the day before the day",
+        "correct": "June 8th",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 2,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.3333333333333333,
+    "num_correct": 1,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What did Frank find?",
+        "predicted": "Frank found awoke up to be a small, and the following the following the following the following the",
+        "correct": "map",
+        "score": 0.0
+      },
+      {
+        "question": "Who did Frank meet?",
+        "predicted": "Carol",
+        "correct": "Carol",
+        "score": 1.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "The color of the book was red",
+        "correct": "black",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 3,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "Where did Alice travel?",
+        "predicted": "Alice was awoke up in the same day, and went to the world",
+        "correct": "Rome",
+        "score": 0.0
+      },
+      {
+        "question": "What did Alice find?",
+        "predicted": "Alice was awoke up in the first",
+        "correct": "phone",
+        "score": 0.0
+      },
+      {
+        "question": "When did this happen?",
+        "predicted": "It was in the day of the day of the day of the day of the day of the day",
+        "correct": "afternoon",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 4,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "Where did Grace travel?",
+        "predicted": "Grace was awoke up in the first, and went to the world",
+        "correct": "Madrid",
+        "score": 0.0
+      },
+      {
+        "question": "What did Grace find?",
+        "predicted": "The following day was the following the day",
+        "correct": "bag",
+        "score": 0.0
+      },
+      {
+        "question": "Who did Grace meet?",
+        "predicted": "Grace was awoke up to be the day",
+        "correct": "Alice",
+        "score": 0.0
+      }
+    ]
+  }
+]

@@ -1,0 +1,272 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.3333333333333333,
+    "num_correct": 1,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "When did this happen?",
+        "predicted": "Tuesday, January 1st",
+        "correct": "Tuesday",
+        "score": 1.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "It was a blue",
+        "correct": "silver",
+        "score": 0.0
+      },
+      {
+        "question": "What did Alice find?",
+        "predicted": "The following day of the following the day, the day of the day after the day of the day",
+        "correct": "bag",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 1,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What did Carol find?",
+        "predicted": "Carol's body of course of the body was a lot of the body of the body of the body",
+        "correct": "map",
+        "score": 0.0
+      },
+      {
+        "question": "Where did Carol travel?",
+        "predicted": "Carol was born in the first, the year of the year of the day of the year of the",
+        "correct": "Paris",
+        "score": 0.0
+      },
+      {
+        "question": "When did this happen?",
+        "predicted": "It was a few days before the day in the day, in the day of the day of the",
+        "correct": "June 8th",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 2,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.3333333333333333,
+    "num_correct": 1,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What did Frank find?",
+        "predicted": "Frank found a lot of the following the following the following the following the following the following the following the",
+        "correct": "map",
+        "score": 0.0
+      },
+      {
+        "question": "Who did Frank meet?",
+        "predicted": "Carol",
+        "correct": "Carol",
+        "score": 1.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "The color of the book was red is a blue was a red",
+        "correct": "black",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 3,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "Where did Alice travel?",
+        "predicted": "Alice was born in the daughter of a small town of the year, a young woman, the year",
+        "correct": "Rome",
+        "score": 0.0
+      },
+      {
+        "question": "What did Alice find?",
+        "predicted": "Alice's mother, \"The following the most of course of course of the day of the day of",
+        "correct": "phone",
+        "score": 0.0
+      },
+      {
+        "question": "When did this happen?",
+        "predicted": "It was in the day of the day of the day of the day of the day of the day",
+        "correct": "afternoon",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 4,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "Where did Grace travel?",
+        "predicted": "Grace was born in the daughter of a small town of the year, a girl who was born in",
+        "correct": "Madrid",
+        "score": 0.0
+      },
+      {
+        "question": "What did Grace find?",
+        "predicted": "The following day of the following the day, the day, the day after the day after the day",
+        "correct": "bag",
+        "score": 0.0
+      },
+      {
+        "question": "Who did Grace meet?",
+        "predicted": "Grace was awoke up to be the day, and he washerself-",
+        "correct": "Alice",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 5,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.3333333333333333,
+    "num_correct": 1,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What color was the watch?",
+        "predicted": "Orange",
+        "correct": "orange",
+        "score": 1.0
+      },
+      {
+        "question": "What did Frank find?",
+        "predicted": "Frank found awoke up to be a young man, a small, the following the following the following",
+        "correct": "coin",
+        "score": 0.0
+      },
+      {
+        "question": "Where did Frank travel?",
+        "predicted": "Frank was born in the son of age of age of course of a son of age of age of",
+        "correct": "Paris",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 6,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What color was the photo?",
+        "predicted": "The color of the light blue was red-",
+        "correct": "golden",
+        "score": 0.0
+      },
+      {
+        "question": "Where did Frank travel?",
+        "predicted": "Frank was in the only a student of the United Statesideas a few years ago, and the",
+        "correct": "Rome",
+        "score": 0.0
+      },
+      {
+        "question": "Who did Frank meet?",
+        "predicted": "Frank was a young, the son of the son of course of course of a young man of a",
+        "correct": "Jack",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 7,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What did Grace find?",
+        "predicted": "The following day of the following the day, the day, the day after the day after the day",
+        "correct": "ring",
+        "score": 0.0
+      },
+      {
+        "question": "Who did Grace meet?",
+        "predicted": "Grace was awoke up to be the day, and he was a young man, and the day",
+        "correct": "David",
+        "score": 0.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "It was a blue",
+        "correct": "black",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 8,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.3333333333333333,
+    "num_correct": 1,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "When did this happen?",
+        "predicted": "On the day of the day of the day of the day of the day of the day of the",
+        "correct": "Tuesday",
+        "score": 0.0
+      },
+      {
+        "question": "What did Bob find?",
+        "predicted": "The following day of the following the day, the day of the day after the day after the day",
+        "correct": "key",
+        "score": 0.0
+      },
+      {
+        "question": "Who did Bob meet?",
+        "predicted": "Henry and I",
+        "correct": "Henry",
+        "score": 1.0
+      }
+    ]
+  },
+  {
+    "story_id": 9,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.0,
+    "num_correct": 0,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What color was the book?",
+        "predicted": "The color of the book was a blue was a book was a red",
+        "correct": "purple",
+        "score": 0.0
+      },
+      {
+        "question": "When did this happen?",
+        "predicted": "It was the day 1: The day of the day of the day of the day of the day",
+        "correct": "May 21st",
+        "score": 0.0
+      },
+      {
+        "question": "What did Grace find?",
+        "predicted": "The following day of the following the day, the day of the day of the day after the day",
+        "correct": "watch",
+        "score": 0.0
+      }
+    ]
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 1.0,
+    "num_correct": 3,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "When did this happen?",
+        "predicted": "Tuesday",
+        "correct": "Tuesday",
+        "score": 1.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "It was silver",
+        "correct": "silver",
+        "score": 1.0
+      },
+      {
+        "question": "What did Alice find?",
+        "predicted": "The bag was a silver bag",
+        "correct": "bag",
+        "score": 1.0
+      }
+    ]
+  },
+  {
+    "story_id": 1,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.6666666666666666,
+    "num_correct": 2,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What did Carol find?",
+        "predicted": "Carol found a map",
+        "correct": "map",
+        "score": 1.0
+      },
+      {
+        "question": "Where did Carol travel?",
+        "predicted": "Carol traveled to Paris",
+        "correct": "Paris",
+        "score": 1.0
+      },
+      {
+        "question": "When did this happen?",
+        "predicted": "It was a very special day",
+        "correct": "June 8th",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 2,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 1.0,
+    "num_correct": 3,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "What did Frank find?",
+        "predicted": "Frank found a map",
+        "correct": "map",
+        "score": 1.0
+      },
+      {
+        "question": "Who did Frank meet?",
+        "predicted": "Carol",
+        "correct": "Carol",
+        "score": 1.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "The book was black",
+        "correct": "black",
+        "score": 1.0
+      }
+    ]
+  },
+  {
+    "story_id": 3,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.6666666666666666,
+    "num_correct": 2,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "Where did Alice travel?",
+        "predicted": "Alice traveled to Rome",
+        "correct": "Rome",
+        "score": 1.0
+      },
+      {
+        "question": "What did Alice find?",
+        "predicted": "Alice found a phone",
+        "correct": "phone",
+        "score": 1.0
+      },
+      {
+        "question": "When did this happen?",
+        "predicted": "It was a day that Alice was happy",
+        "correct": "afternoon",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "story_id": 4,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 1.0,
+    "num_correct": 3,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "Where did Grace travel?",
+        "predicted": "Grace traveled to Madrid",
+        "correct": "Madrid",
+        "score": 1.0
+      },
+      {
+        "question": "What did Grace find?",
+        "predicted": "The bag was a bag of money",
+        "correct": "bag",
+        "score": 1.0
+      },
+      {
+        "question": "Who did Grace meet?",
+        "predicted": "Grace met Alice",
+        "correct": "Alice",
+        "score": 1.0
+      }
+    ]
+  }
+]

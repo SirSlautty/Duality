@@ -1,0 +1,19 @@
+{
+  "baseline": {
+    "accuracy": 1.0,
+    "correct": 3,
+    "total": 3
+  },
+  "drai": {
+    "accuracy": 0.3333333333333333,
+    "correct": 1,
+    "total": 3
+  },
+  "comparison": {
+    "accuracy_delta": -0.6666666666666667,
+    "correct_delta": -2,
+    "t_statistic": 0.0,
+    "p_value": 1.0,
+    "significant": false
+  }
+}

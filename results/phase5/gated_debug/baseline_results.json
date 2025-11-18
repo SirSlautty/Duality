@@ -1,0 +1,29 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 1.0,
+    "num_correct": 3,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "When did this happen?",
+        "predicted": "Tuesday",
+        "correct": "Tuesday",
+        "score": 1.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "It was silver",
+        "correct": "silver",
+        "score": 1.0
+      },
+      {
+        "question": "What did Alice find?",
+        "predicted": "The bag was a silver bag",
+        "correct": "bag",
+        "score": 1.0
+      }
+    ]
+  }
+]

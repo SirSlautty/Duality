@@ -27,6 +27,7 @@ from simple_story_generator import SimpleStoryGenerator, SimpleStory
 import sys
 sys.path.append(str(Path(__file__).parent.parent.parent))
 from src.drai import apply_drai, get_drai_stats
+from src.drai.config import get_gated_drai_config
 
 
 @dataclass
@@ -87,9 +88,10 @@ class SimpleEvaluator:
 
         # Apply DRAI if requested
         if use_drai:
-            print("Applying DRAI...")
-            model = apply_drai(model)
-            print("[DRAI] Applied successfully")
+            print("Applying GATED DRAI (threshold=0.85)...")
+            gated_config = get_gated_drai_config()
+            model = apply_drai(model, config=gated_config)
+            print("[DRAI] Applied successfully with strict gating")
 
         results = []
 

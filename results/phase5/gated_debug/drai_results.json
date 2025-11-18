@@ -1,0 +1,29 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-410m",
+    "accuracy": 0.3333333333333333,
+    "num_correct": 1,
+    "num_total": 3,
+    "answers": [
+      {
+        "question": "When did this happen?",
+        "predicted": "Tuesday, January 1st",
+        "correct": "Tuesday",
+        "score": 1.0
+      },
+      {
+        "question": "What color was the book?",
+        "predicted": "It was a blue",
+        "correct": "silver",
+        "score": 0.0
+      },
+      {
+        "question": "What did Alice find?",
+        "predicted": "The following day of the following the day, the day of the day after the day of the day",
+        "correct": "bag",
+        "score": 0.0
+      }
+    ]
+  }
+]

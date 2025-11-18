@@ -74,6 +74,9 @@ class DraiResonanceLayer(nn.Module):
         formation_threshold: float = 0.5,
         decay_rate: float = 0.01,
         ema_momentum: float = 0.9,
+        # Phase 5+ gating parameters
+        use_strict_gating: bool = False,  # Enable strict activation gating
+        activation_threshold: float = 0.7,  # Similarity threshold for activation
         # Phase 5+ logging
         enable_logging: bool = False,  # Enable detailed logging for analysis
         # Phase 5+ lesioning for causal experiments
@@ -97,6 +100,10 @@ class DraiResonanceLayer(nn.Module):
         self.formation_threshold = formation_threshold
         self.decay_rate = decay_rate
         self.ema_momentum = ema_momentum
+
+        # Phase 5+ Gating parameters (CRITICAL for small models)
+        self.activation_threshold = activation_threshold
+        self.use_strict_gating = use_strict_gating
 
         # Attractor field buffers (Phase 2+)
         if phase >= 2:
@@ -296,8 +303,11 @@ class DraiResonanceLayer(nn.Module):
         # 4. Decay unused attractors
         self._decay_attractors()
 
-        # 5. Generate synthetic K/V
-        k_reson, v_reson = self._generate_kv(seq_len, batch, query_layer.device, query_layer.dtype)
+        # 5. Generate synthetic K/V (pass current pattern for gating)
+        k_reson, v_reson = self._generate_kv(
+            seq_len, batch, query_layer.device, query_layer.dtype,
+            current_pattern=pattern  # Pass for activation gating
+        )
 
         # 6. Log attractor dynamics (if enabled)
         if self.enable_logging:
@@ -512,17 +522,20 @@ class DraiResonanceLayer(nn.Module):
         batch: int,
         device: torch.device,
         dtype: torch.dtype,
+        current_pattern: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Generate synthetic K/V pairs from the attractor field.
 
         Phase 2: Use top-k strongest attractors.
+        Phase 5+: Add activation gating - only inject attractors that match current query.
 
         Args:
             seq_len: Sequence length to expand to
             batch: Batch size to expand to
             device: Device to create tensors on
             dtype: Data type for tensors
+            current_pattern: [head_dim] Current query pattern for activation gating
 
         Returns:
             k_reson: [seq_len, batch, num_drai_heads, head_dim]
@@ -544,6 +557,30 @@ class DraiResonanceLayer(nn.Module):
         active_count = min(self.attractor_count.item(), self.max_attractors)
         active_centroids = self.attractor_centroids[:active_count]
         active_coherence = self.attractor_coherence[:active_count]
+        active_last_used = self.attractor_last_used[:active_count]
+
+        # Phase 5+ CRITICAL FIX: Don't inject attractors that were just created/updated
+        # Attractors represent PAST patterns, not current query
+        # Only use attractors that are at least 2 timesteps old
+        current_time = self.timestep.item()
+        age_mask = (current_time - active_last_used) >= 2
+
+        if not age_mask.any():
+            # All attractors are too new - return zeros
+            k_reson = torch.zeros(
+                seq_len, batch, self.num_heads, self.head_dim,
+                device=device, dtype=dtype
+            )
+            v_reson = torch.zeros(
+                seq_len, batch, self.num_heads, self.head_dim,
+                device=device, dtype=dtype
+            )
+            return k_reson, v_reson
+
+        # Keep only aged attractors
+        active_centroids = active_centroids[age_mask]
+        active_coherence = active_coherence[age_mask]
+        active_count = active_centroids.shape[0]
 
         # Apply lesioning (Phase 5+ causal experiments)
         if self.lesion_mode == "zero":
@@ -556,10 +593,49 @@ class DraiResonanceLayer(nn.Module):
             active_centroids = active_centroids[perm]
             active_coherence = active_coherence[perm]
 
+        # Phase 5+ ACTIVATION GATING: Filter by similarity to current pattern
+        # This is CRITICAL to prevent random attractor injection
+        if current_pattern is not None and self.use_strict_gating:
+            # Compute similarity of each attractor to current query
+            # current_pattern: [head_dim], active_centroids: [count, head_dim]
+            similarities = F.cosine_similarity(
+                current_pattern.unsqueeze(0),  # [1, head_dim]
+                active_centroids,              # [count, head_dim]
+                dim=1                          # → [count]
+            )
+
+            # Apply activation threshold
+            threshold = 0.85 if self.use_strict_gating else self.activation_threshold
+            active_mask = similarities > threshold
+
+            # DEBUG: Log gating statistics (first 10 forward passes only)
+            if self.timestep < 10:
+                max_sim = similarities.max().item() if len(similarities) > 0 else 0
+                num_pass = active_mask.sum().item()
+                print(f"[DRAI DEBUG] Timestep {self.timestep}: {num_pass}/{len(similarities)} attractors pass threshold (max_sim={max_sim:.3f}, threshold={threshold:.3f})")
+
+            # Filter attractors
+            if not active_mask.any():
+                # No attractors exceed threshold - return zeros (don't inject random noise!)
+                k_reson = torch.zeros(
+                    seq_len, batch, self.num_heads, self.head_dim,
+                    device=device, dtype=dtype
+                )
+                v_reson = torch.zeros(
+                    seq_len, batch, self.num_heads, self.head_dim,
+                    device=device, dtype=dtype
+                )
+                return k_reson, v_reson
+
+            # Keep only high-similarity attractors
+            active_centroids = active_centroids[active_mask]
+            active_coherence = active_coherence[active_mask]
+            active_count = active_centroids.shape[0]
+
         # Sort by coherence (strongest first)
         sorted_indices = torch.argsort(active_coherence, descending=True)
 
-        # Take top num_heads attractors
+        # Take top num_heads attractors (after filtering)
         num_to_use = min(self.num_heads, active_count)
         top_indices = sorted_indices[:num_to_use]
 
