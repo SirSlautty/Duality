@@ -1,0 +1,77 @@
+{
+  "config": {
+    "model": "EleutherAI/pythia-70m",
+    "max_length": 80,
+    "prompts": [
+      "The future of artificial intelligence",
+      "Once upon a time in a distant galaxy",
+      "The most important discovery in science",
+      "Climate change is affecting",
+      "The meaning of consciousness is"
+    ]
+  },
+  "baseline": [
+    {
+      "prompt": "The future of artificial intelligence",
+      "generations": [
+        "The future of artificial intelligence (AI) is a highly dynamic technology, which may be a useful tool for the research and development of AI. In addition, the ability to communicate with the outside world, which may allow the human to interact with the world is a key part of human intelligence, which may be applied in many fields such as research, decision making, research, development, medical research, medicine"
+      ]
+    },
+    {
+      "prompt": "Once upon a time in a distant galaxy",
+      "generations": [
+        "Once upon a time in a distant galaxy, I have seen a young man on the other side of the galaxy. The first time he spoke of the galaxy, the second he spoke of the galaxy. He had seen a young man, in his youth, and he had never known the man of the galaxy before. He had always known the man of the galaxy, and had always known his friend,"
+      ]
+    },
+    {
+      "prompt": "The most important discovery in science",
+      "generations": [
+        "The most important discovery in science is the fact that the individual is not one of them, but rather the individual has a lot of knowledge and knowledge about the world. It is the nature of the individual and the nature of the individual. The nature of the individual is of great importance to the individual, and it is a fact that he is not a single individual.\n\nA lot of people find"
+      ]
+    },
+    {
+      "prompt": "Climate change is affecting",
+      "generations": [
+        "Climate change is affecting the balance of the world's climate.\" \"We're just getting a little closer.\" \"So we're just going to have to work on the future.\" \"You need to be a better, cleaner.\" \"You need to be a better, cleaner.\" \"You need to be a better, cleaner.\" \"I know.\" \"You can do that.\" \"I need you"
+      ]
+    },
+    {
+      "prompt": "The meaning of consciousness is",
+      "generations": [
+        "The meaning of consciousness is the\n * \"the mind of the body\" (1)\n * which is \"the body of the soul\".\n *\n * The meaning of consciousness is the \"the mind of the body\"\n * which is \"the body of the soul\".\n *\n * The meaning of consciousness is the \"the mind of the body\"\n * which is \"the"
+      ]
+    }
+  ],
+  "drai": [
+    {
+      "prompt": "The future of artificial intelligence",
+      "generations": [
+        "The future of artificial intelligence is a complex and growing issue. Itinerally complex.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+      ]
+    },
+    {
+      "prompt": "Once upon a time in a distant galaxy",
+      "generations": [
+        "Once upon a time in a distant galaxy of people.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+      ]
+    },
+    {
+      "prompt": "The most important discovery in science",
+      "generations": [
+        "The most important discovery in science is the research by the ancient Chinese language acquisition of the University of theoreticians and the world-based materializing the National Bureau of the first for the student groups, which the problematics of the analysis of the research, which the country.\n\n\n\n\n\n\nthesis of the best-affective.\ntheoreticians to be a large"
+      ]
+    },
+    {
+      "prompt": "Climate change is affecting",
+      "generations": [
+        "Climate change is affecting the ability of the students and the size and the students are experiencing the individuality of the efficiency of the structure of the player to get stuck to make up to create and how it.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+      ]
+    },
+    {
+      "prompt": "The meaning of consciousness is",
+      "generations": [
+        "The meaning of consciousness is the same, and the meaning of the following the meaning of the meaning is the meaning of the following the meanings of the meaning of the meaning of the firsthandlesioned numbers.\nthe significance of the following the meaning of the meaning of the meaning of the meaning of the meaning of the meaning of the meaning of the meaning of the meaning of the meaning of the meaning of"
+      ]
+    }
+  ]
+}

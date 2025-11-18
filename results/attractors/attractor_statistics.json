@@ -1,0 +1,248 @@
+{
+  "config": {
+    "model": "EleutherAI/pythia-70m",
+    "num_samples": 20,
+    "max_length": 64,
+    "drai_config": {
+      "phase": 2,
+      "num_drai_heads": 1,
+      "hyperparameters": {
+        "max_attractors": 32,
+        "coherence_threshold": 0.3,
+        "formation_threshold": 0.5,
+        "decay_rate": 0.01,
+        "ema_momentum": 0.9
+      }
+    }
+  },
+  "stats_before": {
+    "num_layers": 6,
+    "layer_stats": [
+      {
+        "layer_idx": 0,
+        "attractor_count": 0,
+        "num_active": 0,
+        "avg_coherence": 0.0,
+        "max_coherence": 0.0,
+        "min_coherence": 0.0,
+        "std_coherence": 0.0,
+        "forward_count": 0,
+        "attractors_created": 0,
+        "attractors_reinforced": 0,
+        "attractors_decayed": 0
+      },
+      {
+        "layer_idx": 1,
+        "attractor_count": 0,
+        "num_active": 0,
+        "avg_coherence": 0.0,
+        "max_coherence": 0.0,
+        "min_coherence": 0.0,
+        "std_coherence": 0.0,
+        "forward_count": 0,
+        "attractors_created": 0,
+        "attractors_reinforced": 0,
+        "attractors_decayed": 0
+      },
+      {
+        "layer_idx": 2,
+        "attractor_count": 0,
+        "num_active": 0,
+        "avg_coherence": 0.0,
+        "max_coherence": 0.0,
+        "min_coherence": 0.0,
+        "std_coherence": 0.0,
+        "forward_count": 0,
+        "attractors_created": 0,
+        "attractors_reinforced": 0,
+        "attractors_decayed": 0
+      },
+      {
+        "layer_idx": 3,
+        "attractor_count": 0,
+        "num_active": 0,
+        "avg_coherence": 0.0,
+        "max_coherence": 0.0,
+        "min_coherence": 0.0,
+        "std_coherence": 0.0,
+        "forward_count": 0,
+        "attractors_created": 0,
+        "attractors_reinforced": 0,
+        "attractors_decayed": 0
+      },
+      {
+        "layer_idx": 4,
+        "attractor_count": 0,
+        "num_active": 0,
+        "avg_coherence": 0.0,
+        "max_coherence": 0.0,
+        "min_coherence": 0.0,
+        "std_coherence": 0.0,
+        "forward_count": 0,
+        "attractors_created": 0,
+        "attractors_reinforced": 0,
+        "attractors_decayed": 0
+      },
+      {
+        "layer_idx": 5,
+        "attractor_count": 0,
+        "num_active": 0,
+        "avg_coherence": 0.0,
+        "max_coherence": 0.0,
+        "min_coherence": 0.0,
+        "std_coherence": 0.0,
+        "forward_count": 0,
+        "attractors_created": 0,
+        "attractors_reinforced": 0,
+        "attractors_decayed": 0
+      }
+    ]
+  },
+  "stats_after": {
+    "num_layers": 6,
+    "layer_stats": [
+      {
+        "layer_idx": 0,
+        "attractor_count": 1,
+        "num_active": 1,
+        "avg_coherence": 0.9999997615814209,
+        "max_coherence": 0.9999997615814209,
+        "min_coherence": 0.9999997615814209,
+        "std_coherence": 0.0,
+        "forward_count": 1211,
+        "attractors_created": 6,
+        "attractors_reinforced": 1205,
+        "attractors_decayed": 5
+      },
+      {
+        "layer_idx": 1,
+        "attractor_count": 1,
+        "num_active": 1,
+        "avg_coherence": 0.9976741075515747,
+        "max_coherence": 0.9976741075515747,
+        "min_coherence": 0.9976741075515747,
+        "std_coherence": 0.0,
+        "forward_count": 1211,
+        "attractors_created": 2,
+        "attractors_reinforced": 1209,
+        "attractors_decayed": 1
+      },
+      {
+        "layer_idx": 2,
+        "attractor_count": 1,
+        "num_active": 1,
+        "avg_coherence": 0.9999997615814209,
+        "max_coherence": 0.9999997615814209,
+        "min_coherence": 0.9999997615814209,
+        "std_coherence": 0.0,
+        "forward_count": 1211,
+        "attractors_created": 1,
+        "attractors_reinforced": 1210,
+        "attractors_decayed": 0
+      },
+      {
+        "layer_idx": 3,
+        "attractor_count": 1,
+        "num_active": 1,
+        "avg_coherence": 0.9999997615814209,
+        "max_coherence": 0.9999997615814209,
+        "min_coherence": 0.9999997615814209,
+        "std_coherence": 0.0,
+        "forward_count": 1211,
+        "attractors_created": 7,
+        "attractors_reinforced": 1204,
+        "attractors_decayed": 6
+      },
+      {
+        "layer_idx": 4,
+        "attractor_count": 1,
+        "num_active": 1,
+        "avg_coherence": 0.9999997615814209,
+        "max_coherence": 0.9999997615814209,
+        "min_coherence": 0.9999997615814209,
+        "std_coherence": 0.0,
+        "forward_count": 1211,
+        "attractors_created": 5,
+        "attractors_reinforced": 1206,
+        "attractors_decayed": 4
+      },
+      {
+        "layer_idx": 5,
+        "attractor_count": 1,
+        "num_active": 1,
+        "avg_coherence": 0.9999991059303284,
+        "max_coherence": 0.9999991059303284,
+        "min_coherence": 0.9999991059303284,
+        "std_coherence": 0.0,
+        "forward_count": 1211,
+        "attractors_created": 15,
+        "attractors_reinforced": 1196,
+        "attractors_decayed": 14
+      }
+    ]
+  },
+  "analysis": {
+    "total_attractors_before": 0,
+    "total_attractors_after": 6,
+    "total_delta": 6,
+    "total_created": 36,
+    "total_reinforced": 7230,
+    "total_decayed": 30,
+    "layer_changes": [
+      {
+        "layer_idx": 0,
+        "attractors_delta": 1,
+        "coherence_delta": 0.9999997615814209,
+        "forward_count": 1211,
+        "created": 6,
+        "reinforced": 1205,
+        "decayed": 5
+      },
+      {
+        "layer_idx": 1,
+        "attractors_delta": 1,
+        "coherence_delta": 0.9976741075515747,
+        "forward_count": 1211,
+        "created": 2,
+        "reinforced": 1209,
+        "decayed": 1
+      },
+      {
+        "layer_idx": 2,
+        "attractors_delta": 1,
+        "coherence_delta": 0.9999997615814209,
+        "forward_count": 1211,
+        "created": 1,
+        "reinforced": 1210,
+        "decayed": 0
+      },
+      {
+        "layer_idx": 3,
+        "attractors_delta": 1,
+        "coherence_delta": 0.9999997615814209,
+        "forward_count": 1211,
+        "created": 7,
+        "reinforced": 1204,
+        "decayed": 6
+      },
+      {
+        "layer_idx": 4,
+        "attractors_delta": 1,
+        "coherence_delta": 0.9999997615814209,
+        "forward_count": 1211,
+        "created": 5,
+        "reinforced": 1206,
+        "decayed": 4
+      },
+      {
+        "layer_idx": 5,
+        "attractors_delta": 1,
+        "coherence_delta": 0.9999991059303284,
+        "forward_count": 1211,
+        "created": 15,
+        "reinforced": 1196,
+        "decayed": 14
+      }
+    ]
+  }
+}
