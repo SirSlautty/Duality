@@ -366,6 +366,7 @@ class DraiV1Hyperparameters:
     - Novel pattern creation in free slots
     - Field vector approach (weighted mean)
     - Soft gating (tanh * max_influence_scale)
+    - Burn-in threshold (critical for stability!)
     """
     max_attractors: int = 16
     """Fixed attractor bank size. 16 for 410M, 32 for larger models."""
@@ -387,6 +388,24 @@ class DraiV1Hyperparameters:
 
     max_influence_scale: float = 0.15
     """Cap on K/V influence. 0.15 for 410M, 0.3 for larger models."""
+
+    burn_in_threshold: float = 12.0
+    """Minimum total strength before injection begins. CRITICAL for preventing early instability.
+
+    Attractors continue learning during burn-in, but don't influence the model until
+    they've accumulated enough strength to be meaningful. This prevents:
+    - Early random noise injection
+    - Feedback loops from unstable initial generation
+    - Attractors burned-in on loops/repetition
+
+    Recommended values:
+    - 12.0 for conservative (410M)
+    - 8.0 for standard (1B+)
+    - 0.0 to disable (not recommended)
+
+    Theory: Dynamic memory systems need warm-up time before participating.
+    See results/phase5/DRAI_V1_ALGORITHM.md for detailed explanation.
+    """
 
 
 @dataclass
@@ -440,6 +459,7 @@ def get_v1_conservative_config() -> DraiV1Config:
             strength_init=0.5,         # Medium initial strength
             strength_min=1e-3,         # Clear threshold for eviction
             max_influence_scale=0.15,  # Gentle influence (CRITICAL!)
+            burn_in_threshold=12.0,    # Wait for meaningful strength (CRITICAL!)
         ),
     )
 
@@ -462,6 +482,7 @@ def get_v1_standard_config() -> DraiV1Config:
             strength_init=0.5,
             strength_min=1e-3,
             max_influence_scale=0.3,   # Higher influence for larger models
+            burn_in_threshold=8.0,     # Lower threshold for larger models
         ),
     )
 

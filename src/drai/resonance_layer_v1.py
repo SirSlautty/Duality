@@ -72,6 +72,7 @@ class DraiResonanceLayerV1(nn.Module):
         strength_init: float = 0.5,
         strength_min: float = 1e-3,
         max_influence_scale: float = 0.15,
+        burn_in_threshold: float = 12.0,
     ):
         super().__init__()
 
@@ -90,6 +91,7 @@ class DraiResonanceLayerV1(nn.Module):
         self.strength_init = strength_init
         self.strength_min = strength_min
         self.max_influence_scale = max_influence_scale
+        self.burn_in_threshold = burn_in_threshold
 
         # State buffers (registered as buffers so they move with model)
         # A ∈ [M, d] - attractor vectors
@@ -409,12 +411,13 @@ class DraiResonanceLayerV1(nn.Module):
         S: torch.Tensor
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        Generate synthetic K/V pairs with safety gating.
+        Generate synthetic K/V pairs with safety gating and burn-in threshold.
 
         Design:
         - Compute global field vector as strength-weighted mean of active attractors
         - Gate by overall strength and number of alive attractors
         - Scale by max_influence_scale (gentle nudge, not bulldozer)
+        - BURN-IN THRESHOLD: Don't inject until total_strength >= threshold
         - K_reson == V_reson == field_vector (can add transforms later)
 
         Args:
@@ -444,6 +447,13 @@ class DraiResonanceLayerV1(nn.Module):
 
         total_strength = torch.sum(S_alive) + eps  # scalar
 
+        # BURN-IN THRESHOLD: Don't inject until attractors have accumulated enough strength
+        # This prevents early instability and feedback loops
+        if total_strength < self.burn_in_threshold:
+            # Attractors still warming up - return zeros (passive mode)
+            zero = torch.zeros((B, T, 1, d), dtype=query.dtype, device=query.device)
+            return zero, zero
+
         # Weighted mean field vector
         field_vec = torch.sum(A_alive * S_alive.unsqueeze(-1), dim=0) / total_strength  # [d]
 
@@ -472,6 +482,10 @@ class DraiResonanceLayerV1(nn.Module):
                 - total_strength: Sum of all strengths
                 - mean_strength: Average strength of alive attractors
                 - max_strength: Maximum strength
+                - timestep: Current timestep
+                - burn_in_active: Whether burn-in is still active (strength < threshold)
+                - burn_in_threshold: The threshold value
+                - burn_in_progress: Percentage of burn-in completed (0-100%)
         """
         alive_mask = self.attractor_strengths > self.strength_min
         num_alive = torch.sum(alive_mask).item()
@@ -486,10 +500,17 @@ class DraiResonanceLayerV1(nn.Module):
 
         max_strength = torch.max(self.attractor_strengths).item()
 
+        # Burn-in status
+        burn_in_active = total_strength < self.burn_in_threshold
+        burn_in_progress = min(100.0, (total_strength / self.burn_in_threshold) * 100.0)
+
         return {
             "num_alive": num_alive,
             "total_strength": total_strength,
             "mean_strength": mean_strength,
             "max_strength": max_strength,
             "timestep": self.timestep.item(),
+            "burn_in_active": burn_in_active,
+            "burn_in_threshold": self.burn_in_threshold,
+            "burn_in_progress": burn_in_progress,
         }
