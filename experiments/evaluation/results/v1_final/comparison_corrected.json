@@ -429,8 +429,8 @@
   },
   "v1_drai": {
     "model_name": "V1 DRAI (burn-in=50.0)",
-    "accuracy": 0.85,
-    "correct": 51,
+    "accuracy": 0.8833333333333333,
+    "correct": 53,
     "total": 60,
     "results": [
       {
@@ -465,7 +465,7 @@
         "story_idx": 2,
         "question": "When did this happen?",
         "expected": "March 15th",
-        "generated": "David was in a car",
+        "generated": "David was in his office",
         "correct": false
       },
       {
@@ -549,7 +549,7 @@
         "story_idx": 6,
         "question": "Where did Bob travel?",
         "expected": "Vienna",
-        "generated": "Bob traveled to Vienna",
+        "generated": "He traveled to Vienna",
         "correct": true
       },
       {
@@ -619,8 +619,8 @@
         "story_idx": 9,
         "question": "When did this happen?",
         "expected": "June 8th",
-        "generated": "It was a day that Bob was happy",
-        "correct": false
+        "generated": "It happened on June 8th",
+        "correct": true
       },
       {
         "story_idx": 10,
@@ -640,7 +640,7 @@
         "story_idx": 10,
         "question": "Who did Isabel meet?",
         "expected": "Emma",
-        "generated": "Isabel met Emma",
+        "generated": "Emma",
         "correct": true
       },
       {
@@ -766,8 +766,8 @@
         "story_idx": 16,
         "question": "When did this happen?",
         "expected": "evening",
-        "generated": "It was a day that Isabel was happy",
-        "correct": false
+        "generated": "It happened on evening",
+        "correct": true
       },
       {
         "story_idx": 17,
@@ -815,7 +815,7 @@
         "story_idx": 19,
         "question": "What did Henry find?",
         "expected": "key",
-        "generated": "The key was a key",
+        "generated": "The key",
         "correct": true
       },
       {
@@ -858,15 +858,15 @@
   "v1_stats": {
     "num_drai_layers": 1,
     "total_active": 16,
-    "total_strength": 429.89361572265625,
-    "mean_strength": 429.89361572265625,
+    "total_strength": 429.8935852050781,
+    "mean_strength": 429.8935852050781,
     "layers": [
       {
         "layer_idx": 12,
         "num_alive": 16,
-        "total_strength": 429.89361572265625,
-        "mean_strength": 26.868350982666016,
-        "max_strength": 91.99483489990234,
+        "total_strength": 429.8935852050781,
+        "mean_strength": 26.868349075317383,
+        "max_strength": 95.41622161865234,
         "timestep": 1200.0,
         "burn_in_active": false,
         "burn_in_mode": "strength",
@@ -876,7 +876,7 @@
       }
     ]
   },
-  "delta": 0.0,
+  "delta": 0.033333333333333326,
   "verdict": "SUCCESS",
   "config": {
     "burn_in_threshold": 50.0,
