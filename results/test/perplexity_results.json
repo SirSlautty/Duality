@@ -1,0 +1,76 @@
+{
+  "config": {
+    "model": "EleutherAI/pythia-70m",
+    "max_length": 256,
+    "stride": 256,
+    "num_samples": 10,
+    "drai_config": {
+      "enabled": true,
+      "phase": 2,
+      "num_drai_heads": 1,
+      "hyperparameters": {
+        "max_attractors": 32,
+        "coherence_threshold": 0.3,
+        "formation_threshold": 0.5,
+        "decay_rate": 0.01,
+        "ema_momentum": 0.9
+      }
+    }
+  },
+  "baseline": {
+    "perplexity": 82.77651256514751,
+    "avg_loss": 4.416144356478649,
+    "bits_per_char": 1.5927873907353824,
+    "total_tokens": 1245,
+    "num_sequences": 10,
+    "loss_mean": 5.455409336090088,
+    "loss_std": 1.4155338836396874,
+    "loss_median": 4.501295804977417,
+    "loss_min": 3.972240447998047,
+    "loss_max": 7.986513614654541,
+    "sequence_losses": [
+      6.267845153808594,
+      4.25711727142334,
+      3.972240447998047,
+      7.986513614654541,
+      7.172200679779053,
+      4.480402946472168,
+      4.505244255065918,
+      7.0284295082092285,
+      4.497347354888916,
+      4.386752128601074
+    ]
+  },
+  "drai": {
+    "perplexity": 82.77644820697046,
+    "avg_loss": 4.41614357898513,
+    "bits_per_char": 1.5927871103138713,
+    "total_tokens": 1245,
+    "num_sequences": 10,
+    "loss_mean": 5.455408906936645,
+    "loss_std": 1.415534175697242,
+    "loss_median": 4.501293897628784,
+    "loss_min": 3.972240447998047,
+    "loss_max": 7.986513614654541,
+    "sequence_losses": [
+      6.267845153808594,
+      4.25711727142334,
+      3.972240447998047,
+      7.986513614654541,
+      7.172200679779053,
+      4.480402946472168,
+      4.505240440368652,
+      7.0284295082092285,
+      4.497347354888916,
+      4.386751651763916
+    ]
+  },
+  "comparison": {
+    "perplexity_delta": -6.43581770560786e-05,
+    "perplexity_percent_change": -7.774932171179217e-05,
+    "loss_delta": -7.774935193438637e-07,
+    "t_statistic": 1.1318988820058602,
+    "p_value": 0.28693291899495427,
+    "significance": "n.s.",
+    "cohens_d": -0.3772996273352867,
+    "is_significant": 
