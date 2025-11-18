@@ -14,14 +14,71 @@ We want to move beyond retrieval‑based memory and build an inseparable memory 
 - Visualise the evolution of the resonance manifold as new concepts are stabilised.  
 - Document findings, pitfalls, and emergent behaviours along the way.  
   
-## Repository structure  
-  
-This repository will grow over time. For now we plan to include:  
-  
-- `docs/` – design documents, diagrams, and theory notes.  
-- `src/` – prototype code for the DRAI resonance layer and model hooks.  
-- `experiments/` – notebooks and scripts for running small‑scale tests.  
-- `.gitignore` – ignores virtual envs, logs, datasets, and compiled artifacts as discussed.  
-- `LICENSE` – Apache‑2.0 license to allow permissive use while protecting contributions.  
-  
-Feel free to open issues or discussions as the project evolves. This is a research playground — contributions and critiques are welcome. 
+## Project Status
+
+**Current Phase:** Phase 2 - DRAI Core Implementation
+**Environment:** ✓ PyTorch 2.9.1 installed and tested
+**Structure:** ✓ Complete (Phase 1 finished)
+**Implementation:** 🚧 In progress
+
+See [`docs/CODEBASE_AUDIT.md`](docs/CODEBASE_AUDIT.md) for the complete roadmap.
+
+## Quick Start
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/HalcyonAIR/Duality.git
+cd Duality
+
+# Install dependencies
+pip install -r requirements.txt
+
+# For development (includes pytest, black, etc.)
+pip install -e ".[dev]"
+
+# Run environment tests
+pytest tests/environment
+```
+
+### Repository Structure
+
+```
+Duality/
+├── src/               # DRAI implementation
+│   ├── drai/         # Resonance layer core
+│   └── models/       # Transformer integration
+├── tests/            # Test suite (unit, integration, environment)
+├── experiments/      # Notebooks and scripts
+├── models/           # External model repositories
+└── docs/             # Design docs and specifications
+```
+
+See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for detailed documentation.
+
+## Key Documentation
+
+- **[DESIGN.md](docs/DESIGN.md)** - Architecture and theory
+- **[INSERTION_POINTS.md](docs/INSERTION_POINTS.md)** - Technical implementation strategy
+- **[BUILD_STEPS.md](docs/BUILD_STEPS.md)** - Step-by-step build guide
+- **[Glossary.md](docs/Glossary.md)** - Terminology and concepts
+- **[Why_Duality.md](docs/Why_Duality.md)** - Vision and philosophy
+
+## Development Status
+
+- [x] Environment setup and verification
+- [x] Project structure and organization
+- [x] Documentation and design specs
+- [ ] DRAI resonance layer implementation
+- [ ] Unit tests for DRAI
+- [ ] Transformer integration
+- [ ] Experimental validation
+
+## Contributing
+
+This is a research playground. Feel free to open issues or discussions as the project evolves. Contributions and critiques are welcome.
+
+## License
+
+Apache 2.0 - See [LICENSE](LICENSE) for details. 
