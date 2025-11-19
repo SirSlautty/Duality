@@ -76,25 +76,36 @@ F(q; M_A) = θ(‖S‖) · π_M_A(q̂)
 ### Attractor Evolution
 
 ```
-dM_A/dt = -∇_A E(M_A, Q_t)
-```
-
-**where**:
-- E(M_A, Q_t) : memory energy functional
-- Q_t : query distribution at time t
-- ∇_A : gradient with respect to attractor positions
-
-**In practice** (EMA flow):
-```
 da_i/dt = α · (q_matched - a_i) · δ(i matched)
 ds_i/dt = (γ · δ(i matched) - λ) · s_i
 ```
 
+**where**:
+- α : EMA momentum (typically 0.05)
+- γ : strength boost per match
+- λ : global decay rate
+- δ(i matched) : indicator function (1 if attractor i matches query)
+
+**Important**: This is **EMA-like flow**, not formally derived from an energy functional.
+
+**Metaphor** (useful but not rigorous):
+```
+dM_A/dt ≈ -∇_A E_pseudo(M_A, Q_t)
+
+where E_pseudo might be:
+  E = Σ_i ||a_i - ⟨q|i⟩||² - λ·H(S)
+
+  (squared distance to matched queries + entropy regularization)
+```
+
+**But**: We haven't proven this E exists or is convex. The EMA update is a **heuristic** that behaves like gradient descent, not a formal optimization algorithm.
+
 **Properties**:
-- Smooth gradient flow (exponential smoothing)
+- Smooth evolution (exponential smoothing)
 - Attractors drift toward matching queries
 - Strengths reinforce with hits, decay globally
-- Bounded evolution (no explosion)
+- Bounded evolution (α < 1 prevents explosion)
+- **No guarantee of convergence to global minimum**
 
 ---
 
@@ -145,10 +156,21 @@ ds_i/dt = (γ · δ(i matched) - λ) · s_i
 ### 1. Topological Invariant
 **π_M_A is continuous and well-defined**
 
-Preserved by:
-- Dual thresholds: Only use attractors with s_i > ε (prevents division by zero)
-- Exponential kernel: κ always positive (denominator never zero)
-- Field vector normalization: Output always unit length
+**CRITICAL**: This smoothness is **engineered**, not automatic.
+
+Without these design choices, π could be discontinuous:
+- **Dual thresholds**: Only use attractors with s_i > ε (prevents division by zero)
+- **Exponential kernel**: κ always positive, smooth everywhere (not hard thresholds)
+- **Field averaging**: Weighted mean (not winner-take-all which is discontinuous)
+- **Normalization**: All vectors normalized before similarity (prevents magnitude explosion)
+- **Burn-in**: Delays injection until stable (prevents early noise amplification)
+
+**Phase 2 failed because it lacked these**:
+- Winner-take-all → ∇F undefined at boundaries
+- Hard thresholds → discontinuous jumps
+- No burn-in → immediate injection of random noise
+
+**Result**: π is smooth everywhere, but only because we made it smooth.
 
 ### 2. Geometric Invariant
 **All operations preserve angles**
@@ -355,6 +377,67 @@ F is a **kernel density estimator** with learned centers:
 
 ---
 
+## What's Rigorous vs Metaphorical
+
+### Formally Proven ✓
+
+1. **F is continuous** (given the design choices above)
+   - π is smooth because of exponential kernel + averaging
+   - θ is smooth (except deliberate burn-in step)
+   - Composition of smooth functions is smooth
+
+2. **F is bounded** (output never explodes)
+   - All vectors normalized → magnitudes ≤ 1
+   - θ saturates at α_max
+   - |F(q)| ≤ α_max always
+
+3. **Scale invariance** (works across model sizes)
+   - Cosine similarity rotation/scale invariant
+   - No dependence on hidden_dim magnitude
+   - Only α_max scales with capacity
+
+4. **EMA updates are bounded** (no explosion)
+   - |da_i/dt| ≤ α||q - a_i|| ≤ 2α (since normalized)
+   - s_i decays exponentially → bounded above
+
+### Useful Metaphors (not proven) ⚠️
+
+1. **"Gradient flow"** for attractor evolution
+   - EMA behaves like gradient descent
+   - But no explicit energy functional E
+   - No proof of convergence to minimum
+   - **Status**: Heuristic that works empirically
+
+2. **"Energy minimization"**
+   - System seems to minimize some implicit cost
+   - We can construct pseudo-energy E_pseudo
+   - But it's not convex, may have local minima
+   - **Status**: Conceptual tool, not formal theorem
+
+3. **"Phase transitions"** at invariant violations
+   - System behavior changes qualitatively
+   - Analogous to thermodynamic transitions
+   - But no rigorous statistical mechanics
+   - **Status**: Useful analogy for understanding failures
+
+4. **"Temperature"** for θ gating
+   - θ controls influence like thermodynamic temperature
+   - But no connection to Boltzmann distribution
+   - No formal entropy or free energy
+   - **Status**: Suggestive metaphor
+
+### What We Should Prove (Future Work)
+
+1. **Convergence bounds**: Does M_A converge? To what?
+2. **Stability analysis**: Lyapunov functions for EMA flow?
+3. **Optimal hyperparameters**: Derive α, λ, β analytically?
+4. **Phase transition theory**: Formal bifurcation analysis?
+5. **Information bounds**: Does π preserve information? How much?
+
+**The mathematics is solid where it needs to be** (continuity, boundedness), but **uses metaphor for intuition** (gradient flow, energy). This is fine - many successful algorithms do this (Adam, momentum SGD).
+
+---
+
 ## Why This Formulation Matters
 
 1. **Unifies V1 design**: All 7 steps flow from preserving F's invariants
@@ -427,18 +510,47 @@ Model learns when to trust memory vs when to ignore it
 **F(q; M_A) = θ(‖S‖) · π_M_A(q̂)** is the invariant equation of DRAI V1.
 
 It expresses attractor-based memory as:
-- A **topological morphism** (soft projection π)
-- With **thermodynamic gating** (burn-in + scaling θ)
-- On an **evolving manifold** (EMA flow dM_A/dt)
-- Using a **smooth kernel** (exponential similarity κ)
+- A **soft projection** π onto attractor manifold (engineered to be smooth)
+- With **gated influence** θ (burn-in + soft scaling)
+- On an **evolving state** M_A (EMA-like updates, not formal gradient)
+- Using a **smooth kernel** κ (exponential similarity)
 
-**All design choices in V1 exist to preserve the invariants of this equation.**
+### What This Gives Us
 
-The elegance is that F is **covariant**: it transforms naturally under model changes, which is why identical hyperparameters (except α_max) work from 70M to 2.8B parameters.
+**Rigorous**:
+- F is continuous and bounded (proven by construction)
+- F is scale-invariant (works across model sizes)
+- All design choices explicitly listed and justified
+- Clear failure modes when invariants violated
 
-**This is the mathematics of DRAI.**
+**Metaphorical but useful**:
+- "Gradient flow" for attractor evolution (heuristic, not optimization)
+- "Energy minimization" (no explicit functional)
+- "Phase transitions" (qualitative analogy)
+
+**Critical insight**: The smoothness isn't automatic - it's **engineered** through:
+- Exponential kernel (not hard thresholds)
+- Field averaging (not winner-take-all)
+- Dual thresholds (prevents division by zero)
+- Burn-in (prevents early instability)
+- Normalization (bounds magnitudes)
+
+**Phase 2 failed precisely because it lacked these safeguards.**
+
+The elegance is that F is **covariant**: identical hyperparameters (except α_max) work from 70M to 2.8B because F operates on normalized geometry, not parameters.
+
+**This formulation is valuable because**:
+1. Unifies all V1 design choices
+2. Explains stability across scales
+3. Predicts failure modes
+4. Guides diagnostics and interventions
+5. Suggests theoretical directions (even if not all proven yet)
 
 ---
 
-**Status**: Core invariant identified and documented
-**Next**: Use F to prove convergence bounds and derive optimal hyperparameters analytically
+**Status**: Core invariant documented with rigorous/metaphorical boundaries clarified
+**Next**:
+- Prove convergence bounds (if possible)
+- Define explicit energy functional (make gradient flow rigorous)
+- Derive optimal hyperparameters analytically
+- Formal stability analysis
