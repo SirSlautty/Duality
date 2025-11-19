@@ -1,0 +1,1083 @@
+{
+  "model_name": "EleutherAI/pythia-1b",
+  "baseline": {
+    "model_name": "Baseline (EleutherAI/pythia-1b)",
+    "accuracy": 0.8333333333333334,
+    "correct": 50,
+    "total": 60,
+    "results": [
+      {
+        "story_idx": 1,
+        "question": "What did Bob find?",
+        "expected": "map",
+        "generated": "Bob found a bag",
+        "correct": false
+      },
+      {
+        "story_idx": 1,
+        "question": "When did this happen?",
+        "expected": "Tuesday",
+        "generated": "Tuesday",
+        "correct": true
+      },
+      {
+        "story_idx": 1,
+        "question": "What color was the bag?",
+        "expected": "blue",
+        "generated": "The bag was blue",
+        "correct": true
+      },
+      {
+        "story_idx": 2,
+        "question": "What color was the bag?",
+        "expected": "silver",
+        "generated": "The bag was silver",
+        "correct": true
+      },
+      {
+        "story_idx": 2,
+        "question": "When did this happen?",
+        "expected": "March 15th",
+        "generated": "David was in a car",
+        "correct": false
+      },
+      {
+        "story_idx": 2,
+        "question": "Who did David meet?",
+        "expected": "Isabel",
+        "generated": "David met a man named David",
+        "correct": false
+      },
+      {
+        "story_idx": 3,
+        "question": "What color was the key?",
+        "expected": "blue",
+        "generated": "The key was blue",
+        "correct": true
+      },
+      {
+        "story_idx": 3,
+        "question": "When did this happen?",
+        "expected": "June 8th",
+        "generated": "Frank was in London",
+        "correct": false
+      },
+      {
+        "story_idx": 3,
+        "question": "Where did Frank travel?",
+        "expected": "London",
+        "generated": "Frank traveled to London",
+        "correct": true
+      },
+      {
+        "story_idx": 4,
+        "question": "Who did Henry meet?",
+        "expected": "Jack",
+        "generated": "Henry met Jack",
+        "correct": true
+      },
+      {
+        "story_idx": 4,
+        "question": "When did this happen?",
+        "expected": "April 3rd",
+        "generated": "This happened on April 3rd",
+        "correct": true
+      },
+      {
+        "story_idx": 4,
+        "question": "What did Henry find?",
+        "expected": "phone",
+        "generated": "Henry found a phone",
+        "correct": true
+      },
+      {
+        "story_idx": 5,
+        "question": "What did David find?",
+        "expected": "watch",
+        "generated": "David found a watch",
+        "correct": true
+      },
+      {
+        "story_idx": 5,
+        "question": "What color was the photo?",
+        "expected": "golden",
+        "generated": "The photo was golden",
+        "correct": true
+      },
+      {
+        "story_idx": 5,
+        "question": "When did this happen?",
+        "expected": "May 21st",
+        "generated": "David was in a good mood",
+        "correct": false
+      },
+      {
+        "story_idx": 6,
+        "question": "When did this happen?",
+        "expected": "Wednesday",
+        "generated": "Wednesday, August 6, 2018",
+        "correct": true
+      },
+      {
+        "story_idx": 6,
+        "question": "Where did Bob travel?",
+        "expected": "Vienna",
+        "generated": "Bob traveled to Vienna",
+        "correct": true
+      },
+      {
+        "story_idx": 6,
+        "question": "Who did Bob meet?",
+        "expected": "Henry",
+        "generated": "Bob met Henry",
+        "correct": true
+      },
+      {
+        "story_idx": 7,
+        "question": "What color was the key?",
+        "expected": "yellow",
+        "generated": "The key was yellow",
+        "correct": true
+      },
+      {
+        "story_idx": 7,
+        "question": "When did this happen?",
+        "expected": "evening",
+        "generated": "David was in a car",
+        "correct": false
+      },
+      {
+        "story_idx": 7,
+        "question": "What did David find?",
+        "expected": "coin",
+        "generated": "David found a yellow key",
+        "correct": false
+      },
+      {
+        "story_idx": 8,
+        "question": "Where did Emma travel?",
+        "expected": "Oslo",
+        "generated": "Emma traveled to Oslo",
+        "correct": true
+      },
+      {
+        "story_idx": 8,
+        "question": "When did this happen?",
+        "expected": "June 8th",
+        "generated": "This happened on June 8th",
+        "correct": true
+      },
+      {
+        "story_idx": 8,
+        "question": "Who did Emma meet?",
+        "expected": "Henry",
+        "generated": "Emma met Henry",
+        "correct": true
+      },
+      {
+        "story_idx": 9,
+        "question": "What did Bob find?",
+        "expected": "watch",
+        "generated": "Bob found a watch",
+        "correct": true
+      },
+      {
+        "story_idx": 9,
+        "question": "Who did Bob meet?",
+        "expected": "Carol",
+        "generated": "Bob met Carol",
+        "correct": true
+      },
+      {
+        "story_idx": 9,
+        "question": "When did this happen?",
+        "expected": "June 8th",
+        "generated": "June 8th, 2018",
+        "correct": true
+      },
+      {
+        "story_idx": 10,
+        "question": "When did this happen?",
+        "expected": "May 21st",
+        "generated": "May 21st",
+        "correct": true
+      },
+      {
+        "story_idx": 10,
+        "question": "What did Isabel find?",
+        "expected": "key",
+        "generated": "Isabel found a key",
+        "correct": true
+      },
+      {
+        "story_idx": 10,
+        "question": "Who did Isabel meet?",
+        "expected": "Emma",
+        "generated": "Isabel met Emma",
+        "correct": true
+      },
+      {
+        "story_idx": 11,
+        "question": "When did this happen?",
+        "expected": "afternoon",
+        "generated": "It happened on the afternoon of the day of the story",
+        "correct": true
+      },
+      {
+        "story_idx": 11,
+        "question": "What color was the phone?",
+        "expected": "yellow",
+        "generated": "The phone was yellow",
+        "correct": true
+      },
+      {
+        "story_idx": 11,
+        "question": "Who did Isabel meet?",
+        "expected": "Carol",
+        "generated": "Isabel met Carol",
+        "correct": true
+      },
+      {
+        "story_idx": 12,
+        "question": "What did Jack find?",
+        "expected": "coin",
+        "generated": "Jack found a coin",
+        "correct": true
+      },
+      {
+        "story_idx": 12,
+        "question": "What color was the photo?",
+        "expected": "yellow",
+        "generated": "The photo was yellow",
+        "correct": true
+      },
+      {
+        "story_idx": 12,
+        "question": "Where did Jack travel?",
+        "expected": "Paris",
+        "generated": "Jack traveled to Paris",
+        "correct": true
+      },
+      {
+        "story_idx": 13,
+        "question": "Who did Bob meet?",
+        "expected": "Jack",
+        "generated": "Bob met Jack",
+        "correct": true
+      },
+      {
+        "story_idx": 13,
+        "question": "When did this happen?",
+        "expected": "Wednesday",
+        "generated": "Bob was in Tokyo",
+        "correct": false
+      },
+      {
+        "story_idx": 13,
+        "question": "Where did Bob travel?",
+        "expected": "Tokyo",
+        "generated": "Bob traveled to Tokyo",
+        "correct": true
+      },
+      {
+        "story_idx": 14,
+        "question": "Where did David travel?",
+        "expected": "Vienna",
+        "generated": "David traveled to Vienna",
+        "correct": true
+      },
+      {
+        "story_idx": 14,
+        "question": "What did David find?",
+        "expected": "bag",
+        "generated": "David found a bag",
+        "correct": true
+      },
+      {
+        "story_idx": 14,
+        "question": "What color was the ring?",
+        "expected": "blue",
+        "generated": "The ring was blue",
+        "correct": true
+      },
+      {
+        "story_idx": 15,
+        "question": "When did this happen?",
+        "expected": "Monday",
+        "generated": "This happened on Monday",
+        "correct": true
+      },
+      {
+        "story_idx": 15,
+        "question": "Where did Jack travel?",
+        "expected": "London",
+        "generated": "Jack traveled to London",
+        "correct": true
+      },
+      {
+        "story_idx": 15,
+        "question": "Who did Jack meet?",
+        "expected": "Alice",
+        "generated": "Jack met Alice",
+        "correct": true
+      },
+      {
+        "story_idx": 16,
+        "question": "Where did Isabel travel?",
+        "expected": "Rome",
+        "generated": "Isabel traveled to Rome",
+        "correct": true
+      },
+      {
+        "story_idx": 16,
+        "question": "What color was the bag?",
+        "expected": "green",
+        "generated": "The bag was green",
+        "correct": true
+      },
+      {
+        "story_idx": 16,
+        "question": "When did this happen?",
+        "expected": "evening",
+        "generated": "This happened on the evening of the day of the week",
+        "correct": true
+      },
+      {
+        "story_idx": 17,
+        "question": "When did this happen?",
+        "expected": "May 21st",
+        "generated": "David was in a meeting with Henry",
+        "correct": false
+      },
+      {
+        "story_idx": 17,
+        "question": "What did David find?",
+        "expected": "watch",
+        "generated": "David found a watch",
+        "correct": true
+      },
+      {
+        "story_idx": 17,
+        "question": "Who did David meet?",
+        "expected": "Henry",
+        "generated": "David met Henry",
+        "correct": true
+      },
+      {
+        "story_idx": 18,
+        "question": "When did this happen?",
+        "expected": "afternoon",
+        "generated": "Frank was in a car",
+        "correct": false
+      },
+      {
+        "story_idx": 18,
+        "question": "Who did Frank meet?",
+        "expected": "Isabel",
+        "generated": "Frank met Isabel",
+        "correct": true
+      },
+      {
+        "story_idx": 18,
+        "question": "What color was the map?",
+        "expected": "silver",
+        "generated": "The map was silver",
+        "correct": true
+      },
+      {
+        "story_idx": 19,
+        "question": "What did Henry find?",
+        "expected": "key",
+        "generated": "Henry found a key",
+        "correct": true
+      },
+      {
+        "story_idx": 19,
+        "question": "Who did Henry meet?",
+        "expected": "David",
+        "generated": "Henry met David",
+        "correct": true
+      },
+      {
+        "story_idx": 19,
+        "question": "When did this happen?",
+        "expected": "Wednesday",
+        "generated": "This happened on Wednesday",
+        "correct": true
+      },
+      {
+        "story_idx": 20,
+        "question": "Who did Alice meet?",
+        "expected": "Frank",
+        "generated": "Alice met Frank",
+        "correct": true
+      },
+      {
+        "story_idx": 20,
+        "question": "What color was the ring?",
+        "expected": "black",
+        "generated": "The ring was black",
+        "correct": true
+      },
+      {
+        "story_idx": 20,
+        "question": "Where did Alice travel?",
+        "expected": "Athens",
+        "generated": "Alice traveled to Athens",
+        "correct": true
+      }
+    ]
+  },
+  "v1_drai": {
+    "model_name": "V1 DRAI (EleutherAI/pythia-1b)",
+    "accuracy": 0.8333333333333334,
+    "correct": 50,
+    "total": 60,
+    "results": [
+      {
+        "story_idx": 1,
+        "question": "What did Bob find?",
+        "expected": "map",
+        "generated": "Bob found a bag",
+        "correct": false
+      },
+      {
+        "story_idx": 1,
+        "question": "When did this happen?",
+        "expected": "Tuesday",
+        "generated": "Bob was in a meeting",
+        "correct": false
+      },
+      {
+        "story_idx": 1,
+        "question": "What color was the bag?",
+        "expected": "blue",
+        "generated": "The bag was blue",
+        "correct": true
+      },
+      {
+        "story_idx": 2,
+        "question": "What color was the bag?",
+        "expected": "silver",
+        "generated": "The bag was silver",
+        "correct": true
+      },
+      {
+        "story_idx": 2,
+        "question": "When did this happen?",
+        "expected": "March 15th",
+        "generated": "David was in a car",
+        "correct": false
+      },
+      {
+        "story_idx": 2,
+        "question": "Who did David meet?",
+        "expected": "Isabel",
+        "generated": "David met a girl named Isabel",
+        "correct": true
+      },
+      {
+        "story_idx": 3,
+        "question": "What color was the key?",
+        "expected": "blue",
+        "generated": "The key was blue",
+        "correct": true
+      },
+      {
+        "story_idx": 3,
+        "question": "When did this happen?",
+        "expected": "June 8th",
+        "generated": "Frank was in London",
+        "correct": false
+      },
+      {
+        "story_idx": 3,
+        "question": "Where did Frank travel?",
+        "expected": "London",
+        "generated": "Frank traveled to London",
+        "correct": true
+      },
+      {
+        "story_idx": 4,
+        "question": "Who did Henry meet?",
+        "expected": "Jack",
+        "generated": "Henry met Jack",
+        "correct": true
+      },
+      {
+        "story_idx": 4,
+        "question": "When did this happen?",
+        "expected": "April 3rd",
+        "generated": "This happened on April 3rd",
+        "correct": true
+      },
+      {
+        "story_idx": 4,
+        "question": "What did Henry find?",
+        "expected": "phone",
+        "generated": "Henry found a phone",
+        "correct": true
+      },
+      {
+        "story_idx": 5,
+        "question": "What did David find?",
+        "expected": "watch",
+        "generated": "David found a watch",
+        "correct": true
+      },
+      {
+        "story_idx": 5,
+        "question": "What color was the photo?",
+        "expected": "golden",
+        "generated": "The photo was golden",
+        "correct": true
+      },
+      {
+        "story_idx": 5,
+        "question": "When did this happen?",
+        "expected": "May 21st",
+        "generated": "David was in a good mood",
+        "correct": false
+      },
+      {
+        "story_idx": 6,
+        "question": "When did this happen?",
+        "expected": "Wednesday",
+        "generated": "This happened on Wednesday",
+        "correct": true
+      },
+      {
+        "story_idx": 6,
+        "question": "Where did Bob travel?",
+        "expected": "Vienna",
+        "generated": "Bob traveled to Vienna",
+        "correct": true
+      },
+      {
+        "story_idx": 6,
+        "question": "Who did Bob meet?",
+        "expected": "Henry",
+        "generated": "Bob met Henry",
+        "correct": true
+      },
+      {
+        "story_idx": 7,
+        "question": "What color was the key?",
+        "expected": "yellow",
+        "generated": "The key was yellow",
+        "correct": true
+      },
+      {
+        "story_idx": 7,
+        "question": "When did this happen?",
+        "expected": "evening",
+        "generated": "David was a very good person",
+        "correct": false
+      },
+      {
+        "story_idx": 7,
+        "question": "What did David find?",
+        "expected": "coin",
+        "generated": "David found a key",
+        "correct": false
+      },
+      {
+        "story_idx": 8,
+        "question": "Where did Emma travel?",
+        "expected": "Oslo",
+        "generated": "Emma traveled to Oslo",
+        "correct": true
+      },
+      {
+        "story_idx": 8,
+        "question": "When did this happen?",
+        "expected": "June 8th",
+        "generated": "This happened on June 8th",
+        "correct": true
+      },
+      {
+        "story_idx": 8,
+        "question": "Who did Emma meet?",
+        "expected": "Henry",
+        "generated": "Emma met Henry",
+        "correct": true
+      },
+      {
+        "story_idx": 9,
+        "question": "What did Bob find?",
+        "expected": "watch",
+        "generated": "Bob found a watch",
+        "correct": true
+      },
+      {
+        "story_idx": 9,
+        "question": "Who did Bob meet?",
+        "expected": "Carol",
+        "generated": "Bob met Carol",
+        "correct": true
+      },
+      {
+        "story_idx": 9,
+        "question": "When did this happen?",
+        "expected": "June 8th",
+        "generated": "June 8th, 2018",
+        "correct": true
+      },
+      {
+        "story_idx": 10,
+        "question": "When did this happen?",
+        "expected": "May 21st",
+        "generated": "May 21st was a significant day",
+        "correct": true
+      },
+      {
+        "story_idx": 10,
+        "question": "What did Isabel find?",
+        "expected": "key",
+        "generated": "Isabel found a key",
+        "correct": true
+      },
+      {
+        "story_idx": 10,
+        "question": "Who did Isabel meet?",
+        "expected": "Emma",
+        "generated": "Isabel met Emma",
+        "correct": true
+      },
+      {
+        "story_idx": 11,
+        "question": "When did this happen?",
+        "expected": "afternoon",
+        "generated": "It happened on the afternoon of the day of the story",
+        "correct": true
+      },
+      {
+        "story_idx": 11,
+        "question": "What color was the phone?",
+        "expected": "yellow",
+        "generated": "It was yellow",
+        "correct": true
+      },
+      {
+        "story_idx": 11,
+        "question": "Who did Isabel meet?",
+        "expected": "Carol",
+        "generated": "Isabel met Carol",
+        "correct": true
+      },
+      {
+        "story_idx": 12,
+        "question": "What did Jack find?",
+        "expected": "coin",
+        "generated": "Jack found a coin",
+        "correct": true
+      },
+      {
+        "story_idx": 12,
+        "question": "What color was the photo?",
+        "expected": "yellow",
+        "generated": "The photo was yellow",
+        "correct": true
+      },
+      {
+        "story_idx": 12,
+        "question": "Where did Jack travel?",
+        "expected": "Paris",
+        "generated": "Jack traveled to Paris",
+        "correct": true
+      },
+      {
+        "story_idx": 13,
+        "question": "Who did Bob meet?",
+        "expected": "Jack",
+        "generated": "Bob met Jack",
+        "correct": true
+      },
+      {
+        "story_idx": 13,
+        "question": "When did this happen?",
+        "expected": "Wednesday",
+        "generated": "Bob was in Tokyo",
+        "correct": false
+      },
+      {
+        "story_idx": 13,
+        "question": "Where did Bob travel?",
+        "expected": "Tokyo",
+        "generated": "Bob traveled to Tokyo",
+        "correct": true
+      },
+      {
+        "story_idx": 14,
+        "question": "Where did David travel?",
+        "expected": "Vienna",
+        "generated": "David traveled to Vienna",
+        "correct": true
+      },
+      {
+        "story_idx": 14,
+        "question": "What did David find?",
+        "expected": "bag",
+        "generated": "David found a bag",
+        "correct": true
+      },
+      {
+        "story_idx": 14,
+        "question": "What color was the ring?",
+        "expected": "blue",
+        "generated": "The ring was blue",
+        "correct": true
+      },
+      {
+        "story_idx": 15,
+        "question": "When did this happen?",
+        "expected": "Monday",
+        "generated": "This happened on Monday",
+        "correct": true
+      },
+      {
+        "story_idx": 15,
+        "question": "Where did Jack travel?",
+        "expected": "London",
+        "generated": "Jack traveled to London",
+        "correct": true
+      },
+      {
+        "story_idx": 15,
+        "question": "Who did Jack meet?",
+        "expected": "Alice",
+        "generated": "Jack met Alice",
+        "correct": true
+      },
+      {
+        "story_idx": 16,
+        "question": "Where did Isabel travel?",
+        "expected": "Rome",
+        "generated": "Isabel traveled to Rome",
+        "correct": true
+      },
+      {
+        "story_idx": 16,
+        "question": "What color was the bag?",
+        "expected": "green",
+        "generated": "The bag was green",
+        "correct": true
+      },
+      {
+        "story_idx": 16,
+        "question": "When did this happen?",
+        "expected": "evening",
+        "generated": "This happened on the evening of the day of the week",
+        "correct": true
+      },
+      {
+        "story_idx": 17,
+        "question": "When did this happen?",
+        "expected": "May 21st",
+        "generated": "David was in a meeting with Henry",
+        "correct": false
+      },
+      {
+        "story_idx": 17,
+        "question": "What did David find?",
+        "expected": "watch",
+        "generated": "David found a watch",
+        "correct": true
+      },
+      {
+        "story_idx": 17,
+        "question": "Who did David meet?",
+        "expected": "Henry",
+        "generated": "David met Henry",
+        "correct": true
+      },
+      {
+        "story_idx": 18,
+        "question": "When did this happen?",
+        "expected": "afternoon",
+        "generated": "Frank was in a car",
+        "correct": false
+      },
+      {
+        "story_idx": 18,
+        "question": "Who did Frank meet?",
+        "expected": "Isabel",
+        "generated": "Frank met Isabel",
+        "correct": true
+      },
+      {
+        "story_idx": 18,
+        "question": "What color was the map?",
+        "expected": "silver",
+        "generated": "It was silver",
+        "correct": true
+      },
+      {
+        "story_idx": 19,
+        "question": "What did Henry find?",
+        "expected": "key",
+        "generated": "Henry found a key",
+        "correct": true
+      },
+      {
+        "story_idx": 19,
+        "question": "Who did Henry meet?",
+        "expected": "David",
+        "generated": "Henry met David",
+        "correct": true
+      },
+      {
+        "story_idx": 19,
+        "question": "When did this happen?",
+        "expected": "Wednesday",
+        "generated": "This happened on Wednesday",
+        "correct": true
+      },
+      {
+        "story_idx": 20,
+        "question": "Who did Alice meet?",
+        "expected": "Frank",
+        "generated": "Alice met Frank",
+        "correct": true
+      },
+      {
+        "story_idx": 20,
+        "question": "What color was the ring?",
+        "expected": "black",
+        "generated": "The ring was black",
+        "correct": true
+      },
+      {
+        "story_idx": 20,
+        "question": "Where did Alice travel?",
+        "expected": "Athens",
+        "generated": "Alice traveled to Athens",
+        "correct": true
+      }
+    ]
+  },
+  "v1_stats": {
+    "num_drai_layers": 16,
+    "total_active": 512,
+    "total_strength": 4266.228118896484,
+    "mean_strength": 266.6392574310303,
+    "layers": [
+      {
+        "layer_idx": 0,
+        "num_alive": 32,
+        "total_strength": 240.9252471923828,
+        "mean_strength": 7.528913974761963,
+        "max_strength": 39.21152877807617,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 1,
+        "num_alive": 32,
+        "total_strength": 237.31484985351562,
+        "mean_strength": 7.416089057922363,
+        "max_strength": 25.839859008789062,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 2,
+        "num_alive": 32,
+        "total_strength": 229.76699829101562,
+        "mean_strength": 7.180218696594238,
+        "max_strength": 31.615652084350586,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 3,
+        "num_alive": 32,
+        "total_strength": 257.0516357421875,
+        "mean_strength": 8.03286361694336,
+        "max_strength": 29.941909790039062,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 4,
+        "num_alive": 32,
+        "total_strength": 279.3638916015625,
+        "mean_strength": 8.730121612548828,
+        "max_strength": 26.759624481201172,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 5,
+        "num_alive": 32,
+        "total_strength": 292.87921142578125,
+        "mean_strength": 9.152475357055664,
+        "max_strength": 34.090187072753906,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 6,
+        "num_alive": 32,
+        "total_strength": 280.39129638671875,
+        "mean_strength": 8.762228012084961,
+        "max_strength": 36.309471130371094,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 7,
+        "num_alive": 32,
+        "total_strength": 298.5016784667969,
+        "mean_strength": 9.328177452087402,
+        "max_strength": 29.807411193847656,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 8,
+        "num_alive": 32,
+        "total_strength": 229.26486206054688,
+        "mean_strength": 7.16452693939209,
+        "max_strength": 31.831331253051758,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 9,
+        "num_alive": 32,
+        "total_strength": 227.7176513671875,
+        "mean_strength": 7.116176605224609,
+        "max_strength": 32.66086196899414,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 10,
+        "num_alive": 32,
+        "total_strength": 305.4449157714844,
+        "mean_strength": 9.545153617858887,
+        "max_strength": 29.4610538482666,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 11,
+        "num_alive": 32,
+        "total_strength": 233.09661865234375,
+        "mean_strength": 7.284269332885742,
+        "max_strength": 34.45562744140625,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 12,
+        "num_alive": 32,
+        "total_strength": 288.4028625488281,
+        "mean_strength": 9.012589454650879,
+        "max_strength": 36.242576599121094,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 13,
+        "num_alive": 32,
+        "total_strength": 255.59703063964844,
+        "mean_strength": 7.987407207489014,
+        "max_strength": 31.353376388549805,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 14,
+        "num_alive": 32,
+        "total_strength": 306.41021728515625,
+        "mean_strength": 9.575319290161133,
+        "max_strength": 38.90593338012695,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      },
+      {
+        "layer_idx": 15,
+        "num_alive": 32,
+        "total_strength": 304.0991516113281,
+        "mean_strength": 9.503098487854004,
+        "max_strength": 40.763275146484375,
+        "timestep": 1200.0,
+        "burn_in_active": false,
+        "burn_in_mode": "strength",
+        "burn_in_threshold": 30.0,
+        "burn_in_tokens": 8,
+        "burn_in_progress": 100.0
+      }
+    ]
+  },
+  "delta": 0.0,
+  "verdict": "SUCCESS",
+  "config": {
+    "burn_in_threshold": 30.0,
+    "max_influence_scale": 0.3,
+    "layer_mode": "all",
+    "max_attractors": 32
+  }
+}

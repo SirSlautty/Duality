@@ -1,0 +1,28 @@
+# Core PyTorch dependencies for Project Duality
+# Duality: Experimental research exploring hybrid cognitive architectures
+# with Dynamic Resonance AI (DRAI) integrated into transformer models
+
+# PyTorch and related packages (CPU version - change to CUDA if GPU available)
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# Core scientific computing
+numpy>=1.24.0
+
+# Utilities
+sympy>=1.13.0
+pillow>=10.0.0
+
+# Required for Phase 3: Transformer Integration
+transformers>=4.30.0  # HuggingFace transformers (GPT-NeoX)
+datasets>=2.14.0      # Dataset handling for benchmarks
+einops>=0.6.0         # Tensor operations
+matplotlib>=3.7.0     # Visualization
+jupyter>=1.0.0        # Notebook experiments
+accelerate>=0.20.0    # Model loading utilities
+
+# Development dependencies
+# pytest>=7.4.0         # Uncomment for testing
+# black>=23.0.0         # Uncomment for code formatting
+# flake8>=6.0.0         # Uncomment for linting

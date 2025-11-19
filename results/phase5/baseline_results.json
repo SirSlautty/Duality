@@ -1,0 +1,324 @@
+[
+  {
+    "story_id": 0,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "* * I am still not sure if this will be true.* We have no other way than by chance we are going through an attempt which could potentially help us get closer again or perhaps just keep it up.]***",
+        "correct": "August 19th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Michael travel to?",
+        "predicted": "Several individuals demonstrated significant vulnerability when they did not learn what he learned or how much damage his surroundings caused him fearing death! In addition there are some exceptions: many people have been exposed by exposure during these early stages but all those who didn't know",
+        "correct": "Rome",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Avery searching for?",
+        "predicted": "Accessories failed or not visited all sides but we are certain this is true again!",
+        "correct": "a map",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "Watchers saw how they could catch up on anything without being able or even having trouble finding any help during training sessions (although some people would be so lucky). They finally realized what happened when there weren't enough resources available",
+        "correct": "Michael",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Michael and Patricia?",
+        "predicted": "\"We are still looking forward.\" Francis Dyer said during his interview on September 3rd (January 23nd). He added: \"There is nothing you can do but go back.\u201d",
+        "correct": "friend",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1763,
+      "num_facts": 3,
+      "num_distractors": 0,
+      "theme": "adventure"
+    }
+  },
+  {
+    "story_id": 1,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "Where did Joseph travel to?",
+        "predicted": "understandings relating events in his time as an archaeologist who labored on earthly things like this one (aerial studies) not only revealed what happened during those years but we may have been aware again by now or later than it has ever occurred",
+        "correct": "Berlin",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "understandings within its grasp as well (see below).",
+        "correct": "9173",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "understandings regarding its future plans as well.\"",
+        "correct": "August 19th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Was there any conflicting information about 9173?",
+        "predicted": "awareness concerning human rights abuses during World War II as well . Mormon led his first trip in 1939 by more than 200 people across Canada after serving three years there on behalf over 300 military bases along coastline",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "understandings before they even began in life-threatening terms (the only one being able not having an opportunity). Banking is possible but it has been difficult as well on other areas which have failed since its inception when there are more than 50 people who",
+        "correct": "Joseph",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Joseph and Jennifer?",
+        "predicted": "understandings but never really addressed anything else (not only did they be overshadowed).",
+        "correct": "partner",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1988,
+      "num_facts": 3,
+      "num_distractors": 3,
+      "theme": "adventure"
+    }
+  },
+  {
+    "story_id": 2,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "4352;3321 (0x5)1 1 2 3 5 6 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42",
+        "correct": "8361",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Richard searching for?",
+        "predicted": "1) Question 2;1). Questions 3-4 (question 5);2)? How many questions do you ask here or where does it go wrong ?",
+        "correct": "a document",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Richard travel to?",
+        "predicted": "In March 2011 he met his friend Patrick O'Brien who visited him at an American hotel where they discussed how good it felt like after having dinner together during lunchtime (that is). They asked if there would have meant another visit before returning home or",
+        "correct": "London",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "'It is an Access' (access). Is it possible she has accessed your account or are you able-to contact her directly?' It may have appeared because he already knew who did so.' There wasn't much chance we could do either way'.",
+        "correct": "7851",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Riley's hometown?",
+        "predicted": "Aren't you going there after your first meeting or another discussion?\" He asked if he'd ever met her again! She answered \"Yes.\" When she replied otherwise it seemed like no one would have known exactly where they all went at once... There",
+        "correct": "Rome",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Was there any conflicting information about London?",
+        "predicted": "No! There is no conflict between us or anything like it here at home when we go through things such they are really very different; if you have an idea how important your discussion may feel then let me know.\" Rachel asked questions after her comments arrived",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Was there any conflicting information about 8361?",
+        "predicted": "No...No..Not yet.\" This is an issue at all times,\" Rory said \"when he asked you how it could happen if one person tried calling me?\" She answered her husband who knew him well enough she did have no idea why people",
+        "correct": "Yes, there were conflicting reports.",
+        "score": 0.0,
+        "type": "consistency_check"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "Answer (1) In an effortless world where people are supposed by nothing; they just don't know it! You may think you're going there before your day is over if things get better or worse after all these years we've seen them go",
+        "correct": "Richard",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Richard and Elizabeth?",
+        "predicted": "1) \"Why did you think he would get his attention?\" 682\u2013699 (1400). See Ryle Farrow here at www.\u200bsociology-andrelationships\u200bfor_themes]. 3326; see _P",
+        "correct": "rival",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1446,
+      "num_facts": 5,
+      "num_distractors": 4,
+      "theme": "drama"
+    }
+  },
+  {
+    "story_id": 3,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "1) No one ever spoke down here or at any other hearing;2). Question is what happens when you speak/talked it again because there are no answers yet (I know I have an answer);3.) Questions like \"what does this",
+        "correct": "2648",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "1) How did you manage your relationship between an experience or how many times it occurred when someone told them what they knew he would say so if she said nothing at all during her conversations this is going away forever! (2). Question asked why people",
+        "correct": "February 28th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was David's occupation?",
+        "predicted": "1) He said he did no work at all when his company began working there; how many people have left home due north or south by phone after they went through each day so she couldn't get them anything else during her absence (that is what",
+        "correct": "musician",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Where did Jennifer travel to?",
+        "predicted": "I'm here now because she has received permission so far but no interest at all due her visit (my daughter is pregnant). She went there after this trip before returning home late Wednesday evening; however we still have an opportunity when it comes our way!",
+        "correct": "Madrid",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Jennifer's age?",
+        "predicted": "1) She would be living at home alone if she wanted her children away; or 3). Her mother could have just died but no one knew who they lived together before he left school \u2013 it seemed like this didn't matter whether you live there until",
+        "correct": "57",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "1) What did you think would happen if someone suggested it be possible or impossible... It is only then! I have seen what happens when people want me through this process.. If there are no real answers yet but they don't know where (or",
+        "correct": "December 5th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "1) \"We have no knowledge,\" said Jonathan Bezos' answer at last week when asked if he thought it would be possible by emailing him again after receiving his response (with an explanation). They did say they'd just send emails or ask",
+        "correct": "7851",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "\"It is an issue where people are going through complex dynamics.\"",
+        "correct": "David",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between David and Jennifer?",
+        "predicted": "1) Did you know what is going into your mind when they started hearing it or did there ever have an answer; who are talking now but can't tell if he/she will hear anything at all after his silence has died away.? Answer \"",
+        "correct": "colleague",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1322,
+      "num_facts": 7,
+      "num_distractors": 1,
+      "theme": "drama"
+    }
+  },
+  {
+    "story_id": 4,
+    "model_name": "EleutherAI/pythia-70m",
+    "accuracy": 0.0,
+    "consistency_score": 0.0,
+    "answers": [
+      {
+        "question": "What was Casey searching for?",
+        "predicted": "\"I have no problem.\" Page 5 - I know where this question is coming off but my mind has never answered it properly before trying again! Please answer your questions here or come along at any moment instead.... There are so many answers... This quiz",
+        "correct": "a document",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was the access code mentioned in the story?",
+        "predicted": "\"There is an open communication between people who have seen this deal.\" It seemed like it would be possible if there hadn't already spoken through what they saw or heard any evidence (such knowledge could only come at one point). This wasn\u2019t quite",
+        "correct": "1754",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "When was the event scheduled?",
+        "predicted": "There are no options available which could be taken into consideration by us or our partners at this point; we would like you all together if possible... We will do it quickly! I hope there is another way forward so far within ourselves - but what happens",
+        "correct": "February 28th",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Mary's age?",
+        "predicted": "\"I've got this year.\" Maintain an open mind... or will be my future friend! He may have lost his parents' name at least once but now they are going off into different lives when he is away (or too far)",
+        "correct": "37",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "What was Mary searching for?",
+        "predicted": "'Yes'",
+        "correct": "a computer",
+        "score": 0.0,
+        "type": "factual_recall"
+      },
+      {
+        "question": "Who was the main character in this story?",
+        "predicted": "It is one thing or another I think would be very interesting but it seems like there are many other characters around me who have failed at all when they've shown themselves so badly by such people (especially myself). What do you mean if your protagonist has",
+        "correct": "Michael",
+        "score": 0.0,
+        "type": "character_identification"
+      },
+      {
+        "question": "What was the relationship between Michael and Mary?",
+        "predicted": "There is no evidence against what he did or didn't do when it occurred alone over at least one week ago.\" Peter Hester,\" Iain Sinclair\" said...\" \"I don' know this sounds like an accusation!\" In my mind.\"\"Peter K",
+        "correct": "rival",
+        "score": 0.0,
+        "type": "relationship"
+      }
+    ],
+    "metadata": {
+      "story_length": 1556,
+      "num_facts": 5,
+      "num_distractors": 0,
+      "theme": "drama"
+    }
+  }
+]
