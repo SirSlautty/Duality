@@ -1,72 +1,48 @@
 """
-DRAI (Dynamic Resonance AI) — V1 Production Release
----------------------------------------------------
+DRAI (Dynamic Resonance AI) — V1 Production API
+-----------------------------------------------
 
-Dynamic, training-free attractor memory for transformer models.
+Stable, training-free dynamic resonance memory for transformer models.
 
-This module exposes the stable public API for integrating DRAI V1 into
-supported Hugging Face architectures (currently GPT-NeoX-style models,
-with broader compatibility planned in V2–V3).
+This module exposes the public V1 API:
+    • apply_drai_v1()          – patch a model with DRAI V1
+    • get_drai_v1_stats()      – inspect attractor state
+    • V1Config / V1Hyperparameters
+    • Presets: get_v1_conservative(), get_v1_standard()
 
-DRAI V1 adds a persistent, self-organizing internal memory field to
-frozen language models using controlled attractor dynamics. It enables
-stable reasoning over long contexts without modifying weights, training,
-or requiring external memory systems.
-
-Quick Start:
-    >>> from drai import apply_drai_v1, get_v1_conservative_config
-    >>> from transformers import AutoModelForCausalLM
-
-    # Load a supported transformer model (e.g., GPT-NeoX family)
-    >>> model = AutoModelForCausalLM.from_pretrained("EleutherAI/pythia-410m")
-
-    # Add dynamic memory in one line
-    >>> model = apply_drai_v1(model, config=get_v1_conservative_config())
-
-    # Use normally — now with internal attractor memory
-    >>> outputs = model.generate(inputs)
-
-Documentation:
-  - Repo: https://github.com/HalcyonAIR/Duality
-  - DRAI V1 Overview: /docs/DRAI_V1_OVERVIEW.md
-  - Attractor Memory Theory: /docs/ATTRACTOR_DYNAMICS.md
-
-Compatibility Notes:
-  - V1 is fully stable and production-ready.
-  - API surface for standard use is stable.
-  - Advanced APIs (ResonanceLayer, projections, internal hooks)
-    may evolve in V2–V3 as concatenated K/V mechanisms are introduced.
+Supported architectures (V1):
+    • GPT-NeoX / Pythia-family models
+    • Other HF architectures with `.layers` will be supported in V2–V3
 """
 
-# Core V1 components
+# Core V1 attractor engine
 from .resonance_layer_v1 import DraiResonanceLayerV1
 
 # Configuration system
 from .config import (
-    DraiV1Config,
-    DraiV1Hyperparameters,
-    get_v1_conservative_config,
-    get_v1_standard_config,
+    V1Config,
+    V1Hyperparameters,
+    get_v1_conservative,
+    get_v1_standard,
 )
 
-# High-level public API
+# High-level application API
 from .apply_v1 import apply_drai_v1, get_drai_v1_stats
 
-# Package metadata
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "Halcyon AI Research"
 
 __all__ = [
-    # Main API
+    # Public API
     "apply_drai_v1",
     "get_drai_v1_stats",
 
-    # Configurations
-    "DraiV1Config",
-    "DraiV1Hyperparameters",
-    "get_v1_conservative_config",
-    "get_v1_standard_config",
+    # Configuration system
+    "V1Config",
+    "V1Hyperparameters",
+    "get_v1_conservative",
+    "get_v1_standard",
 
-    # Advanced / Internal components
+    # Advanced internal components
     "DraiResonanceLayerV1",
 ]
