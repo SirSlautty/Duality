@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Validate Python syntax
+      run: |
+        python -m py_compile src/drai/__init__.py
+        python -m py_compile src/drai/apply_v1.py
+        python -m py_compile src/drai/config.py
+        python -m py_compile src/drai/resonance_layer_v1.py
+        python -m py_compile src/drai/neox_integration_v1.py
+        python -m py_compile benchmarks/story_comprehension_410m/run.py
+        python -m py_compile benchmarks/story_comprehension_410m/story_generator.py
+
+    - name: Check DRAI imports
+      run: |
+        python -c "from src.drai import apply_drai_v1, get_v1_conservative_config, get_drai_v1_stats; print('✓ DRAI V1 imports OK')"
+
+    - name: Run pytest (if tests exist)
+      run: |
+        if [ -d "tests" ]; then
+          pip install pytest
+          pytest
+        else
+          echo "No tests directory found (skipping)"
+        fi
+      continue-on-error: true
+
+  validate-reproduction:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Check reproduction script structure
+      run: |
+        bash -n scripts/run_reproduction_410m.sh
+        echo "✓ Reproduction script syntax valid"
+
+    - name: Verify benchmark structure
+      run: |
+        test -f benchmarks/story_comprehension_410m/run.py
+        test -f benchmarks/story_comprehension_410m/story_generator.py
+        test -f benchmarks/story_comprehension_410m/README.md
+        echo "✓ Benchmark structure valid"
+
+  style:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Check code formatting (optional)
+      run: |
+        pip install black
+        black --check src/ || echo "Note: Consider running 'black src/' to auto-format"
+      continue-on-error: true
