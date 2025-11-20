@@ -5,8 +5,8 @@ DRAI (Dynamic Resonance AI) — V1 Production API
 Stable, training-free dynamic resonance memory for transformer models.
 
 This module exposes the public V1 API:
-    • apply_drai_v1()          – patch a model with DRAI V1
-    • get_drai_v1_stats()      – inspect attractor state
+    • apply_v1()           – patch a model with DRAI V1
+    • get_v1_stats()       – inspect attractor state
     • V1Config / V1Hyperparameters
     • Presets: get_v1_conservative(), get_v1_standard()
 
@@ -27,15 +27,15 @@ from .config import (
 )
 
 # High-level application API
-from .apply_v1 import apply_drai_v1, get_drai_v1_stats
+from .apply_v1 import apply_v1, get_v1_stats
 
 __version__ = "1.1.0"
 __author__ = "Halcyon AI Research"
 
 __all__ = [
     # Public API
-    "apply_drai_v1",
-    "get_drai_v1_stats",
+    "apply_v1",
+    "get_v1_stats",
 
     # Configuration system
     "V1Config",
