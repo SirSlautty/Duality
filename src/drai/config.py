@@ -1,570 +1,262 @@
-"""Configuration system for DRAI integration into transformer models.
+"""
+Unified DRAI configuration system.
 
-This module provides a comprehensive configuration system for controlling
-DRAI behavior, injection strategy, and hyperparameters.
+This module provides:
+- A shared base configuration class (DRAIBaseConfig)
+- Clean subclassing for Phase-2 and V1 algorithms
+- Architecture-aware layer selection
+- Versioned configuration structures
+- JSON-safe representations
+- Consistent hyperparameter naming and validation
+
+Designed for long-term maintainability across:
+- Phase-2 (resonance attractors)
+- V1 (production-ready small-model algorithm)
+- Future V2/V3 algorithms
 """
 
+from __future__ import annotations
 from dataclasses import dataclass, field, asdict
-from typing import Optional, List, Literal
+from typing import Optional, List, Literal, Dict, Any
 
+
+# ---------------------------------------------------------------------------
+# Shared Utilities
+# ---------------------------------------------------------------------------
+
+def _auto_mid_layers(num_layers: int) -> List[int]:
+    """Return 1–2 middle layers depending on model depth."""
+    if num_layers <= 4:
+        return [num_layers // 2]
+    if num_layers <= 12:
+        return [num_layers // 2]
+    # 24-layer NeoX etc.
+    m = num_layers // 2
+    return [m - 1, m]
+
+
+# ---------------------------------------------------------------------------
+# Base Classes (Versioned)
+# ---------------------------------------------------------------------------
 
 @dataclass
-class DraiHyperparameters:
-    """DRAI attractor dynamics hyperparameters.
-
-    These parameters control the behavior of the attractor field:
-    - Formation: How easily new attractors are created
-    - Reinforcement: How attractors are strengthened
-    - Decay: How attractors fade over time
-    - Capacity: How many attractors can exist
-
-    See docs/ATTRACTOR_MATHEMATICS.md for mathematical details.
+class DRAIBaseConfig:
     """
+    Base config for all DRAI algorithms.
 
-    max_attractors: int = 32
-    """Maximum number of attractors per layer. Higher = more memory, more patterns."""
+    All derived configs MUST include:
+        - version
+        - algorithm_type
+        - layer_mode
+        - num_drai_heads
+    """
+    version: str = "1.0"
+    algorithm_type: Literal["phase2", "v1"] = "phase2"
 
-    coherence_threshold: float = 0.3
-    """Minimum similarity to match existing attractor. Lower = looser matching."""
+    # Layer injection mode (same API across algorithms)
+    layer_mode: Literal["all", "selective", "none", "mid", "specific"] = "all"
+    specific_layers: Optional[List[int]] = None
 
-    formation_threshold: float = 0.5
-    """Initial coherence for new attractors. Higher = stricter formation criteria."""
+    num_drai_heads: int = 1  # shared across all algorithms
 
-    decay_rate: float = 0.01
-    """Exponential decay rate for unused attractors. Higher = faster forgetting."""
-
-    ema_momentum: float = 0.9
-    """EMA momentum for attractor updates. Higher = more stable, slower adaptation."""
-
-    # Phase 5+ Gating parameters
-    use_strict_gating: bool = False
-    """Enable strict activation gating (threshold 0.85). CRITICAL for small models to prevent random injection."""
-
-    activation_threshold: float = 0.7
-    """Similarity threshold for activating attractors. Only inject if cosine_similarity > this."""
-
-    def __post_init__(self):
-        """Validate hyperparameters."""
-        if self.max_attractors < 1:
-            raise ValueError(f"max_attractors must be >= 1, got {self.max_attractors}")
-
-        if not 0 < self.coherence_threshold < 1:
-            raise ValueError(
-                f"coherence_threshold must be in (0, 1), got {self.coherence_threshold}"
-            )
-
-        if not 0 < self.formation_threshold <= 1:
-            raise ValueError(
-                f"formation_threshold must be in (0, 1], got {self.formation_threshold}"
-            )
-
-        if self.coherence_threshold > self.formation_threshold:
-            raise ValueError(
-                f"coherence_threshold ({self.coherence_threshold}) must be <= "
-                f"formation_threshold ({self.formation_threshold})"
-            )
-
-        if self.decay_rate < 0:
-            raise ValueError(f"decay_rate must be >= 0, got {self.decay_rate}")
-
-        if not 0 < self.ema_momentum < 1:
-            raise ValueError(f"ema_momentum must be in (0, 1), got {self.ema_momentum}")
-
-    def to_dict(self):
-        """Convert to dictionary for easy passing to DraiResonanceLayer."""
+    def to_dict(self) -> Dict[str, Any]:
+        """JSON-safe global config export."""
         return asdict(self)
 
+    # -------------------- Layer selection --------------------
 
-@dataclass
-class DraiConfig:
-    """Complete DRAI configuration for transformer integration.
+    def resolve_layers(self, num_layers: int) -> List[int]:
+        """
+        Return the list of layers that should receive DRAI injection.
+        Standardized across algorithms.
+        """
+        if self.layer_mode == "none":
+            return []
 
-    This configuration controls:
-    1. Whether DRAI is enabled
-    2. Which phase to use (1=zeros, 2=attractors)
-    3. Which layers receive DRAI
-    4. DRAI architecture (heads, dimensions)
-    5. Attractor dynamics hyperparameters
-    6. Monitoring and logging options
+        if self.layer_mode == "all":
+            return list(range(num_layers))
 
-    Example usage:
-        # Full DRAI on all layers
-        config = DraiConfig(enabled=True, phase=2, layer_mode="all")
+        if self.layer_mode == "mid":
+            return _auto_mid_layers(num_layers)
 
-        # DRAI only on deeper layers
-        config = DraiConfig(
-            enabled=True,
-            phase=2,
-            layer_mode="selective",
-            selective_layers=[6, 7, 8, 9, 10, 11]
-        )
+        if self.layer_mode == "specific":
+            return self.specific_layers or []
 
-        # Custom hyperparameters
-        config = DraiConfig(
-            enabled=True,
-            phase=2,
-            hyperparameters=DraiHyperparameters(
-                max_attractors=64,
-                decay_rate=0.005,
-            )
-        )
-    """
+        if self.layer_mode == "selective":
+            return self.specific_layers or []
 
-    # Core settings
-    enabled: bool = False
-    """Enable DRAI injection. If False, model behaves as standard transformer."""
+        raise ValueError(f"Unknown layer_mode: {self.layer_mode}")
 
-    phase: int = 2
-    """DRAI phase: 1=zeros (no impact), 2=full attractor dynamics."""
-
-    # Layer selection
-    layer_mode: Literal["all", "selective", "none"] = "all"
-    """
-    Which layers get DRAI:
-    - "all": Inject into all layers
-    - "selective": Only layers in selective_layers list
-    - "none": No injection (equivalent to enabled=False)
-    """
-
-    selective_layers: Optional[List[int]] = None
-    """Layer indices for selective injection. Only used if layer_mode="selective"."""
-
-    # DRAI architecture
-    num_drai_heads: int = 1
-    """Number of DRAI heads per layer. Acts like extra attention positions."""
-
-    drai_head_dim: Optional[int] = None
-    """
-    Dimension of each DRAI head. If None, uses model's head_dim.
-    Typically should match model's head_dim for proper integration.
-    """
-
-    # Hyperparameters
-    hyperparameters: DraiHyperparameters = field(default_factory=DraiHyperparameters)
-    """Attractor dynamics hyperparameters. See DraiHyperparameters for details."""
-
-    # Monitoring
-    verbose_logging: bool = False
-    """Enable verbose logging of DRAI operations (for debugging)."""
-
-    collect_statistics: bool = True
-    """Collect attractor statistics during forward passes."""
+    # ---------------------- Validation ------------------------
 
     def __post_init__(self):
-        """Validate configuration."""
-        # Validate phase
-        if self.phase not in [1, 2]:
-            raise ValueError(f"phase must be 1 or 2, got {self.phase}")
+        if self.num_drai_heads < 1:
+            raise ValueError("num_drai_heads must be >= 1")
 
-        # Validate layer_mode
-        valid_modes = ["all", "selective", "none"]
+        valid_modes = {"all", "none", "mid", "selective", "specific"}
         if self.layer_mode not in valid_modes:
             raise ValueError(
                 f"layer_mode must be one of {valid_modes}, got {self.layer_mode}"
             )
 
-        # Validate selective_layers
-        if self.layer_mode == "selective":
-            if self.selective_layers is None or len(self.selective_layers) == 0:
+        # validate selective/specific lists
+        if self.layer_mode in {"selective", "specific"}:
+            if not self.specific_layers:
                 raise ValueError(
-                    "selective_layers must be provided when layer_mode='selective'"
+                    f"layer_mode='{self.layer_mode}' requires specific_layers list"
                 )
-            if not all(isinstance(i, int) and i >= 0 for i in self.selective_layers):
-                raise ValueError(
-                    "selective_layers must contain non-negative integers"
-                )
+            if not all(isinstance(x, int) and x >= 0 for x in self.specific_layers):
+                raise ValueError("specific_layers must be non-negative integers")
 
-        # Validate num_drai_heads
-        if self.num_drai_heads < 1:
-            raise ValueError(
-                f"num_drai_heads must be >= 1, got {self.num_drai_heads}"
-            )
-
-        # Validate drai_head_dim
-        if self.drai_head_dim is not None and self.drai_head_dim < 1:
-            raise ValueError(
-                f"drai_head_dim must be >= 1 or None, got {self.drai_head_dim}"
-            )
-
-    def should_inject_layer(self, layer_idx: int) -> bool:
-        """Determine if DRAI should be injected into a specific layer.
-
-        Args:
-            layer_idx: Index of the layer (0-indexed)
-
-        Returns:
-            True if DRAI should be injected, False otherwise
-        """
-        if not self.enabled:
-            return False
-
-        if self.layer_mode == "none":
-            return False
-
-        if self.layer_mode == "all":
-            return True
-
-        if self.layer_mode == "selective":
-            return layer_idx in (self.selective_layers or [])
-
-        return False
-
+    # readable representation
     def __repr__(self):
-        """Readable string representation."""
-        if not self.enabled:
-            return "DraiConfig(enabled=False)"
-
-        lines = [
-            "DraiConfig(",
-            f"  enabled={self.enabled}",
-            f"  phase={self.phase}",
-            f"  layer_mode='{self.layer_mode}'",
-        ]
-
-        if self.layer_mode == "selective":
-            lines.append(f"  selective_layers={self.selective_layers}")
-
-        lines.extend([
-            f"  num_drai_heads={self.num_drai_heads}",
-            f"  hyperparameters={self.hyperparameters}",
-            ")"
-        ])
-
-        return "\n".join(lines)
+        return f"{self.__class__.__name__}(version={self.version}, algorithm={self.algorithm_type}, layer_mode='{self.layer_mode}')"
 
 
-# Preset configurations for common use cases
-
-def get_baseline_config() -> DraiConfig:
-    """Baseline configuration: DRAI disabled.
-
-    Use this for baseline comparisons without DRAI.
-    """
-    return DraiConfig(enabled=False)
-
-
-def get_full_drai_config() -> DraiConfig:
-    """Full DRAI configuration: All layers, default hyperparameters.
-
-    This is the standard configuration for testing DRAI impact.
-    """
-    return DraiConfig(
-        enabled=True,
-        phase=2,
-        layer_mode="all",
-        num_drai_heads=1,
-    )
-
-
-def get_selective_drai_config(num_layers: int, fraction: float = 0.5) -> DraiConfig:
-    """Selective DRAI configuration: Only deeper layers.
-
-    Args:
-        num_layers: Total number of layers in the model
-        fraction: Fraction of layers to use (starting from deeper layers)
-            For example, 0.5 uses the second half of layers
-
-    Returns:
-        DraiConfig with selective layer injection
-    """
-    start_layer = int(num_layers * (1 - fraction))
-    selective_layers = list(range(start_layer, num_layers))
-
-    return DraiConfig(
-        enabled=True,
-        phase=2,
-        layer_mode="selective",
-        selective_layers=selective_layers,
-        num_drai_heads=1,
-    )
-
-
-def get_aggressive_drai_config() -> DraiConfig:
-    """Aggressive DRAI configuration: Fast formation, slow decay.
-
-    This configuration encourages quick attractor formation and
-    long-term memory retention.
-    """
-    return DraiConfig(
-        enabled=True,
-        phase=2,
-        layer_mode="all",
-        num_drai_heads=1,
-        hyperparameters=DraiHyperparameters(
-            max_attractors=64,  # More capacity
-            coherence_threshold=0.2,  # Easier matching
-            formation_threshold=0.3,  # Easier formation
-            decay_rate=0.005,  # Slower decay
-            ema_momentum=0.95,  # More stable
-        ),
-    )
-
-
-def get_conservative_drai_config() -> DraiConfig:
-    """Conservative DRAI configuration: Slow formation, fast decay.
-
-    This configuration requires strong patterns for attractor formation
-    and quickly forgets unused patterns.
-    """
-    return DraiConfig(
-        enabled=True,
-        phase=2,
-        layer_mode="all",
-        num_drai_heads=1,
-        hyperparameters=DraiHyperparameters(
-            max_attractors=16,  # Less capacity
-            coherence_threshold=0.5,  # Stricter matching
-            formation_threshold=0.7,  # Harder formation
-            decay_rate=0.02,  # Faster decay
-            ema_momentum=0.8,  # Less stable
-        ),
-    )
-
-
-def get_gated_drai_config() -> DraiConfig:
-    """Gated DRAI configuration: Strict activation gating for small models.
-
-    This configuration adds threshold gating to prevent random attractor
-    injection. CRITICAL for small models (< 1B params) to prevent
-    performance degradation.
-
-    Key feature: Only injects attractors that strongly match current query
-    (cosine similarity > 0.85), preventing random noise injection that
-    would degrade generation quality.
-
-    Use this for:
-    - Small models (pythia-410m, pythia-1b)
-    - Generation tasks
-    - Tasks requiring coherent outputs
-
-    Phase 5+ feature validated through tractable task experiments.
-    """
-    return DraiConfig(
-        enabled=True,
-        phase=2,
-        layer_mode="all",
-        num_drai_heads=1,
-        hyperparameters=DraiHyperparameters(
-            max_attractors=32,  # Reasonable capacity
-            coherence_threshold=0.3,  # Standard matching
-            formation_threshold=0.5,  # Standard formation
-            decay_rate=0.01,  # Standard decay
-            ema_momentum=0.9,  # Standard stability
-            use_strict_gating=True,  # CRITICAL: Enable gating
-            activation_threshold=0.85,  # High threshold for injection
-        ),
-    )
-
-
-# V1 Configuration Classes (for new V1 algorithm)
-@dataclass
-class DraiV1Hyperparameters:
-    """V1 algorithm hyperparameters.
-
-    V1 uses a fundamentally different algorithm with:
-    - Proper pattern detection (live + score thresholds)
-    - Novel pattern creation in free slots
-    - Field vector approach (weighted mean)
-    - Soft gating (tanh * max_influence_scale)
-    - Burn-in threshold (critical for stability!)
-    """
-    max_attractors: int = 16
-    """Fixed attractor bank size. 16 for 410M, 32 for larger models."""
-
-    theta_match: float = 0.8
-    """Cosine similarity threshold for pattern matching. Higher = more conservative."""
-
-    alpha_update: float = 0.05
-    """Learning rate for centroid updates. Lower = more stable."""
-
-    lambda_decay: float = 0.995
-    """Global decay factor per step. Higher = slower decay."""
-
-    strength_init: float = 0.5
-    """Initial strength for new attractors."""
-
-    strength_min: float = 1e-3
-    """Minimum strength before eviction."""
-
-    max_influence_scale: float = 0.15
-    """Cap on K/V influence. 0.15 for 410M, 0.3 for larger models."""
-
-    burn_in_threshold: float = 50.0
-    """Minimum total strength before injection begins. CRITICAL for preventing early instability.
-
-    Attractors continue learning during burn-in, but don't influence the model until
-    they've accumulated enough strength to be meaningful. This prevents:
-    - Early random noise injection
-    - Feedback loops from unstable initial generation
-    - Attractors burned-in on loops/repetition
-
-    IMPORTANT: Strength grows super-linearly (~6-8 per token, not 1-2) due to query
-    self-similarity in generation. For pythia-70m, threshold=12 is crossed by token 3-4.
-
-    Recommended values (revised based on empirical observation):
-    - 50.0 for conservative (410M) - ensures ~6-8 tokens of burn-in
-    - 30.0 for standard (1B+) - ensures ~4-6 tokens of burn-in
-    - 100.0 for very conservative - ensures ~12-15 tokens
-    - 0.0 to disable (not recommended)
-
-    Theory: Dynamic memory systems need warm-up time before participating.
-    See results/phase5/BURN_IN_INSIGHT.md for detailed explanation.
-
-    To determine threshold for your model:
-    - Run test generation, monitor strength growth
-    - Multiply desired_burn_in_tokens by ~6-8 (average strength gain per token)
-    - Example: Want 10 tokens? Set threshold = 10 * 7 = 70.0
-    """
-
-    burn_in_mode: str = "strength"
-    """Burn-in mode: 'strength' (strength-based) or 'tokens' (token-count-based).
-
-    - 'strength': Use burn_in_threshold (total_strength >= threshold)
-    - 'tokens': Use burn_in_tokens (timestep >= burn_in_tokens)
-
-    Strength-based is default and works well. Token-based is simpler to reason about
-    but ignores actual attractor formation dynamics.
-    """
-
-    burn_in_tokens: int = 10
-    """Minimum tokens before injection (only used if burn_in_mode='tokens').
-
-    Token-based burn-in is simpler but less adaptive. Use this if you want
-    predictable burn-in duration regardless of strength accumulation rate.
-
-    Recommended: 10-20 tokens for small models, 5-10 for large models.
-    """
-
+# ---------------------------------------------------------------------------
+# Phase-2 Hyperparameters (Legacy Algorithm)
+# ---------------------------------------------------------------------------
 
 @dataclass
-class DraiV1Config:
-    """Configuration for V1 DRAI algorithm.
-
-    V1 is a production-ready algorithm that doesn't wreck small models.
-    Use this instead of Phase 2 for generation tasks.
-    """
-    enabled: bool = True
-    layer_mode: str = "mid"  # "mid", "specific", "all"
-    specific_layers: list = None  # For layer_mode="specific"
-    num_drai_heads: int = 1
-    hyperparameters: DraiV1Hyperparameters = None
+class Phase2Hyperparameters:
+    """Hyperparameters for legacy Phase-2 attractor system."""
+    max_attractors: int = 32
+    coherence_threshold: float = 0.3
+    formation_threshold: float = 0.5
+    decay_rate: float = 0.01
+    ema_momentum: float = 0.9
+    use_strict_gating: bool = False
+    activation_threshold: float = 0.7
 
     def __post_init__(self):
-        if self.hyperparameters is None:
-            self.hyperparameters = DraiV1Hyperparameters()
+        if self.max_attractors < 1:
+            raise ValueError("max_attractors must be >= 1")
+        if not 0 < self.coherence_threshold < 1:
+            raise ValueError("coherence_threshold must be in (0,1)")
+        if not 0 < self.formation_threshold <= 1:
+            raise ValueError("formation_threshold must be in (0,1]")
+        if self.coherence_threshold > self.formation_threshold:
+            raise ValueError("coherence_threshold must <= formation_threshold")
+        if self.decay_rate < 0:
+            raise ValueError("decay_rate must be >= 0")
+        if not 0 < self.ema_momentum < 1:
+            raise ValueError("ema_momentum must be in (0,1)")
 
 
-def get_v1_conservative_config() -> DraiV1Config:
-    """V1 Conservative configuration for pythia-410m.
+# ---------------------------------------------------------------------------
+# Phase-2 Config
+# ---------------------------------------------------------------------------
 
-    This is the RECOMMENDED configuration for small models (< 1B params).
+@dataclass
+class Phase2Config(DRAIBaseConfig):
+    """Clean Phase-2 configuration."""
+    algorithm_type: Literal["phase2"] = "phase2"
+    hyperparameters: Phase2Hyperparameters = field(default_factory=Phase2Hyperparameters)
 
-    Key features:
-    - Only 16 attractors (gentle memory)
-    - High match threshold (0.8 = only strong patterns)
-    - Low learning rate (0.05 = stable updates)
-    - Low influence (0.15 = gentle nudge)
-    - Mid-layer injection (1-2 layers, not all 24!)
 
-    Expected behavior:
-    - Baseline: ~93% accuracy
-    - V1 DRAI: ~88-93% accuracy (small degradation or neutral)
-    - No catastrophic failures
+# Presets
+def get_phase2_full() -> Phase2Config:
+    return Phase2Config(layer_mode="all")
 
-    Usage:
-        config = get_v1_conservative_config()
-        model = apply_drai_v1(model, config=config)
-    """
-    return DraiV1Config(
-        enabled=True,
-        layer_mode="mid",  # Only mid-layer (layer 12 for 24-layer model)
-        num_drai_heads=1,
-        hyperparameters=DraiV1Hyperparameters(
-            max_attractors=16,         # Gentle memory
-            theta_match=0.8,           # Conservative matching
-            alpha_update=0.05,         # Slow, stable updates
-            lambda_decay=0.995,        # Slow decay
-            strength_init=0.5,         # Medium initial strength
-            strength_min=1e-3,         # Clear threshold for eviction
-            max_influence_scale=0.15,  # Gentle influence (CRITICAL!)
-            burn_in_threshold=50.0,    # Ensures ~6-8 tokens of burn-in (CRITICAL!)
-            burn_in_mode="strength",   # Strength-based (adaptive)
-            burn_in_tokens=10,         # Backup token-based mode
+
+def get_phase2_conservative() -> Phase2Config:
+    return Phase2Config(
+        layer_mode="all",
+        hyperparameters=Phase2Hyperparameters(
+            max_attractors=16,
+            coherence_threshold=0.5,
+            formation_threshold=0.7,
+            decay_rate=0.02,
+            ema_momentum=0.8,
         ),
     )
 
 
-def get_v1_standard_config() -> DraiV1Config:
-    """V1 Standard configuration for larger models (1B+ params).
-
-    Use this for models like pythia-1b, pythia-2.8b, etc.
-    Slightly more aggressive than conservative config.
-    """
-    return DraiV1Config(
-        enabled=True,
-        layer_mode="all",  # All layers for larger models
-        num_drai_heads=1,
-        hyperparameters=DraiV1Hyperparameters(
-            max_attractors=32,         # More memory capacity
-            theta_match=0.75,          # Slightly more permissive
-            alpha_update=0.1,          # Faster adaptation
-            lambda_decay=0.99,         # Faster decay
-            strength_init=0.5,
-            strength_min=1e-3,
-            max_influence_scale=0.3,   # Higher influence for larger models
-            burn_in_threshold=30.0,    # Ensures ~4-6 tokens for larger models
-            burn_in_mode="strength",   # Strength-based (adaptive)
-            burn_in_tokens=8,          # Shorter for larger models
+def get_phase2_gated() -> Phase2Config:
+    return Phase2Config(
+        layer_mode="all",
+        hyperparameters=Phase2Hyperparameters(
+            use_strict_gating=True,
+            activation_threshold=0.85,
         ),
     )
 
 
-# Example configurations for documentation
-if __name__ == "__main__":
-    print("=== DRAI Configuration Examples ===\n")
+# ---------------------------------------------------------------------------
+# V1 Hyperparameters (Small-model production algorithm)
+# ---------------------------------------------------------------------------
 
-    print("1. Baseline (no DRAI):")
-    print(get_baseline_config())
-    print()
+@dataclass
+class V1Hyperparameters:
+    """
+    Hyperparameters for the V1 algorithm.
+    Designed specifically to avoid catastrophic degradation
+    on small models (<1B params).
+    """
+    max_attractors: int = 16
+    theta_match: float = 0.8
+    alpha_update: float = 0.05
+    lambda_decay: float = 0.995
+    strength_init: float = 0.5
+    strength_min: float = 1e-3
+    max_influence_scale: float = 0.15
+    burn_in_threshold: float = 50.0
+    burn_in_mode: Literal["strength", "tokens"] = "strength"
+    burn_in_tokens: int = 10
 
-    print("2. Full DRAI (all layers):")
-    print(get_full_drai_config())
-    print()
+    def __post_init__(self):
+        if self.max_attractors < 1:
+            raise ValueError("max_attractors must be >= 1")
+        if not 0 < self.theta_match <= 1:
+            raise ValueError("theta_match must be in (0,1]")
+        if not 0 < self.alpha_update <= 1:
+            raise ValueError("alpha_update must be in (0,1]")
+        if not 0 < self.lambda_decay <= 1.0:
+            raise ValueError("lambda_decay must be in (0,1]")
+        if self.strength_min < 0:
+            raise ValueError("strength_min must be >= 0")
+        if self.max_influence_scale <= 0:
+            raise ValueError("max_influence_scale must be > 0")
 
-    print("3. Selective DRAI (50% of 12 layers):")
-    print(get_selective_drai_config(num_layers=12, fraction=0.5))
-    print()
 
-    print("4. Aggressive DRAI:")
-    print(get_aggressive_drai_config())
-    print()
+# ---------------------------------------------------------------------------
+# V1 Config
+# ---------------------------------------------------------------------------
 
-    print("5. Conservative DRAI:")
-    print(get_conservative_drai_config())
-    print()
+@dataclass
+class V1Config(DRAIBaseConfig):
+    algorithm_type: Literal["v1"] = "v1"
+    hyperparameters: V1Hyperparameters = field(default_factory=V1Hyperparameters)
 
-    # Validation examples
-    print("=== Validation Examples ===\n")
 
-    try:
-        bad_config = DraiConfig(phase=3)
-    except ValueError as e:
-        print(f"✓ Caught invalid phase: {e}")
+# Presets
+def get_v1_conservative() -> V1Config:
+    """Best for 410M–1B models."""
+    return V1Config(
+        layer_mode="mid",
+        hyperparameters=V1Hyperparameters(
+            max_attractors=16,
+            theta_match=0.8,
+            alpha_update=0.05,
+            lambda_decay=0.995,
+            max_influence_scale=0.15,
+            burn_in_threshold=50.0,
+        ),
+    )
 
-    try:
-        bad_config = DraiConfig(
-            layer_mode="selective",
-            selective_layers=None
-        )
-    except ValueError as e:
-        print(f"✓ Caught missing selective_layers: {e}")
 
-    try:
-        bad_config = DraiConfig(
-            hyperparameters=DraiHyperparameters(
-                coherence_threshold=0.8,
-                formation_threshold=0.5
-            )
-        )
-    except ValueError as e:
-        print(f"✓ Caught invalid threshold ordering: {e}")
+def get_v1_standard() -> V1Config:
+    """Standard for 1B+ models."""
+    return V1Config(
+        layer_mode="all",
+        hyperparameters=V1Hyperparameters(
+            max_attractors=32,
+            theta_match=0.75,
+            alpha_update=0.1,
+            lambda_decay=0.99,
+            max_influence_scale=0.3,
+            burn_in_threshold=30.0,
+            burn_in_tokens=8,
+        ),
+    )
+
