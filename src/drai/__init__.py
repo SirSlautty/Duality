@@ -1,33 +1,47 @@
 """
-DRAI (Dynamic Resonance AI) – V1 Production Release
+DRAI (Dynamic Resonance AI) — V1 Production Release
 ---------------------------------------------------
 
-Internal-state augmentation for transformer models using persistent
-attractor dynamics. This module exposes the public API for integrating
-DRAI into any Hugging Face transformer model.
+Dynamic, training-free attractor memory for transformer models.
 
-Quick Usage:
+This module exposes the stable public API for integrating DRAI V1 into
+supported Hugging Face architectures (currently GPT-NeoX-style models,
+with broader compatibility planned in V2–V3).
+
+DRAI V1 adds a persistent, self-organizing internal memory field to
+frozen language models using controlled attractor dynamics. It enables
+stable reasoning over long contexts without modifying weights, training,
+or requiring external memory systems.
+
+Quick Start:
     >>> from drai import apply_drai_v1, get_v1_conservative_config
     >>> from transformers import AutoModelForCausalLM
 
-    # Load any transformer
+    # Load a supported transformer model (e.g., GPT-NeoX family)
     >>> model = AutoModelForCausalLM.from_pretrained("EleutherAI/pythia-410m")
 
-    # Add working memory (one line!)
+    # Add dynamic memory in one line
     >>> model = apply_drai_v1(model, config=get_v1_conservative_config())
 
-    # Use normally — now with internal state
+    # Use normally — now with internal attractor memory
     >>> outputs = model.generate(inputs)
 
-See:
-  - GitHub: https://github.com/HalcyonAIR/Duality
-  - Theory docs: /docs/THE_CLOUD_MECHANISM.md
+Documentation:
+  - Repo: https://github.com/HalcyonAIR/Duality
+  - DRAI V1 Overview: /docs/DRAI_V1_OVERVIEW.md
+  - Attractor Memory Theory: /docs/ATTRACTOR_DYNAMICS.md
+
+Compatibility Notes:
+  - V1 is fully stable and production-ready.
+  - API surface for standard use is stable.
+  - Advanced APIs (ResonanceLayer, projections, internal hooks)
+    may evolve in V2–V3 as concatenated K/V mechanisms are introduced.
 """
 
 # Core V1 components
 from .resonance_layer_v1 import DraiResonanceLayerV1
 
-# Configuration
+# Configuration system
 from .config import (
     DraiV1Config,
     DraiV1Hyperparameters,
@@ -38,7 +52,8 @@ from .config import (
 # High-level public API
 from .apply_v1 import apply_drai_v1, get_drai_v1_stats
 
-__version__ = "0.1.0"
+# Package metadata
+__version__ = "1.0.0"
 __author__ = "Halcyon AI Research"
 
 __all__ = [
@@ -46,13 +61,12 @@ __all__ = [
     "apply_drai_v1",
     "get_drai_v1_stats",
 
-    # Configs
+    # Configurations
     "DraiV1Config",
     "DraiV1Hyperparameters",
     "get_v1_conservative_config",
     "get_v1_standard_config",
 
-    # Advanced
+    # Advanced / Internal components
     "DraiResonanceLayerV1",
 ]
-
