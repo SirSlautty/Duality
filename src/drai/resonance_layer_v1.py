@@ -1,18 +1,20 @@
 """
-DRAI Resonance Layer V1 — Clean, Stable, Production-Ready Implementation
-(Plan A: True multi-head synthetic K/V output for transformer integration)
+DRAI (Dynamic Resonance AI) — V1 Resonance Layer
+------------------------------------------------
 
-This module implements the core attractor-memory mechanism used by
-DRAI V1. It is designed for absolute stability in small models (<1B),
-and correctness when used in attention injection pipelines.
+Core attractor-memory engine powering the DRAI V1 architecture.
 
-Major properties:
-- Robust pattern detection via cosine similarity + min-strength gating
-- Carefully bounded EMA accumulation (alpha_update)
-- Automatic slot allocation for novel patterns
-- State decay + eviction to prevent drift
-- Burn-in (strength or token-based) to avoid early self-feedback
-- Deterministic, safe, synthetic K/V generation for use in Plan A injection
+This layer implements:
+    • Stable attractor slot memory (Plan A)
+    • Robust cosine-similarity matching
+    • EMA-like centroid updating with decay
+    • Novel-slot assignment with strength init
+    • Safe burn-in gating (strength- or token-based)
+    • Deterministic synthetic K/V generation
+
+Designed for:
+    • correctness and stability in <1B models
+    • injection into GPT-NeoX and Pythia-family architectures
 """
 
 import torch
@@ -21,16 +23,20 @@ import torch.nn.functional as F
 from typing import Tuple, Optional
 
 
-class DraiResonanceLayerV1(nn.Module):
+class DRAIV1ResonanceLayer(nn.Module):
     """
-    Production-safe V1 attractor algorithm.
+    Production-safe, training-free attractor memory used in DRAI V1.
 
     Input:
-        query_layer: [seq_len, batch, num_attn_heads, head_dim]
+        query_layer:
+            [seq_len, batch, num_attention_heads, head_dim]
 
     Output:
-        k_reson: [seq_len, batch, num_drai_heads, head_dim]
-        v_reson: [seq_len, batch, num_drai_heads, head_dim]
+        k_reson:
+            [seq_len, batch, num_drai_heads, head_dim]
+
+        v_reson:
+            [seq_len, batch, num_drai_heads, head_dim]
     """
 
     def __init__(
@@ -40,7 +46,7 @@ class DraiResonanceLayerV1(nn.Module):
         head_dim: Optional[int] = None,
         device: Optional[str] = None,
         dtype: Optional[torch.dtype] = None,
-        # V1 hyperparameters
+        # Hyperparameters
         max_attractors: int = 16,
         theta_match: float = 0.8,
         alpha_update: float = 0.05,
@@ -56,12 +62,12 @@ class DraiResonanceLayerV1(nn.Module):
 
         self.hidden_size = hidden_size
         self.num_heads = num_heads
-        self.head_dim = head_dim if head_dim is not None else 64
+        self.head_dim = head_dim or 64
 
         self.device = device or "cpu"
         self.dtype = dtype or torch.float32
 
-        # Hyperparameters
+        # Hyperparams
         self.M = max_attractors
         self.d = self.head_dim
         self.theta_match = theta_match
@@ -74,68 +80,65 @@ class DraiResonanceLayerV1(nn.Module):
         self.burn_in_mode = burn_in_mode
         self.burn_in_tokens = burn_in_tokens
 
-        # ------------------------------------------------------------------
-        # Persistent attractor memory state (buffers move with model)
-        # ------------------------------------------------------------------
+        # Persistent memory buffers
         self.register_buffer(
             "attractor_vectors",
-            torch.randn(self.M, self.d, device=self.device, dtype=self.dtype) * 1e-3
+            torch.randn(self.M, self.d, device=self.device, dtype=self.dtype) * 1e-3,
         )
         self.register_buffer(
             "attractor_strengths",
-            torch.zeros(self.M, device=self.device, dtype=self.dtype)
+            torch.zeros(self.M, device=self.device, dtype=self.dtype),
         )
         self.register_buffer(
             "attractor_last_used",
-            torch.zeros(self.M, device=self.device, dtype=self.dtype)
+            torch.zeros(self.M, device=self.device, dtype=self.dtype),
         )
         self.register_buffer(
             "timestep",
-            torch.tensor(0.0, device=self.device, dtype=self.dtype)
+            torch.tensor(0.0, device=self.device, dtype=self.dtype),
         )
 
     # ======================================================================
-    # Forward: Query → Attractor Update → Synthetic K/V
+    # Forward Pass — Query → Attractor Update → Synthetic K/V
     # ======================================================================
     def forward(self, query_layer: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        """
-        query_layer:
-            [seq_len, batch, num_attention_heads, head_dim]
-        """
         seq_len, batch, _, _ = query_layer.shape
 
-        # (1) Collapse multi-head Q into a single per-token representation
-        q = query_layer.mean(dim=2)            # [S, B, D]
-        q = q.transpose(0, 1)                  # [B, S, D]
+        # Collapse multi-head Q → one vector per token
+        q = query_layer.mean(dim=2)          # [S, B, D]
+        q = q.transpose(0, 1)                # [B, S, D]
 
         A = self.attractor_vectors
         S = self.attractor_strengths
         L = self.attractor_last_used
         step = self.timestep
 
-        # Flatten batch × seq
+        # Flatten for detection
         B, T, D = q.shape
         q_flat = q.reshape(-1, D)
 
-        # (2) Pattern detection: match or novel?
+        # (1) Detect matches & novel
         match_idx, match_mask, novel_mask = self._detect(q_flat, A, S)
 
-        # (3) Updates
+        # (2) Accumulate updates
         A, S, L = self._accumulate(q_flat, A, S, L, match_idx, match_mask, step)
+
+        # (3) Assign novel patterns
         A, S, L = self._assign_new(q_flat, A, S, L, novel_mask, step)
+
+        # (4) Decay + Evict
         A, S, L = self._decay(A, S, L)
         A, S, L = self._evict(A, S, L)
 
-        # Persist
+        # Persist updated memory
         self.attractor_vectors.copy_(A)
         self.attractor_strengths.copy_(S)
         self.attractor_last_used.copy_(L)
         self.timestep.copy_(step + 1.0)
 
-        # (4) Generate synthetic K/V (Plan A)
+        # (5) Generate synthetic K/V
         k_reson, v_reson = self._gen_kv(q, A, S)
 
-        # Return in NeoX forward shape
         return k_reson.transpose(0, 1), v_reson.transpose(0, 1)
 
     # ======================================================================
@@ -143,10 +146,11 @@ class DraiResonanceLayerV1(nn.Module):
     # ======================================================================
     def _detect(self, q_flat, A, S):
         eps = 1e-8
-        qn = F.normalize(q_flat, p=2, dim=-1, eps=eps)
-        An = F.normalize(A, p=2, dim=-1, eps=eps)
 
-        sim = qn @ An.T                                # [N, M]
+        q_norm = F.normalize(q_flat, p=2, dim=-1, eps=eps)
+        A_norm = F.normalize(A, p=2, dim=-1, eps=eps)
+
+        sim = q_norm @ A_norm.T   # [N, M]
         best_scores, best_idx = torch.max(sim, dim=-1)
 
         strong_enough = S[best_idx] > self.strength_min
@@ -156,11 +160,10 @@ class DraiResonanceLayerV1(nn.Module):
         return best_idx, match_mask, novel_mask
 
     # ======================================================================
-    # Accumulation: EMA-like centroid update and strength reinforcement
+    # Accumulation: Update matched attractors
     # ======================================================================
     def _accumulate(self, q_flat, A, S, L, match_idx, match_mask, step):
         M, d = A.shape
-        N = q_flat.shape[0]
 
         matched = q_flat * match_mask.unsqueeze(-1)
 
@@ -188,33 +191,33 @@ class DraiResonanceLayerV1(nn.Module):
         return A_new, S_new, L_new
 
     # ======================================================================
-    # Create new attractors for novel patterns
+    # Assign new attractors for novel patterns
     # ======================================================================
     def _assign_new(self, q_flat, A, S, L, novel_mask, step):
         novel_idx = torch.where(novel_mask)[0]
         if len(novel_idx) == 0:
             return A, S, L
 
-        free = torch.where(S < self.strength_min)[0]
-        if len(free) == 0:
+        free_slots = torch.where(S < self.strength_min)[0]
+        if len(free_slots) == 0:
             return A, S, L
 
-        k = min(len(novel_idx), len(free))
-        assign_q = novel_idx[:k]
-        assign_slots = free[:k]
+        k = min(len(novel_idx), len(free_slots))
+        q_sel = novel_idx[:k]
+        slot_sel = free_slots[:k]
 
         A_new = A.clone()
         S_new = S.clone()
         L_new = L.clone()
 
-        A_new[assign_slots] = q_flat[assign_q]
-        S_new[assign_slots] = self.strength_init
-        L_new[assign_slots] = step
+        A_new[slot_sel] = q_flat[q_sel]
+        S_new[slot_sel] = self.strength_init
+        L_new[slot_sel] = step
 
         return A_new, S_new, L_new
 
     # ======================================================================
-    # Decay and Eviction
+    # Decay + Eviction
     # ======================================================================
     def _decay(self, A, S, L):
         return A, S * self.lambda_decay, L
@@ -250,25 +253,20 @@ class DraiResonanceLayerV1(nn.Module):
                 zero = torch.zeros((B, T, self.num_heads, d),
                                    device=query.device, dtype=query.dtype)
                 return zero, zero
-        else:  # tokens mode
+        else:
             if self.timestep < self.burn_in_tokens:
                 zero = torch.zeros((B, T, self.num_heads, d),
                                    device=query.device, dtype=query.dtype)
                 return zero, zero
 
-        # Mean field attractor vector
         field_vec = (A_alive * S_alive.unsqueeze(-1)).sum(dim=0) / total_strength
 
         unit = field_vec / (field_vec.norm() + eps)
         scale = self.max_influence_scale * torch.tanh(total_strength)
 
-        field_scaled = scale * unit                     # [d]
+        field_scaled = scale * unit
 
-        out = (
-            field_scaled.view(1, 1, 1, d)
-            .expand(B, T, self.num_heads, d)
-        )
-
+        out = field_scaled.view(1, 1, 1, d).expand(B, T, self.num_heads, d)
         return out, out
 
     # ======================================================================
