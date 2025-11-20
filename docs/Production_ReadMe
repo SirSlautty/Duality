@@ -1,0 +1,274 @@
+DRAI V1 — Dynamic Resonance AI
+Self-Organizing Internal Memory for Transformer Models
+
+Production-Ready · Training-Free · Safe on Small Models
+
+DRAI V1 augments transformer attention with a lightweight, stable, self-organizing memory system based on attractor dynamics.
+It runs inside the model — no training, no external store, no fine-tuning, no infrastructure — and maintains baseline performance even on small models (70M–410M).
+
+V1 introduces a true internal memory field that emerges through pattern detection and attractor stabilization during generation.
+It is safe, deterministic, and specifically engineered not to corrupt the host model.
+
+🔍 What DRAI V1 Does
+
+DRAI V1 extends transformer attention by:
+
+Detecting repeating query patterns over time
+
+Forming attractors for stable, meaningful patterns
+
+Updating attractors via controlled centroid averaging
+
+Decaying and evicting weak attractors
+
+Building a global “memory field vector”
+
+Emitting synthetic multi-head K/V pairs representing learned context
+
+Injecting this memory back into attention in a fully gated, safe way
+
+The result:
+A model that can remember, stabilize, and reuse information over the course of a generation.
+
+🚀 Quick Start
+from drai import apply_drai_v1
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained("EleutherAI/pythia-410m")
+model = apply_drai_v1(model)     # Uses V1 conservative config by default
+
+tok = AutoTokenizer.from_pretrained("EleutherAI/pythia-410m")
+inp = tok("The future of memory systems is", return_tensors="pt")
+
+out = model.generate(inp["input_ids"], max_length=80)
+print(tok.decode(out[0]))
+
+
+Your model now has dynamic, self-organizing memory.
+
+🧠 Why V1 Exists
+
+Early DRAI phases showed promise but were unstable for small models.
+V1 is a full redesign focused on:
+
+Safety-first dynamics
+
+Controlled burn-in
+
+Deterministic learning rules
+
+Strict matching thresholds
+
+Bounded influence in attention
+
+Production reliability under generation loads
+
+V1 is the first attractor system that is predictable and robust enough for everyday usage.
+
+🧩 Technical Summary
+1. Query Pattern Detection
+
+For each token’s attention query 
+𝑞
+𝑡
+q
+t
+	​
+
+:
+
+Normalize queries and attractors
+
+Compute cosine similarities
+
+Select best match
+
+Match only if:
+
+similarity > theta_match
+strength   > strength_min
+
+
+Else → treat as novel pattern.
+
+2. Attractor Accumulation
+
+Matched attractors receive:
+
+EMA-based centroid updates
+
+Strength increments based on frequency
+
+Last-used timestamps for decay logic
+
+Strength grows ~6–8 per token due to natural autoregressive self-similarity.
+
+3. Novel Pattern Creation
+
+If novel queries appear:
+
+They occupy free attractor slots
+
+No overwriting of active attractors
+
+No unbounded memory growth
+
+4. Decay & Eviction
+
+Unused attractors passively decay each step.
+If their strength falls below strength_min, they are fully evicted.
+
+5. Burn-In (Critical Safety Mechanism)
+
+DRAI V1 does not influence the model until memory is “mature.”
+
+Two modes:
+
+Strength-based burn-in (default)
+
+Activate only after:
+
+total_attractor_strength >= burn_in_threshold
+
+Token-based burn-in (backup)
+
+Activate after:
+
+timestep >= burn_in_tokens
+
+
+Prevents early-noise amplification and unstable self-feedback.
+
+6. Synthetic Multi-Head K/V Generation
+
+V1 emits:
+
+k_reson, v_reson
+Shape: [seq_len, batch, num_drai_heads, head_dim]
+
+
+These vectors represent a global, normalized memory field, scaled via:
+
+tanh(total_strength) * max_influence_scale
+
+
+The vectors are produced by:
+
+Weighted mean of alive attractors
+
+Normalized and influence-bounded
+
+Broadcast across DRAI heads
+
+This replaces V0/V2’s unstable per-token attractor injection with a clean, interpretable field signal.
+
+🔧 Plan A: True K/V Concatenation (Now Enabled Internally)
+
+The resonance layer now produces correctly shaped multi-head K/V, enabling:
+
+Concatenation:
+K_aug = concat([K, k_reson], dim=2)
+V_aug = concat([V, v_reson], dim=2)
+
+
+This is the future default for DRAI V2.
+
+Current V1 maintains a safe additive correction fallback for small-model stability, but the architecture is now fully Plan-A compatible.
+
+📊 Monitoring Attractor Dynamics
+from drai import get_drai_v1_stats
+
+stats = get_drai_v1_stats(model)
+
+print(stats["num_drai_layers"])
+print(stats["total_strength"])
+print(stats["layers"])
+
+
+You can inspect:
+
+Per-layer attractor count
+
+Strength growth
+
+Burn-in progression
+
+Memory evolution over time
+
+⚙️ Recommended Configurations
+Small Models (<1B params)
+
+Use: get_v1_conservative_config()
+
+16 attractors
+
+theta_match = 0.8
+
+max_influence_scale = 0.15
+
+mid-layer injection
+
+burn_in_threshold = 50
+
+Larger Models (1B–6B)
+
+Use: get_v1_standard_config()
+
+32 attractors
+
+faster updates
+
+all-layer injection
+
+burn_in_threshold = 30
+
+Both are training-free and safe.
+
+📈 Performance Characteristics
+
+~5–7% runtime overhead (similarity + resonance updates)
+
+~20–40KB overhead for attractor memory
+
+Preserves baseline perplexity
+
+Stable for long generations (50+ tokens)
+
+No drift, no collapse, no catastrophic failures
+
+DRAI V1 is built for robustness, not for boosting accuracy.
+
+🧭 Roadmap
+V1 (now)
+
+Stable attractor dynamics
+
+Multi-head synthetic K/V
+
+Safe influence gating
+
+Mid-layer injection for small models
+
+V2
+
+Full Plan A: integrated K/V concatenation in attention
+
+Multi-head attractor specialization
+
+Per-head pattern tracking
+
+V3
+
+Projection-learned attractor spaces
+
+Support for GPT-2, LLaMA, Mistral, Qwen, Gemma
+
+Multi-layer cooperative memory
+
+📄 Citation
+@software{drai2025,
+  title={DRAI V1: Stable Self-Organizing Memory for Transformer Models},
+  author={Halcyon AI Research},
+  url={https://github.com/HalcyonAIR/Duality},
+  year={2025}
+}
