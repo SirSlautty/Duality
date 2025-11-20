@@ -5,18 +5,23 @@ DRAI (Dynamic Resonance AI) — V1 Production API
 Stable, training-free dynamic resonance memory for transformer models.
 
 This module exposes the public V1 API:
-    • apply_v1()           – patch a model with DRAI V1
-    • get_v1_stats()       – inspect attractor state
+    • apply_v1()                     – patch a model with DRAI V1
+    • get_v1_stats()                 – inspect attractor state
     • V1Config / V1Hyperparameters
     • Presets: get_v1_conservative(), get_v1_standard()
-
-Supported architectures (V1):
-    • GPT-NeoX / Pythia-family models
-    • Other HF architectures with `.layers` will be supported in V2–V3
+    • DRAIV1ResonanceLayer           – core attractor engine
+    • DRAIV1NeoXAttention            – GPT-NeoX attention wrapper
+    • apply_v1_neox_injection        – NeoX injection utility
 """
 
 # Core V1 attractor engine
-from .resonance_layer_v1 import DraiResonanceLayerV1
+from .resonance_layer_v1 import DRAIV1ResonanceLayer
+
+# GPT-NeoX integration components
+from .neox_integration_v1 import (
+    DRAIV1NeoXAttention,
+    apply_v1_neox_injection,
+)
 
 # Configuration system
 from .config import (
@@ -33,7 +38,7 @@ __version__ = "1.1.0"
 __author__ = "Halcyon AI Research"
 
 __all__ = [
-    # Public API
+    # High-level API
     "apply_v1",
     "get_v1_stats",
 
@@ -43,6 +48,9 @@ __all__ = [
     "get_v1_conservative",
     "get_v1_standard",
 
-    # Advanced internal components
-    "DraiResonanceLayerV1",
+    # Core engine + integrations
+    "DRAIV1ResonanceLayer",
+    "DRAIV1NeoXAttention",
+    "apply_v1_neox_injection",
 ]
+
