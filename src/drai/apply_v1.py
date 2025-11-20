@@ -1,19 +1,16 @@
 """
 High-level API for applying DRAI V1 to transformer models.
 
-DRAI V1 provides a stable, production-ready attractor-memory mechanism
-for GPT-NeoX models (e.g., Pythia). It adds pattern detection, attractor
-accumulation, exponential averaging, and gated memory injection directly
-into the model’s attention system — without training and without degrading
-baseline behavior.
+This module exposes the public entry point:
 
-This module exposes two primary user-facing functions:
+    apply_v1(model_or_name, config=None, verbose=False)
 
-    apply_drai_v1(model_or_name, config=None, verbose=False)
-    get_drai_v1_stats(model)
+and the statistics interface:
 
-The rest of the module handles safety, loader wiring, architecture
-inspection, and consistent statistics extraction.
+    get_v1_stats(model)
+
+Everything else provides architecture detection, loading,
+double-injection protection, and consistent stats formatting.
 """
 
 from typing import Optional, Union, Dict, Any, List
@@ -23,8 +20,8 @@ from transformers import (
 )
 
 from .config import (
-    DraiV1Config,
-    get_v1_conservative_config,
+    V1Config,
+    get_v1_conservative,
 )
 from .neox_integration_v1 import inject_drai_v1_into_model
 
@@ -35,30 +32,30 @@ from .neox_integration_v1 import inject_drai_v1_into_model
 
 def _load_model_from_name(name: str, **kwargs) -> PreTrainedModel:
     """
-    Internal model loader used when the user calls:
-        apply_drai_v1("EleutherAI/pythia-410m")
+    Internal helper for when users call:
 
-    This keeps apply_v1 self-contained without needing a separate module.
+        apply_v1("EleutherAI/pythia-410m")
+
+    This keeps model loading self-contained.
     """
     try:
         return AutoModelForCausalLM.from_pretrained(name, **kwargs)
     except Exception as e:
         raise RuntimeError(
-            f"DRAI could not load model '{name}'. "
-            f"Pass a PreTrainedModel instance instead. HF Error: {e}"
+            f"DRAI V1 could not load model '{name}'. "
+            f"Pass an already-instantiated PreTrainedModel instead. "
+            f"HF Error: {e}"
         )
 
 
 def _get_layers_for_stats(model: PreTrainedModel) -> List:
     """
-    Identify the transformer block list depending on architecture.
+    Identify the correct transformer block list.
 
     Supported families:
-      - GPT-NeoX (Pythia/NeoX-style): model.gpt_neox.layers
-      - HF models exposing model.model.layers
-      - Generic models exposing .layers
-
-    Returns a list of layers or raises NotImplementedError.
+      - GPT-NeoX / Pythia: model.gpt_neox.layers
+      - HF architectures exposing model.model.layers
+      - Generic models with .layers
     """
     if hasattr(model, "gpt_neox") and hasattr(model.gpt_neox, "layers"):
         return model.gpt_neox.layers
@@ -70,32 +67,32 @@ def _get_layers_for_stats(model: PreTrainedModel) -> List:
         return model.layers
 
     raise NotImplementedError(
-        "DRAI V1 does not recognize the model architecture. "
+        "DRAI V1 does not recognize this model architecture. "
         "Supported: GPT-NeoX, Pythia, or models exposing `.layers`."
     )
 
 
 def _validate_not_already_injected(model: PreTrainedModel):
-    """Prevent accidental double-injection."""
+    """Prevent accidental double-patching."""
     if getattr(model, "_drai_v1_applied", False):
         raise RuntimeError(
             "DRAI V1 has already been applied to this model. "
-            "Applying twice would corrupt attention weights."
+            "Re-applying would corrupt attention modules."
         )
 
 
 def _mark_injected(model: PreTrainedModel):
-    """Mark the model as DRAI-patched."""
+    """Mark model as patched."""
     setattr(model, "_drai_v1_applied", True)
 
 
 # ============================================================================
-# Public API
+# Public API: apply_v1
 # ============================================================================
 
-def apply_drai_v1(
+def apply_v1(
     model: Union[PreTrainedModel, str],
-    config: Optional[DraiV1Config] = None,
+    config: Optional[V1Config] = None,
     verbose: bool = False,
     **kwargs,
 ) -> PreTrainedModel:
@@ -104,61 +101,64 @@ def apply_drai_v1(
 
     Args:
         model:
-            - A loaded PreTrainedModel instance, OR
-            - A HF model name/path string (e.g. "EleutherAI/pythia-410m")
-              which will be loaded automatically.
+            Either a PreTrainedModel instance, or the name/path of a
+            HuggingFace model to be automatically loaded.
 
         config:
-            Optional DraiV1Config. If omitted, uses conservative V1 defaults
-            suitable for small models (<1B).
+            Optional V1Config. If omitted, defaults to get_v1_conservative()
+            which is safe for small models (<1B).
 
         verbose:
-            Enable per-layer printouts during injection.
+            If True, prints layer-by-layer injection info.
 
         **kwargs:
-            Passed directly to AutoModelForCausalLM.from_pretrained() when
-            model is a string.
+            Forwarded to AutoModelForCausalLM.from_pretrained() if `model`
+            is a string.
 
     Returns:
-        A model modified with DRAI V1 attractor layers.
+        The model modified with DRAI V1 attractor-memory layers.
     """
 
-    # Auto-load name-based models
+    # Load if model is a name
     if isinstance(model, str):
         model = _load_model_from_name(model, **kwargs)
 
-    # Prevent accidental double-application
+    # Ensure DRAI V1 isn't applied twice
     _validate_not_already_injected(model)
 
-    # Default configuration
+    # Default config
     if config is None:
-        config = get_v1_conservative_config()
+        config = get_v1_conservative()
 
-    # Perform injection
+    # Inject DRAI V1
     model = inject_drai_v1_into_model(model, config, verbose=verbose)
 
-    # Tag the model
+    # Mark as patched
     _mark_injected(model)
 
     return model
 
 
-def get_drai_v1_stats(model: PreTrainedModel) -> Dict[str, Any]:
+# ============================================================================
+# Public API: get_v1_stats
+# ============================================================================
+
+def get_v1_stats(model: PreTrainedModel) -> Dict[str, Any]:
     """
-    Extract attractor statistics from a DRAI-modified model.
+    Extract attractor statistics from a DRAI-V1-modified model.
 
     Returns:
         {
-            'num_drai_layers': int,
-            'total_active': int,
-            'total_strength': float,
-            'mean_strength': float,
-            'layers': [
+            "num_drai_layers": int,
+            "total_active": int,
+            "total_strength": float,
+            "mean_strength": float,
+            "layers": [
                 {
-                    'layer_idx': int,
-                    'num_alive': int,
-                    'total_strength': float,
-                    'mean_strength': float,
+                    "layer_idx": int,
+                    "num_alive": int,
+                    "total_strength": float,
+                    "mean_strength": float,
                     ...
                 },
                 ...
@@ -166,8 +166,8 @@ def get_drai_v1_stats(model: PreTrainedModel) -> Dict[str, Any]:
         }
 
     Notes:
-        - If no layers contain DRAI V1 attention, returns zeros.
-        - This function does NOT mutate the model.
+        - Does NOT modify the model.
+        - If the model has no DRAI layers, returns zeros.
     """
 
     from .neox_integration_v1 import DraiGPTNeoXAttentionV1
@@ -186,16 +186,13 @@ def get_drai_v1_stats(model: PreTrainedModel) -> Dict[str, Any]:
         attn = getattr(layer, "attention", None)
 
         if isinstance(attn, DraiGPTNeoXAttentionV1):
-            layer_stats = attn.drai.get_stats()
+            layer_stats = attn.get_drai_statistics()
 
             stats["num_drai_layers"] += 1
             stats["total_active"] += layer_stats.get("num_alive", 0)
             stats["total_strength"] += layer_stats.get("total_strength", 0.0)
 
-            stats["layers"].append({
-                "layer_idx": idx,
-                **layer_stats,
-            })
+            stats["layers"].append(layer_stats)
 
     if stats["num_drai_layers"] > 0:
         stats["mean_strength"] = (
