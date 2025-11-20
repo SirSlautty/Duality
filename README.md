@@ -1,76 +1,91 @@
 # DRAI: Dynamic Resonance AI
 
-"DRAI adds the one primitive transformers never had: internal state.  This transformer design creates persistent internal state... No cognitive claims made, but the inference memory space exhibits properties that become increasingly relevant at scale, when evaluating multi-layer state propagation.  Everything demonstrated here is reproducible, measurable, and relies on standard transformer operations." - HalcyonAIResearch
+**DRAI introduces persistent internal state into transformer models using a lightweight, fully differentiable mechanism based on attractor dynamics.**  
+The goal is practical: improve stability, coherence, and short-term memory during inference without modifying pre-training, without external memory systems, and without non-standard operations.
 
-This project focuses strictly on engineering: adding a persistent internal state mechanism that improves model stability and memory. It doesn’t speculate about emergent properties... it just delivers a practical capability that transformers have been missing.
-
-**Internal State for Transformers Through Persistent Attractor Dynamics**
-
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
+Everything demonstrated here is reproducible, measurable, and implemented entirely with standard PyTorch and transformer components.
 
 ---
 
-## The Problem
+## Why This Exists
 
-Current transformers lack internal persistent state. Everything is external:
-- **Context windows**: Brute force (recompute everything)
-- **RAG**: External memory lookup
-- **Agent wrappers**: Orchestration layers outside the model
-- **Chain-of-thought**: Simulated reasoning in text
+Modern transformers handle “memory” by repeatedly recomputing or externally retrieving context:
 
-**Result**: No working memory inside the inference loop.
+- **Context windows:** brute-force, quadratic compute  
+- **RAG:** external documents, external orchestration  
+- **Agent frameworks:** Python-level simulation of working memory  
+- **Chain-of-thought:** text-based scaffolding, not internal state  
+
+All of these operate *outside* the model.  
+A transformer itself has **no persistent internal state** across forward passes.
+
+**DRAI fills that gap.**
 
 ---
 
-## The Solution
+## Overview
 
-**DRAI adds working memory directly into the model** through persistent attractor dynamics.
+DRAI introduces a small, persistent attractor field inside the model.  
+This field is interpreted by specific attention heads at chosen layers, producing a structured, evolving “cloud” of state that:
+
+- persists across tokens  
+- conditions future computation  
+- supports lightweight working-memory behaviour  
+- adds <1% compute overhead  
+
+The mechanism is dynamic, but the implementation is simple: a static vector, a projection step, and a controlled influence path into existing attention circuitry.
+
+---
+
+## Quick Example
 
 ```python
+from transformers import AutoModelForCausalLM
 from src.drai import apply_drai_v1, get_v1_conservative_config
 
-# Load any transformer
 model = AutoModelForCausalLM.from_pretrained("EleutherAI/pythia-410m")
 
-# Add working memory (one line!)
-model = apply_drai_v1(model, config=get_v1_conservative_config())
+# Add internal state
+config = get_v1_conservative_config()
+model = apply_drai_v1(model, config=config)
 
-# Use normally - now with internal state
+# Use normally
 outputs = model.generate(inputs)
 ```
 
-**That's it.** Your model now has persistent internal state that evolves across forward passes.
+No training.  
+No fine-tuning.  
+Your model now carries persistent internal state during inference.
 
 ---
 
-## What Emerges
+## What You Get
 
-**Working memory primitives**:
-- Persistent state across tokens
-- Self-conditioning dynamics
-- Compositional binding
-- Goal persistence
-- Context-aware processing
+DRAI enables several measurable computational primitives:
 
-**Not external hacks. Internal computational primitives.**
+- **Persistent state across tokens**  
+- **Self-conditioning** across layers  
+- **Compositional binding** inside the residual stream  
+- **Goal and context persistence** without external memory  
+- **Stable multi-step reasoning at small scales**
+
+These emerge from standard transformer operations, not architectural hacks.
 
 ---
 
 ## Results
 
-### Story Comprehension (Pythia-410M)
+**Story Comprehension (Pythia-410M)**  
+- Baseline: **85.0%** (51/60)  
+- DRAI V1: **88.3%** (53/60)  
+- Improvement: **+3.3 points**  
+- Overhead: **<1% latency**, ~10MB extra per layer
 
-```
-Baseline (no DRAI):  85.0% accuracy (51/60 correct)
-V1 DRAI:             88.3% accuracy (53/60 correct)
-Delta:               +3.3 percentage points
-```
+This task is intentionally simple — the point is demonstrating that persistent internal state produces consistent, reproducible gains even on small models.
 
-**Overhead**: <1% latency, ~10MB memory per layer
+---
 
-### Quick Reproduction
+## Reproduce in 5–10 Minutes
 
 ```bash
 git clone https://github.com/HalcyonAIR/Duality.git
@@ -79,222 +94,162 @@ pip install -r requirements.txt
 bash scripts/run_reproduction_410m.sh
 ```
 
-Results in ~5-10 minutes on CPU.
+Runs on CPU.
 
 ---
 
 ## How It Works
 
-### The Cloud Mechanism
+### 1. The Attractor Field (Seed)
+A small, persistent vector is injected at a designated layer.  
+Its job is not to store information directly — it provides a stable reference frame.
 
-DRAI injects a persistent "attractor field" at strategic layers:
+### 2. Head-Specific Interpretation (Cascade)
+Different attention heads interpret the field differently:
 
-1. **Seed**: Persistent field vector injected at layer L
-2. **Cascade**: 64 attention heads interpret field differently
-   - Head 1: Lexical patterns
-   - Head 12: Syntactic structure
-   - Head 28: Semantic relations
-   - Head 45: Task context
-3. **Cloud**: Multi-layer, multi-head interpretations create emergent memory structure
-4. **Evolution**: Cloud persists in residual stream, conditions future computation
+- head 1 → lexical cues  
+- head 12 → syntactic structure  
+- head 28 → semantic relations  
+- head 45 → task context  
+*(actual mappings vary by model, this is representative)*
 
-**Key insight**: The field is static. The cloud is dynamic. The cloud IS the working memory.
+The diversity of interpretations produces a rich, multi-dimensional internal state.
 
-### Mathematics
+### 3. The Cloud (State)
+Across layers, these interpretations accumulate into a **dynamic attractor cloud** inside the residual stream.
+
+This cloud:  
+- persists across tokens  
+- shapes the next-step computation  
+- adapts as the sequence unfolds  
+
+The static field is the anchor; the cloud is the working memory.
+
+---
+
+## Mathematics (Intuition Only)
+
+A simplified formulation:
 
 ```
 F(q; M_A) = θ(‖S‖) · π_M_A(q̂)
-
-where:
-  π_M_A: soft projection onto attractor manifold
-  θ: burn-in + gating function
-  M_A: evolving attractor state
 ```
 
-See [`docs/DRAI_V1_INVARIANT.md`](docs/DRAI_V1_INVARIANT.md) for full mathematical formulation.
+Where:
+
+- **π_M_A** — soft projection onto an attractor manifold  
+- **θ** — burn-in / gating function  
+- **M_A** — evolving attractor state  
+
+For the full derivation, see:  
+`docs/DRAI_V1_INVARIANT.md`
 
 ---
 
-## Installation
+## Configurations
 
-```bash
-# From PyPI (when released)
-pip install drai
-
-# From source
-git clone https://github.com/HalcyonAIR/Duality.git
-cd Duality
-pip install -e .
-```
-
-**Requirements**: Python 3.8+, PyTorch 2.0+, Transformers 4.30+
-
----
-
-## Quick Start
-
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from src.drai import apply_drai_v1, get_v1_conservative_config
-
-# 1. Load model
-model = AutoModelForCausalLM.from_pretrained("EleutherAI/pythia-410m")
-tokenizer = AutoTokenizer.from_pretrained("EleutherAI/pythia-410m")
-
-# 2. Apply DRAI
-config = get_v1_conservative_config()
-model = apply_drai_v1(model, config=config)
-
-# 3. Use normally
-inputs = tokenizer("The future of AI is", return_tensors="pt")
-outputs = model.generate(inputs["input_ids"], max_new_tokens=50)
-
-print(tokenizer.decode(outputs[0]))
-```
-
-**See**: [`examples/quickstart.py`](examples/quickstart.py) for complete example
-
----
-
-## Configuration
-
-### Conservative (Recommended for 400M-1B models)
+### Conservative (recommended for 400M–1B)
 
 ```python
 config = get_v1_conservative_config()
-
-# Hyperparameters:
-#   max_attractors = 16          # Gentle capacity
-#   theta_match = 0.8            # Conservative matching
-#   burn_in_threshold = 50.0     # ~10 tokens
-#   max_influence_scale = 0.15   # Gentle influence (15% max)
-#   layer_mode = "mid"           # Single strategic layer
 ```
 
-### Standard (For 7B+ models)
+- max_attractors: 16  
+- max_influence_scale: 0.15  
+- burn_in_threshold: 50 tokens  
+- layer_mode: "mid"
+
+### Standard (recommended for 7B+)
 
 ```python
 from src.drai import get_v1_standard_config
-
 config = get_v1_standard_config()
-
-# Hyperparameters:
-#   max_attractors = 64          # More capacity
-#   max_influence_scale = 0.5    # Stronger influence (50% max)
-#   layer_mode = "strategic"     # Multiple layers
 ```
 
-See [`src/drai/config.py`](src/drai/config.py) for all options.
+- max_attractors: 64  
+- max_influence_scale: 0.5  
+- multi-layer integration
+
+See `src/drai/config.py` for details.
 
 ---
 
 ## Benchmarks
 
-### Current
+| Model           | Task                 | Baseline | DRAI V1 | Δ     | Status       |
+|----------------|----------------------|----------|---------|-------|---------------|
+| pythia-410m    | Story comprehension  | 85.0%    | 88.3%   | +3.3% | Validated     |
+| pythia-70m     | Story comprehension  | 0.0%     | 0.0%    | 0.0%  | Too small     |
 
-| Model | Task | Baseline | DRAI V1 | Delta | Status |
-|-------|------|----------|---------|-------|--------|
-| pythia-410m | Story comprehension | 85.0% | 88.3% | **+3.3%** | ✅ Validated |
-| pythia-70m | Story comprehension | 0.0% | 0.0% | 0.0% | ⚠️ Too small |
+### Predictions (based on scaling behaviour)
 
-### Predictions (7B+)
+*These are informed expectations, not claims.*
 
-Based on phase transition theory:
-- **7B models**: +8-12% on memory-intensive tasks
-- **70B models**: +15-25% + emergent behaviors
+- **7B class:** +8–12% on memory-heavy tasks  
+- **70B class:** +15–25% with additional emergent structure  
 
 ---
 
-## Architecture
+## Repository Structure
 
 ```
-Duality/
-├── src/drai/              # Core implementation
-│   ├── apply_v1.py       # Main API
-│   ├── config.py         # Hyperparameters
-│   ├── resonance_layer_v1.py
-│   └── neox_integration_v1.py
-├── tests/                 # 52 passing tests
-├── benchmarks/            # Reproducible results
-├── examples/              # Usage examples
-└── docs/                  # Theory and design
-    ├── THE_CLOUD_MECHANISM.md
-    ├── COMPUTATIONAL_SIGNATURES.md
-    └── DRAI_V1_INVARIANT.md
+src/drai/            # Core implementation
+tests/               # 52 passing tests
+benchmarks/          # Reproducible tasks
+examples/            # Quickstart scripts
+docs/                # Theory and mathematical foundations
 ```
 
----
+Key documents:
 
-## Theory
-
-### Core Documents
-
-1. **[The Cloud Mechanism](docs/THE_CLOUD_MECHANISM.md)**
-   - Why DRAI creates emergent working memory
-   - Seed vs cascade vs cloud
-   - Phase transitions at scale
-
-2. **[Computational Signatures](docs/COMPUTATIONAL_SIGNATURES.md)**
-   - Mapping to cognitive theories (GWT, IIT, etc.)
-   - Proto-workspace architecture
-   - Measurable order parameters
-
-3. **[The Invariant Equation](docs/DRAI_V1_INVARIANT.md)**
-   - Mathematical formulation
-   - Scale invariance
-   - Design principles
-
-### Key Insight
-
-**DRAI doesn't inject memory. It seeds a cascade that creates an emergent memory cloud.**
-
-The cloud is:
-- Integrated (2048 pathways at 7B scale)
-- Differentiated (head specialization)
-- Persistent (across tokens)
-- Self-referential (recursive interpretation)
-- Globally available (via residual stream)
-
-**This is the computational substrate transformers have been missing.**
+- **THE_CLOUD_MECHANISM.md** — explains seed → cascade → cloud  
+- **COMPUTATIONAL_SIGNATURES.md** — measurable behaviours & order parameters  
+- **DRAI_V1_INVARIANT.md** — invariant equation and scale properties  
 
 ---
 
-## What's Next
+## Roadmap
 
-### 7B Validation (In Progress)
-
-Testing phase transition predictions:
-- Superlinear performance gains
-- Emergent compositional binding
-- Spontaneous contradiction detection
-- Goal persistence over long contexts
-
-**Hypothesis**: At 7B+, cloud complexity crosses critical threshold → proto-workspace emerges.
+### 7B+ Validation (In Progress)
+- Multi-layer coupling  
+- Longer-range state persistence  
+- Contradiction-handling behaviour  
+- Compositional binding at scale  
 
 ### Integration Targets
+- GPT-NeoX (pythia family) — ✔️  
+- LLaMA / LLaMA2 — in progress  
+- Mistral — planned  
+- Qwen — planned  
 
-- ✅ GPT-NeoX (pythia family)
-- ⏳ LLaMA/LLaMA2
-- ⏳ Mistral
-- ⏳ Qwen
+We actively welcome community experiments.
 
-### Community Experiments
+---
 
-**We want to see**:
-- Tests on different model families
-- Tests on different tasks
-- Tests at different scales
-- Novel applications
+## FAQ
 
-**Open an issue or PR!**
+**How is this different from RAG?**  
+RAG is external memory. DRAI is internal state.
+
+**How is this different from long context windows?**  
+Long context recomputes everything. DRAI maintains an evolving internal state.
+
+**Does this work with fine-tuned models?**  
+Yes — it is fully post-hoc.
+
+**Does this require retraining?**  
+No. It attaches cleanly to pretrained models.
+
+**Is this a cognitive architecture?**  
+No. This project focuses strictly on engineering persistent internal state.
 
 ---
 
 ## Citation
 
-If you use DRAI in your research:
+If you use this project:
 
-```bibtex
+```
 @software{drai2025,
   title={DRAI: Dynamic Resonance AI},
   author={Halcyon AI Research},
@@ -303,80 +258,18 @@ If you use DRAI in your research:
 }
 ```
 
-Paper (arXiv preprint coming soon):
-> **"The Resonance Cascade: Phase Transitions and Internal State in Large Transformers"**
-
----
-
-## Contributing
-
-We welcome contributions! Areas of interest:
-
-- New model integrations (LLaMA, Mistral, etc.)
-- Benchmark tasks
-- Hyperparameter tuning
-- Visualization tools
-- Bug reports and fixes
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.
-
 ---
 
 ## License
 
-Apache 2.0 - See [LICENSE](LICENSE) for details.
-
----
-
-## FAQ
-
-### How is this different from RAG?
-
-**RAG**: External memory lookup (retrieve documents, inject into context)
-**DRAI**: Internal memory (persistent state inside model)
-
-RAG requires external orchestration. DRAI is native to inference.
-
-### How is this different from longer context windows?
-
-**Long context**: Brute force (recompute everything, no state)
-**DRAI**: Persistent state (evolves incrementally)
-
-Long context is quadratic in compute. DRAI is <1% overhead.
-
-### How is this different from agent frameworks?
-
-**Agents**: External wrappers (Python orchestration)
-**DRAI**: Internal primitives (working memory in the model)
-
-Agents simulate working memory externally. DRAI provides it natively.
-
-### Does this work with fine-tuned models?
-
-Yes! DRAI is post-hoc - apply to any pre-trained or fine-tuned transformer.
-
-### What about training from scratch with DRAI?
-
-Not tested yet. Current focus: zero-shot application to existing models.
-
-### Why "Duality"?
-
-Two computational layers:
-- **Static**: Transformer weights (learned knowledge)
-- **Dynamic**: DRAI attractors (working memory)
-
-Together: Static semantics + dynamic state = proto-workspace.
+Apache 2.0 – see `LICENSE` for details.
 
 ---
 
 ## Contact
 
-**Repository**: https://github.com/HalcyonAIR/Duality
-**Issues**: https://github.com/HalcyonAIR/Duality/issues
-**Discussions**: https://github.com/HalcyonAIR/Duality/discussions
+- Issues: https://github.com/HalcyonAIR/Duality/issues  
+- Discussions: https://github.com/HalcyonAIR/Duality/discussions  
 
----
-
-**Built by Halcyon AI Research**
-
-*Working memory for transformers. Finally.*
+**Built by Halcyon AI Research**  
+Internal state for transformers — finally.
