@@ -12,7 +12,7 @@ This adapter:
     • injects a strictly bounded influence vector into the baseline output
 
 Aligned with the public V1 API:
-    - DraiResonanceLayerV1
+    - DRAIV1ResonanceLayer
     - V1Config / V1Hyperparameters
 """
 
@@ -22,7 +22,7 @@ import torch.nn as nn
 
 from transformers.models.gpt_neox.modeling_gpt_neox import GPTNeoXAttention
 
-from .resonance_layer_v1 import DraiResonanceLayerV1
+from .resonance_layer_v1 import DRAIV1ResonanceLayer
 from .config import V1Config
 
 
@@ -58,7 +58,7 @@ class DRAIV1NeoXAttention(nn.Module):
         # ------------------------------------------------------------------
         hp = config.hyperparameters
 
-        self.resonance_layer = DraiResonanceLayerV1(
+        self.resonance_layer = DRAIV1ResonanceLayer(
             hidden_size=self.hidden_size,
             num_heads=config.num_drai_heads,
             head_dim=self.head_size,
