@@ -22,8 +22,14 @@ from transformers import (
 from .config import (
     V1Config,
     get_v1_conservative,
+    get_v1_standard,
 )
-from .neox_integration_v1 import inject_drai_v1_into_model
+
+# Corrected to match global naming
+from .neox_integration_v1 import (
+    apply_v1_neox_injection,
+    DRAIV1NeoXAttention,
+)
 
 
 # ============================================================================
@@ -130,8 +136,8 @@ def apply_v1(
     if config is None:
         config = get_v1_conservative()
 
-    # Inject DRAI V1
-    model = inject_drai_v1_into_model(model, config, verbose=verbose)
+    # Inject DRAI V1 (corrected function name)
+    model = apply_v1_neox_injection(model, config, verbose=verbose)
 
     # Mark as patched
     _mark_injected(model)
@@ -170,8 +176,6 @@ def get_v1_stats(model: PreTrainedModel) -> Dict[str, Any]:
         - If the model has no DRAI layers, returns zeros.
     """
 
-    from .neox_integration_v1 import DraiGPTNeoXAttentionV1
-
     layers = _get_layers_for_stats(model)
 
     stats = {
@@ -185,8 +189,9 @@ def get_v1_stats(model: PreTrainedModel) -> Dict[str, Any]:
     for idx, layer in enumerate(layers):
         attn = getattr(layer, "attention", None)
 
-        if isinstance(attn, DraiGPTNeoXAttentionV1):
-            layer_stats = attn.get_drai_statistics()
+        # Correct NeoX wrapper class name
+        if isinstance(attn, DRAIV1NeoXAttention):
+            layer_stats = attn.get_v1_statistics()
 
             stats["num_drai_layers"] += 1
             stats["total_active"] += layer_stats.get("num_alive", 0)
