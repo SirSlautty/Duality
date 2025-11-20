@@ -2,7 +2,7 @@
 
 "DRAI adds the one primitive transformers never had: internal state.  This transformer design creates persistent internal state... No cognitive claims made, but the inference memory space exhibits properties that become increasingly relevant at scale, when evaluating multi-layer state propagation.  Everything demonstrated here is reproducible, measurable, and relies on standard transformer operations." - HalcyonAIResearch
 
-This project focuses strictly on engineering: adding a persistent internal state mechanism that improves model stability and memory. It doesn’t speculate about emergent properties — it just delivers a practical capability that transformers have been missing.
+This project focuses strictly on engineering: adding a persistent internal state mechanism that improves model stability and memory. It doesn’t speculate about emergent properties... it just delivers a practical capability that transformers have been missing.
 
 **Internal State for Transformers Through Persistent Attractor Dynamics**
 
