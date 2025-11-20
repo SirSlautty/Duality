@@ -1,6 +1,18 @@
 """
-DRAI Resonance Layer V1 - Production-Ready Attractor Algorithm
-(Updated for Plan A: TRUE multi-head K/V output)
+DRAI Resonance Layer V1 — Clean, Stable, Production-Ready Implementation
+(Plan A: True multi-head synthetic K/V output for transformer integration)
+
+This module implements the core attractor-memory mechanism used by
+DRAI V1. It is designed for absolute stability in small models (<1B),
+and correctness when used in attention injection pipelines.
+
+Major properties:
+- Robust pattern detection via cosine similarity + min-strength gating
+- Carefully bounded EMA accumulation (alpha_update)
+- Automatic slot allocation for novel patterns
+- State decay + eviction to prevent drift
+- Burn-in (strength or token-based) to avoid early self-feedback
+- Deterministic, safe, synthetic K/V generation for use in Plan A injection
 """
 
 import torch
@@ -11,15 +23,14 @@ from typing import Tuple, Optional
 
 class DraiResonanceLayerV1(nn.Module):
     """
-    Safe, production-ready V1 attractor algorithm.
+    Production-safe V1 attractor algorithm.
 
-    This variant has been updated so that synthetic K/V pairs are returned with:
-        [batch, seq_len, num_drai_heads, head_dim]
+    Input:
+        query_layer: [seq_len, batch, num_attn_heads, head_dim]
 
-    instead of:
-        [batch, seq_len, 1, head_dim]
-
-    This enables true K/V concatenation inside attention (Plan A).
+    Output:
+        k_reson: [seq_len, batch, num_drai_heads, head_dim]
+        v_reson: [seq_len, batch, num_drai_heads, head_dim]
     """
 
     def __init__(
@@ -29,7 +40,7 @@ class DraiResonanceLayerV1(nn.Module):
         head_dim: Optional[int] = None,
         device: Optional[str] = None,
         dtype: Optional[torch.dtype] = None,
-        # V1 Hyperparameters
+        # V1 hyperparameters
         max_attractors: int = 16,
         theta_match: float = 0.8,
         alpha_update: float = 0.05,
@@ -44,13 +55,13 @@ class DraiResonanceLayerV1(nn.Module):
         super().__init__()
 
         self.hidden_size = hidden_size
-        self.num_heads = num_heads            # ← now actually used in output
+        self.num_heads = num_heads
         self.head_dim = head_dim if head_dim is not None else 64
 
         self.device = device or "cpu"
         self.dtype = dtype or torch.float32
 
-        # V1 hyperparameters
+        # Hyperparameters
         self.M = max_attractors
         self.d = self.head_dim
         self.theta_match = theta_match
@@ -59,123 +70,111 @@ class DraiResonanceLayerV1(nn.Module):
         self.strength_init = strength_init
         self.strength_min = strength_min
         self.max_influence_scale = max_influence_scale
-
         self.burn_in_threshold = burn_in_threshold
         self.burn_in_mode = burn_in_mode
         self.burn_in_tokens = burn_in_tokens
 
-        # -------------------------------------------
-        # Registered buffers (move with model)
-        # -------------------------------------------
+        # ------------------------------------------------------------------
+        # Persistent attractor memory state (buffers move with model)
+        # ------------------------------------------------------------------
         self.register_buffer(
             "attractor_vectors",
             torch.randn(self.M, self.d, device=self.device, dtype=self.dtype) * 1e-3
         )
-
         self.register_buffer(
             "attractor_strengths",
             torch.zeros(self.M, device=self.device, dtype=self.dtype)
         )
-
         self.register_buffer(
             "attractor_last_used",
             torch.zeros(self.M, device=self.device, dtype=self.dtype)
         )
-
         self.register_buffer(
             "timestep",
             torch.tensor(0.0, device=self.device, dtype=self.dtype)
         )
 
-    # -------------------------------------------------------------------------
-    # Forward: query → state update → synthetic K/V
-    # -------------------------------------------------------------------------
+    # ======================================================================
+    # Forward: Query → Attractor Update → Synthetic K/V
+    # ======================================================================
     def forward(self, query_layer: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        Args:
-            query_layer: [seq_len, batch, num_attn_heads, head_dim]
-
-        Returns:
-            k_reson: [seq_len, batch, num_drai_heads, head_dim]
-            v_reson: same shape
+        query_layer:
+            [seq_len, batch, num_attention_heads, head_dim]
         """
         seq_len, batch, _, _ = query_layer.shape
 
-        # Collapse attention heads → mean representation
-        query = query_layer.mean(dim=2)         # [seq_len, batch, d]
-        query = query.transpose(0, 1)           # [batch, seq_len, d]
+        # (1) Collapse multi-head Q into a single per-token representation
+        q = query_layer.mean(dim=2)            # [S, B, D]
+        q = q.transpose(0, 1)                  # [B, S, D]
 
-        A = self.attractor_vectors     # [M, d]
-        S = self.attractor_strengths   # [M]
-        L = self.attractor_last_used   # [M]
+        A = self.attractor_vectors
+        S = self.attractor_strengths
+        L = self.attractor_last_used
         step = self.timestep
 
-        # Flatten queries
-        B, T, d = query.shape
-        q_flat = query.reshape(-1, d)  # [N, d]
+        # Flatten batch × seq
+        B, T, D = q.shape
+        q_flat = q.reshape(-1, D)
 
-        # Pattern detection
-        match_idx, match_scores, match_mask, novel_mask = \
-            self._detect_patterns(q_flat, A, S)
+        # (2) Pattern detection: match or novel?
+        match_idx, match_mask, novel_mask = self._detect(q_flat, A, S)
 
-        # Updates
-        A, S, L = self._accumulate_patterns(
-            q_flat, A, S, L, match_idx, match_mask, step
-        )
-        A, S, L = self._create_new_attractors(q_flat, A, S, L, novel_mask, step)
-        A, S, L = self._apply_decay(A, S, L)
-        A, S, L = self._evict_weak_attractors(A, S, L)
+        # (3) Updates
+        A, S, L = self._accumulate(q_flat, A, S, L, match_idx, match_mask, step)
+        A, S, L = self._assign_new(q_flat, A, S, L, novel_mask, step)
+        A, S, L = self._decay(A, S, L)
+        A, S, L = self._evict(A, S, L)
 
-        # Persist state
+        # Persist
         self.attractor_vectors.copy_(A)
         self.attractor_strengths.copy_(S)
         self.attractor_last_used.copy_(L)
         self.timestep.copy_(step + 1.0)
 
-        # Generate synthetic K/V for Plan A
-        k_reson, v_reson = self._generate_synthetic_kv(query, A, S)
+        # (4) Generate synthetic K/V (Plan A)
+        k_reson, v_reson = self._gen_kv(q, A, S)
 
-        # Shape back to NeoX format
+        # Return in NeoX forward shape
         return k_reson.transpose(0, 1), v_reson.transpose(0, 1)
 
-    # -------------------------------------------------------------------------
+    # ======================================================================
     # Pattern Detection
-    # -------------------------------------------------------------------------
-    def _detect_patterns(self, q_flat, A, S):
+    # ======================================================================
+    def _detect(self, q_flat, A, S):
         eps = 1e-8
+        qn = F.normalize(q_flat, p=2, dim=-1, eps=eps)
+        An = F.normalize(A, p=2, dim=-1, eps=eps)
 
-        q_norm = F.normalize(q_flat, p=2, dim=-1, eps=eps)
-        A_norm = F.normalize(A, p=2, dim=-1, eps=eps)
+        sim = qn @ An.T                                # [N, M]
+        best_scores, best_idx = torch.max(sim, dim=-1)
 
-        sim = q_norm @ A_norm.T
-        match_scores, match_idx = torch.max(sim, dim=-1)
-
-        S_best = S[match_idx]
-
-        match_mask = (S_best > self.strength_min) & (match_scores > self.theta_match)
+        strong_enough = S[best_idx] > self.strength_min
+        match_mask = (best_scores > self.theta_match) & strong_enough
         novel_mask = ~match_mask
-        return match_idx, match_scores, match_mask, novel_mask
 
-    # -------------------------------------------------------------------------
-    # Accumulation
-    # -------------------------------------------------------------------------
-    def _accumulate_patterns(self, q_flat, A, S, L, match_idx, match_mask, step):
-        N, d = q_flat.shape
-        M = A.shape[0]
+        return best_idx, match_mask, novel_mask
 
-        matched_q = q_flat * match_mask.unsqueeze(-1)
+    # ======================================================================
+    # Accumulation: EMA-like centroid update and strength reinforcement
+    # ======================================================================
+    def _accumulate(self, q_flat, A, S, L, match_idx, match_mask, step):
+        M, d = A.shape
+        N = q_flat.shape[0]
+
+        matched = q_flat * match_mask.unsqueeze(-1)
 
         counts = torch.zeros(M, device=A.device, dtype=A.dtype)
         counts.scatter_add_(0, match_idx, match_mask.float())
 
-        A_for_tokens = A[match_idx]
-        deltas = matched_q - A_for_tokens
+        baseA = A[match_idx]
+        deltas = matched - baseA
 
-        delta_sum = torch.zeros(M, d, device=A.device, dtype=A.dtype)
+        delta_sum = torch.zeros_like(A)
         delta_sum.scatter_add_(
             0,
             match_idx.unsqueeze(-1).expand(-1, d),
-            deltas
+            deltas,
         )
 
         counts_safe = torch.clamp(counts, 1.0)
@@ -184,125 +183,109 @@ class DraiResonanceLayerV1(nn.Module):
         gamma = 0.01
         S_new = (1 - gamma) * S + counts
 
-        used_mask = counts > 0
-        L_new = torch.where(used_mask, step.expand_as(L), L)
+        L_new = torch.where(counts > 0, step.expand_as(L), L)
 
         return A_new, S_new, L_new
 
-    # -------------------------------------------------------------------------
-    # Novel Pattern Creation
-    # -------------------------------------------------------------------------
-    def _create_new_attractors(self, q_flat, A, S, L, novel_mask, step):
+    # ======================================================================
+    # Create new attractors for novel patterns
+    # ======================================================================
+    def _assign_new(self, q_flat, A, S, L, novel_mask, step):
         novel_idx = torch.where(novel_mask)[0]
         if len(novel_idx) == 0:
             return A, S, L
 
-        free_idx = torch.where(S < self.strength_min)[0]
-        if len(free_idx) == 0:
+        free = torch.where(S < self.strength_min)[0]
+        if len(free) == 0:
             return A, S, L
 
-        k = min(len(novel_idx), len(free_idx))
-        assign_nov = novel_idx[:k]
-        assign_slots = free_idx[:k]
-
-        q_new = q_flat[assign_nov]
+        k = min(len(novel_idx), len(free))
+        assign_q = novel_idx[:k]
+        assign_slots = free[:k]
 
         A_new = A.clone()
         S_new = S.clone()
         L_new = L.clone()
 
-        A_new[assign_slots] = q_new
+        A_new[assign_slots] = q_flat[assign_q]
         S_new[assign_slots] = self.strength_init
         L_new[assign_slots] = step
 
         return A_new, S_new, L_new
 
-    # -------------------------------------------------------------------------
-    # Decay & Eviction
-    # -------------------------------------------------------------------------
-    def _apply_decay(self, A, S, L):
+    # ======================================================================
+    # Decay and Eviction
+    # ======================================================================
+    def _decay(self, A, S, L):
         return A, S * self.lambda_decay, L
 
-    def _evict_weak_attractors(self, A, S, L):
+    def _evict(self, A, S, L):
         dead = S < self.strength_min
-        zeroA = torch.zeros_like(A)
-        zeroS = torch.zeros_like(S)
-        zeroL = torch.zeros_like(L)
-        return (
-            torch.where(dead.unsqueeze(-1), zeroA, A),
-            torch.where(dead, zeroS, S),
-            torch.where(dead, zeroL, L),
-        )
+        A = torch.where(dead.unsqueeze(-1), torch.zeros_like(A), A)
+        S = torch.where(dead, torch.zeros_like(S), S)
+        L = torch.where(dead, torch.zeros_like(L), L)
+        return A, S, L
 
-    # -------------------------------------------------------------------------
-    # Synthetic K/V generation (Updated for Plan A)
-    # -------------------------------------------------------------------------
-    def _generate_synthetic_kv(self, query, A, S):
-        """
-        Output:
-            k_reson: [batch, seq_len, num_heads, d]
-            v_reson: [batch, seq_len, num_heads, d]
-        """
+    # ======================================================================
+    # Synthetic K/V Generation (Plan A)
+    # ======================================================================
+    def _gen_kv(self, query, A, S):
         B, T, d = query.shape
         eps = 1e-8
 
         alive = S > self.strength_min
-        if torch.sum(alive) == 0:
-            zero = torch.zeros((B, T, self.num_heads, d), device=query.device, dtype=query.dtype)
+        if alive.sum() == 0:
+            zero = torch.zeros((B, T, self.num_heads, d),
+                               device=query.device, dtype=query.dtype)
             return zero, zero
 
         S_alive = torch.where(alive, S, torch.zeros_like(S))
         A_alive = torch.where(alive.unsqueeze(-1), A, torch.zeros_like(A))
 
-        total_strength = torch.sum(S_alive) + eps
+        total_strength = S_alive.sum() + eps
 
         # Burn-in gating
         if self.burn_in_mode == "strength":
-            burn = total_strength < self.burn_in_threshold
-        elif self.burn_in_mode == "tokens":
-            burn = self.timestep < self.burn_in_tokens
-        else:
-            raise ValueError("Invalid burn_in_mode")
+            if total_strength < self.burn_in_threshold:
+                zero = torch.zeros((B, T, self.num_heads, d),
+                                   device=query.device, dtype=query.dtype)
+                return zero, zero
+        else:  # tokens mode
+            if self.timestep < self.burn_in_tokens:
+                zero = torch.zeros((B, T, self.num_heads, d),
+                                   device=query.device, dtype=query.dtype)
+                return zero, zero
 
-        if burn:
-            zero = torch.zeros((B, T, self.num_heads, d), device=query.device, dtype=query.dtype)
-            return zero, zero
+        # Mean field attractor vector
+        field_vec = (A_alive * S_alive.unsqueeze(-1)).sum(dim=0) / total_strength
 
-        # Weighted mean field
-        field_vec = torch.sum(A_alive * S_alive.unsqueeze(-1), dim=0) / total_strength
-        norm = torch.linalg.norm(field_vec) + eps
-        unit = field_vec / norm
-
+        unit = field_vec / (field_vec.norm() + eps)
         scale = self.max_influence_scale * torch.tanh(total_strength)
-        field_scaled = scale * unit
 
-        # Broadcast to all DRAI heads
+        field_scaled = scale * unit                     # [d]
+
         out = (
-            field_scaled
-            .view(1, 1, 1, d)
+            field_scaled.view(1, 1, 1, d)
             .expand(B, T, self.num_heads, d)
         )
 
         return out, out
 
-    # -------------------------------------------------------------------------
+    # ======================================================================
     # Stats
-    # -------------------------------------------------------------------------
+    # ======================================================================
     def get_stats(self):
         S = self.attractor_strengths
         alive = S > self.strength_min
-        total = torch.sum(S).item()
 
-        if torch.sum(alive) == 0:
-            mean = 0.0
-        else:
-            mean = torch.sum(torch.where(alive, S, torch.zeros_like(S))) / torch.sum(alive)
+        total = float(S.sum())
+        num_alive = int(alive.sum())
+        mean = float((S * alive).sum() / (alive.sum() + 1e-8))
 
         return {
-            "num_alive": torch.sum(alive).item(),
+            "num_alive": num_alive,
             "total_strength": total,
-            "mean_strength": float(mean),
-            "max_strength": torch.max(S).item(),
-            "timestep": self.timestep.item(),
+            "mean_strength": mean,
+            "max_strength": float(S.max()),
+            "timestep": float(self.timestep.item()),
         }
-
