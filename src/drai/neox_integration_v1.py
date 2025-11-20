@@ -1,18 +1,19 @@
 """
-DRAI V1 — GPT-NeoX Integration Layer (Updated)
-----------------------------------------------
+DRAI (Dynamic Resonance AI) — V1 NeoX Integration
+-------------------------------------------------
 
-Stable integration of the DRAI Resonance Layer V1 into GPT-NeoX architectures.
+Production-grade integration of the DRAI V1 resonance engine into
+GPT-NeoX / Pythia-family attention modules.
 
-The wrapper:
-    1. Extracts Q for attractor processing
-    2. Runs V1 resonance dynamics
-    3. Receives synthetic V-resonance field
-    4. Adds a strictly bounded influence vector to the baseline output
+This adapter:
+    • extracts Q for attractor processing
+    • runs V1 resonance dynamics
+    • receives the synthetic V-resonance field
+    • injects a strictly bounded influence vector into the baseline output
 
-This implementation is aligned with the final stable API of:
+Aligned with the public V1 API:
     - DraiResonanceLayerV1
-    - V1Config
+    - V1Config / V1Hyperparameters
 """
 
 from typing import Optional
@@ -20,43 +21,46 @@ import torch
 import torch.nn as nn
 
 from transformers.models.gpt_neox.modeling_gpt_neox import GPTNeoXAttention
+
 from .resonance_layer_v1 import DraiResonanceLayerV1
 from .config import V1Config
 
 
-# ============================================================================
-# Wrapped GPT-NeoX Attention (clean, V1-aligned)
-# ============================================================================
+# =====================================================================
+# DRAI V1 Attention Wrapper for GPT-NeoX
+# =====================================================================
 
-class DraiGPTNeoXAttentionV1(nn.Module):
+class DRAIV1NeoXAttention(nn.Module):
     """
-    Drop-in replacement for GPTNeoXAttention with:
+    Drop-in replacement for GPTNeoXAttention adding:
         • attractor formation
         • resonance-field generation
-        • bounded influence vector addition
+        • bounded influence vector injection
+
+    Behaviour is otherwise identical to the original GPT-NeoX attention.
     """
 
     def __init__(self, original_attention: GPTNeoXAttention,
-                 drai_config: V1Config,
+                 config: V1Config,
                  layer_idx: int):
         super().__init__()
 
         self.original_attention = original_attention
         self.layer_idx = layer_idx
 
-        # HF config references
+        # Hidden configuration
         self.hidden_size = original_attention.config.hidden_size
         self.num_attention_heads = original_attention.config.num_attention_heads
         self.head_size = original_attention.head_size
 
-        # -------------------------
-        # Initialize resonance core
-        # -------------------------
-        hp = drai_config.hyperparameters
+        # ------------------------------------------------------------------
+        # Initialize the DRAI V1 resonance engine
+        # ------------------------------------------------------------------
+        hp = config.hyperparameters
 
-        self.drai = DraiResonanceLayerV1(
+        self.resonance_layer = DraiResonanceLayerV1(
             hidden_size=self.hidden_size,
-            num_heads=drai_config.num_drai_heads,
+            num_heads=config.num_drai_heads,
             head_dim=self.head_size,
             device=str(original_attention.query_key_value.weight.device),
             dtype=original_attention.query_key_value.weight.dtype,
@@ -72,7 +76,7 @@ class DraiGPTNeoXAttentionV1(nn.Module):
             burn_in_tokens=hp.burn_in_tokens,
         )
 
-        # Pass-through attributes HF expects
+        # Attributes that HF expects to exist on attention modules
         passthrough = [
             "query_key_value", "dense", "norm_factor",
             "attention_dropout", "rotary_emb", "rotary_ndims",
@@ -82,9 +86,9 @@ class DraiGPTNeoXAttentionV1(nn.Module):
             if hasattr(original_attention, name):
                 setattr(self, name, getattr(original_attention, name))
 
-    # ============================================================================
-    # Forward pass
-    # ============================================================================
+    # =====================================================================
+    # Forward Pass
+    # =====================================================================
     def forward(
         self,
         hidden_states: torch.Tensor,
@@ -100,23 +104,23 @@ class DraiGPTNeoXAttentionV1(nn.Module):
         batch, seq_len, hidden_dim = hidden_states.shape
 
         # -------------------------------------------------------
-        # (1) Extract Q (only Q is needed for resonance dynamics)
+        # (1) Extract Q only (QKV fused in NeoX)
         # -------------------------------------------------------
         qkv = self.query_key_value(hidden_states)
         qkv = qkv.view(batch, seq_len, self.num_attention_heads, 3 * self.head_size)
 
-        q = qkv[..., :self.head_size]           # [B, S, H, D]
-        q_for_drai = q.permute(1, 0, 2, 3)      # [S, B, H, D]
+        q = qkv[..., :self.head_size]          # [B, S, H, D]
+        q_for_resonance = q.permute(1, 0, 2, 3)  # [S, B, H, D]
 
         # -------------------------------------------------------
-        # (2) Run DRAI resonance (updated Layer API)
+        # (2) Run DRAI V1 resonance dynamics
         # -------------------------------------------------------
-        k_reson, v_reson = self.drai(q_for_drai)
+        k_reson, v_reson = self.resonance_layer(q_for_resonance)
 
         # -------------------------------------------------------
         # (3) Baseline GPT-NeoX attention
         # -------------------------------------------------------
-        base_out = self.original_attention(
+        base = self.original_attention(
             hidden_states,
             attention_mask=attention_mask,
             head_mask=head_mask,
@@ -125,30 +129,28 @@ class DraiGPTNeoXAttentionV1(nn.Module):
             output_attentions=output_attentions,
             cache_position=cache_position,
             position_embeddings=position_embeddings,
-            **kwargs
+            **kwargs,
         )
 
-        if isinstance(base_out, tuple):
-            original_out = base_out[0]
-            tail = base_out[1:]
+        if isinstance(base, tuple):
+            base_out, tail = base[0], base[1:]
         else:
-            original_out = base_out
-            tail = None
+            base_out, tail = base, None
 
         # -------------------------------------------------------
-        # (4) Skip influence if still in burn-in
+        # (4) No injection until burn-in completes
         # -------------------------------------------------------
         if k_reson.norm() < 1e-8:
-            return base_out
+            return base
 
         # -------------------------------------------------------
-        # (5) Convert resonance → influence vector
+        # (5) Convert resonance field → influence vector
         # -------------------------------------------------------
-        v_res = v_reson.permute(1, 0, 2, 3)     # [B, S, H_drai, D]
-        influence = v_res.mean(dim=2)           # [B, S, D]
+        v_res = v_reson.permute(1, 0, 2, 3)   # [B, S, H_drai, D]
+        influence = v_res.mean(dim=2)         # [B, S, D]
 
         # -------------------------------------------------------
-        # (6) Match hidden dimension (safe expansion)
+        # (6) Normalize and match hidden dimension safely
         # -------------------------------------------------------
         if influence.shape[-1] < hidden_dim:
             k = hidden_dim // influence.shape[-1]
@@ -157,31 +159,32 @@ class DraiGPTNeoXAttentionV1(nn.Module):
             influence = influence[..., :hidden_dim]
 
         # -------------------------------------------------------
-        # (7) Combine baseline + influence
+        # (7) Final output = baseline + influence
         # -------------------------------------------------------
-        modified = original_out + influence
+        modified = base_out + influence
 
         if tail is None:
             return modified
         return (modified,) + tail
 
-    # ============================================================================
-    # Stats
-    # ============================================================================
-    def get_drai_statistics(self):
-        st = self.drai.get_stats()
-        st["layer_idx"] = self.layer_idx
-        st["num_drai_heads"] = self.drai.num_heads
-        return st
+    # =====================================================================
+    # Public statistics
+    # =====================================================================
+    def get_v1_statistics(self):
+        stats = self.resonance_layer.get_stats()
+        stats["layer_idx"] = self.layer_idx
+        stats["num_drai_heads"] = self.resonance_layer.num_heads
+        return stats
 
 
-# ============================================================================
+# =====================================================================
 # Injection Utility
-# ============================================================================
+# =====================================================================
 
-def inject_drai_v1_into_model(model, config: V1Config, verbose: bool = True):
+def apply_v1_neox_injection(model, config: V1Config, verbose: bool = True):
     """
-    Replace GPT-NeoX attention modules with DRAI-enabled attention.
+    Patch a GPT-NeoX model in-place, replacing attention modules
+    with DRAI V1-enabled variants.
     """
 
     if not hasattr(model, "gpt_neox"):
@@ -189,21 +192,20 @@ def inject_drai_v1_into_model(model, config: V1Config, verbose: bool = True):
 
     layers = model.gpt_neox.layers
     num_layers = len(layers)
-    targets = config.resolve_layers(num_layers)
+    target_layers = config.resolve_layers(num_layers)
 
     if verbose:
         hp = config.hyperparameters
-        print(f"[DRAI V1] Injecting into layers: {targets}")
+        print(f"[DRAI V1] Injecting into layers: {target_layers}")
         print(f"   max_attractors      = {hp.max_attractors}")
         print(f"   theta_match         = {hp.theta_match}")
         print(f"   max_influence_scale = {hp.max_influence_scale}")
         print(f"   burn_in_threshold   = {hp.burn_in_threshold}")
 
-    for idx in targets:
+    for idx in target_layers:
         orig = layers[idx].attention
-        wrapped = DraiGPTNeoXAttentionV1(orig, config, idx)
+        wrapped = DRAIV1NeoXAttention(orig, config, idx)
 
-        # enforce device/dtype parity
         wrapped = wrapped.to(
             device=orig.query_key_value.weight.device,
             dtype=orig.query_key_value.weight.dtype,
