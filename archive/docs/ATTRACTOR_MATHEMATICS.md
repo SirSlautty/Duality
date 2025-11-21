@@ -4,6 +4,10 @@
 **Status:** Phase 2 Design Specification
 **Purpose:** Formal mathematical definition of DRAI attractor dynamics
 
+This is an archived Phase-1 design document.
+Some formulations may have evolved in implementation.
+Preserved for historical and reference purposes.
+
 ---
 
 ## Overview
