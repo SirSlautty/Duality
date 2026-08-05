@@ -32,7 +32,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from story_generator import StoryGenerator
 
 # DRAI V1
-from src.drai import apply_drai_v1, get_v1_conservative_config, get_drai_v1_stats
+from src.drai import apply_v1, get_v1_conservative, get_v1_stats
 
 
 def evaluate_model(model, tokenizer, stories, model_name="Model"):
@@ -155,7 +155,7 @@ def main():
     print(f"\n[3/4] Testing V1 DRAI...")
     print(f"  Configuration:")
 
-    config = get_v1_conservative_config()
+    config = get_v1_conservative()
     print(f"    - Burn-in threshold: {config.hyperparameters.burn_in_threshold}")
     print(f"    - Burn-in mode: {config.hyperparameters.burn_in_mode}")
     print(f"    - Max influence scale: {config.hyperparameters.max_influence_scale}")
@@ -168,7 +168,7 @@ def main():
         device_map="cpu",
     )
 
-    model_v1 = apply_drai_v1(model_v1, config=config)
+    model_v1 = apply_v1(model_v1, config=config)
 
     v1_results = evaluate_model(
         model_v1, tokenizer, stories,
@@ -176,7 +176,7 @@ def main():
     )
 
     # Get V1 statistics
-    v1_stats = get_drai_v1_stats(model_v1)
+    v1_stats = get_v1_stats(model_v1)
 
     # Clean up
     del model_v1
