@@ -24,7 +24,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # DRAI V1
-from src.drai import apply_drai_v1, get_v1_conservative_config, get_drai_v1_stats
+from src.drai import apply_v1, get_v1_conservative, get_v1_stats
 
 
 def quick_test():
@@ -70,8 +70,8 @@ def quick_test():
 
     # DRAI test
     print(f"\n[3/3] Testing with DRAI V1...")
-    config = get_v1_conservative_config()
-    model = apply_drai_v1(model, config=config)
+    config = get_v1_conservative()
+    model = apply_v1(model, config=config)
 
     drai_outputs = []
     for prompt in test_prompts:
@@ -87,7 +87,7 @@ def quick_test():
         print(f"  DRAI:     '{prompt}' → '{generated}'")
 
     # Check DRAI stats
-    stats = get_drai_v1_stats(model)
+    stats = get_v1_stats(model)
     print(f"\nDRAI Statistics:")
     print(f"  - Layers with DRAI: {stats['num_drai_layers']}")
     print(f"  - Total active attractors: {stats['total_active']}")
