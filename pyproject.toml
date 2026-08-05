@@ -7,7 +7,7 @@ name = "drai"
 version = "0.1.0"
 description = "Dynamic Resonance AI: internal-state augmentation for transformer models"
 readme = "README.md"
-license = { text = "Apache-2.0" }
+license = { file = "LICENSE" }
 authors = [
     { name = "Halcyon AI Research" }
 ]
@@ -31,7 +31,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/HalcyonAIR/Duality"
+Homepage = "https://github.com/SirSlautty/Duality"
+Repository = "https://github.com/SirSlautty/Duality"
+Issues = "https://github.com/SirSlautty/Duality/issues"
 
 [project.optional-dependencies]
 dev = [
