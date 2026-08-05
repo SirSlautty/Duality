@@ -29,7 +29,9 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-homepage = "https://github.com/HalcyonAIR/Duality"
+
+[project.urls]
+Homepage = "https://github.com/HalcyonAIR/Duality"
 
 [project.optional-dependencies]
 dev = [
