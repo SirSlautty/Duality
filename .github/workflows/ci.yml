@@ -2,7 +2,9 @@ name: Python CI
 
 on:
   push:
+    branches: [main, develop]
   pull_request:
+    branches: [main, develop]
 
 permissions:
   contents: read
@@ -23,3 +25,15 @@ jobs:
       - run: python -m pip install -e ".[dev]"
       - run: python -m pytest tests/unit --cov=src --cov-report=term-missing
       - run: python -m compileall -q src examples
+
+  validate-reproduction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate reproduction script
+        run: bash -n scripts/run_reproduction_410m.sh
+      - name: Verify benchmark structure
+        run: |
+          test -f benchmarks/story_comprehension_410m/run.py
+          test -f benchmarks/story_comprehension_410m/story_generator.py
+          test -f benchmarks/story_comprehension_410m/README.md
