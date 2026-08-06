@@ -137,7 +137,7 @@ jobs:
           python -m pip install -e ".[dev]"
 
       - name: Detect archived Phase 2 API
-        id: phase2-api
+        id: phase2_api
         run: |
           python - <<'PY'
           import os
@@ -150,11 +150,11 @@ jobs:
           PY
 
       - name: Run the committed Phase 2 test suite when its API exists
-        if: steps.phase2-api.outputs.available == 'true'
+        if: steps.phase2_api.outputs.available == 'true'
         run: python -m pytest tests/unit
 
       - name: Explain legacy-suite skip
-        if: steps.phase2-api.outputs.available != 'true'
+        if: steps.phase2_api.outputs.available != 'true'
         run: |
           echo "The committed tests/unit suite targets the archived Phase 2 API."
           echo "The active package exposes the production V1 API instead."
