@@ -87,8 +87,6 @@ class DualityLMConfig:
                 raise ValueError(f"{name} must be an integer in [0, vocab_size)")
 
         if self.memory_layers is not None:
-            if not self.memory_layers:
-                raise ValueError("memory_layers cannot be empty when provided")
             if len(set(self.memory_layers)) != len(self.memory_layers):
                 raise ValueError("memory_layers cannot contain duplicates")
             if not all(isinstance(index, int) for index in self.memory_layers):
@@ -121,7 +119,12 @@ class DualityLMConfig:
         return values
 
     @classmethod
-    def tiny(cls, vocab_size: int = 259, max_seq_len: int = 256) -> "DualityLMConfig":
+    def tiny(
+        cls,
+        vocab_size: int = 259,
+        max_seq_len: int = 256,
+        memory_layers: Optional[Tuple[int, ...]] = None,
+    ) -> "DualityLMConfig":
         """Return a fast configuration for tests and CPU smoke runs."""
 
         return cls(
@@ -132,10 +135,16 @@ class DualityLMConfig:
             n_heads=4,
             d_ff=512,
             memory_slots=8,
+            memory_layers=memory_layers,
         )
 
     @classmethod
-    def small(cls, vocab_size: int = 259, max_seq_len: int = 512) -> "DualityLMConfig":
+    def small(
+        cls,
+        vocab_size: int = 259,
+        max_seq_len: int = 512,
+        memory_layers: Optional[Tuple[int, ...]] = None,
+    ) -> "DualityLMConfig":
         """Return a small, trainable CPU/GPU starting point."""
 
         return cls(
@@ -146,5 +155,5 @@ class DualityLMConfig:
             n_heads=8,
             d_ff=1024,
             memory_slots=16,
+            memory_layers=memory_layers,
         )
-

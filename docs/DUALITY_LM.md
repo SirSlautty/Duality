@@ -92,6 +92,9 @@ config = DualityLMConfig.small(
 )
 ```
 
+Set `memory_layers=()` to build the same parameterized decoder without the
+memory pathway for a baseline or ablation run.
+
 After a forward pass:
 
 ```python
@@ -109,4 +112,3 @@ This is a trainable research foundation, not a competitive pretrained LLM.
 The repository still needs a curated corpus, tokenizer training, longer
 training runs, evaluation against a baseline of the same parameter count, and
 ablation studies that compare memory-enabled and memory-disabled models.
-

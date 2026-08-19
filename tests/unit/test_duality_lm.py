@@ -89,3 +89,10 @@ def test_persistent_memory_can_be_reset() -> None:
 def test_config_rejects_bad_memory_layer() -> None:
     with pytest.raises(ValueError):
         DualityLMConfig(n_layers=2, memory_layers=(2,))
+
+
+def test_empty_memory_layers_disable_the_pathway() -> None:
+    config = DualityLMConfig.tiny(memory_layers=())
+    model = DualityLM(config)
+    assert config.resolved_memory_layers() == ()
+    assert model.memory_stats() == []
