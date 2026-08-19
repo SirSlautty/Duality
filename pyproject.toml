@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "drai"
-version = "0.1.0"
-description = "Dynamic Resonance AI: internal-state augmentation for transformer models"
+version = "0.2.0"
+description = "Dynamic Resonance AI and a native attractor-memory language model"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [
@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 # Useful metadata for PyPI & tooling
-keywords = ["transformers", "AI", "memory", "attention", "pytorch", "resonance"]
+keywords = ["transformers", "language-model", "AI", "memory", "attention", "pytorch", "resonance"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3",

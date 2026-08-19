@@ -61,6 +61,7 @@ jobs:
               get_v1_conservative,
               get_v1_stats,
           )
+          from duality_lm import ByteTokenizer, DualityLM, DualityLMConfig
 
           config = get_v1_conservative()
           assert isinstance(config, V1Config)
@@ -89,7 +90,22 @@ jobs:
 
           assert callable(apply_v1)
           assert callable(get_v1_stats)
+
+          tokenizer = ByteTokenizer()
+          native = DualityLM(
+              DualityLMConfig.tiny(
+                  vocab_size=tokenizer.vocab_size,
+                  max_seq_len=64,
+              )
+          )
+          tokens = torch.tensor([tokenizer.encode("Duality")])
+          native_output = native(tokens, use_cache=True)
+          assert native_output.logits.shape == (1, tokens.shape[1], tokenizer.vocab_size)
+          assert native_output.memory_state is not None
+          assert native_output.past_key_values is not None
+
           print("Active DRAI V1 API contract passed")
+          print("Native DualityLM API contract passed")
           PY
 
   environment-tests:
