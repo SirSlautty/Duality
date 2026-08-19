@@ -57,6 +57,30 @@ No training.
 No fine-tuning.  
 Your model now carries persistent internal state during inference.
 
+## Native DualityLM
+
+The repository now also includes `duality_lm`, a trainable decoder-only model
+that makes the Duality idea part of the model architecture rather than only a
+post-hoc patch. It provides causal self-attention, explicit attractor memory in
+selected blocks, prompt-prefill plus KV-cache generation, and a dependency-free
+byte tokenizer for bootstrap experiments.
+
+```python
+import torch
+from duality_lm import ByteTokenizer, DualityLM, DualityLMConfig
+
+tokenizer = ByteTokenizer()
+config = DualityLMConfig.tiny(vocab_size=tokenizer.vocab_size)
+model = DualityLM(config)
+prompt = torch.tensor([tokenizer.encode("Duality remembers")])
+generated = model.generate(prompt, max_new_tokens=32, do_sample=False)
+print(tokenizer.decode(generated[0].tolist()))
+```
+
+This native model is an untrained research foundation until it is fitted to a
+corpus. See [`docs/DUALITY_LM.md`](docs/DUALITY_LM.md) for the architecture,
+training command, state-passing API, and current limitations.
+
 ---
 
 ## What You Get
